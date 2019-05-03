@@ -92,8 +92,10 @@ class JwsSigner {
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
 
-        //now replace the request body with the bytestream we signed, to make sure it gets encoded/serialised correctly across the wire
-        requestOptions.body = bodyBytes;
+        //now if we had a body, replace it with the bytestream we signed, to make sure it gets encoded/serialised correctly across the wire
+        if(requestOptions.body) {
+            requestOptions.body = bodyBytes;
+        }
         requestOptions.json = false;
     }
 }
