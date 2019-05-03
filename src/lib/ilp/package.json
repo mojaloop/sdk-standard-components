@@ -1,0 +1,21 @@
+{
+  "name": "@internal/ilp",
+  "version": "0.0.1",
+  "description": "An ILP abstraction for the Mojaloop SDK",
+  "main": "ilp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Bush, ModusBox Inc.",
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "dependencies": {
+    "base64url": "^3.0.1",
+    "ilp-packet": "^3.0.8"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "mojaloop-sdk-standard-components",
+  "version": "0.0.1",
+  "description": "An set of standard components for connecting to Mojaloop API enabled switches",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "James Bush, ModusBox Inc.",
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "dependencies": {
+    "@internal/jws": "file:lib/jws",
+    "@internal/mojaloop-requests": "file:lib/mojaloop-requests",
+    "@internal/ilp": "file:lib/ilp",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {}
+}
