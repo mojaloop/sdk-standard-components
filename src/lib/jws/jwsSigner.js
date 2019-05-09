@@ -15,6 +15,9 @@ const url = require('url');
 const base64url = require('base64url');
 const jwt = require('jsonwebtoken');
 
+// the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
+const SIGNATURE_ALGORITHM = 'RS256';
+
 
 /**
  * Provides methods for Mojaloop compliant JWS signing and signature verification
@@ -82,7 +85,9 @@ class JwsSigner {
         const bodyBase64 = base64url(bodyBytes, 'utf8');
 
         // now we sign the two strings, concatenated thus: "protectedHeaderBase64.bodyBase64"
-        const signature = jwt.sign(`${protectedHeaderBase64}.${bodyBase64}`, this.signingKey);
+        const signature = jwt.sign(`${protectedHeaderBase64}.${bodyBase64}`, this.signingKey, {
+            algorithm: SIGNATURE_ALGORITHM
+        });
         
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
         const signatureObject = {
