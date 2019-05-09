@@ -10,9 +10,9 @@
 
 'use strict';
 
-const Jws = require('@internal/jws');
-const MojaloopRequests = require('@internal/mojaloop-requests');
-const Ilp = require('@internal/ilp');
+const Jws = require('./lib/jws');
+const MojaloopRequests = require('./lib/mojaloop-requests');
+const Ilp = require('./lib/ilp');
 
 
 module.exports = {

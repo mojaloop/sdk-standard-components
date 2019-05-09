@@ -19,7 +19,7 @@ const common = require('./common.js');
 const buildUrl = common.buildUrl;
 const throwOrJson = common.throwOrJson;
 
-const JwsSigner = require('@internal/jws').signer;
+const JwsSigner = require('../jws').signer;
 
 
 /**
