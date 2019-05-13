@@ -10,13 +10,16 @@
 
 'use strict';
 
+
 const Jws = require('./lib/jws');
 const MojaloopRequests = require('./lib/mojaloop-requests');
 const Ilp = require('./lib/ilp');
+const Errors = require('./lib/errors');
 
 
 module.exports = {
     Jws: Jws,
     MojaloopRequests: MojaloopRequests,
-    Ilp: Ilp
+    Ilp: Ilp,
+    Errors: Errors
 };

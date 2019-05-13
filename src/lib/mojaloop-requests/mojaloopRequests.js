@@ -10,6 +10,8 @@
 
 'use strict';
 
+
+const util = require('util');
 const request = require('request-promise-native');
 
 const http = require('http');
@@ -124,6 +126,16 @@ class MojaloopRequests {
 
 
     /**
+     * Executes a PUT /transfers/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransfersError(transferId, error, destFspId) {
+        return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
+    }
+ 
+
+    /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
@@ -159,6 +171,7 @@ class MojaloopRequests {
         }
 
         try {
+            this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
         }
         catch (e) {
@@ -183,6 +196,7 @@ class MojaloopRequests {
         }
 
         try {
+            this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
         }
         catch (e) {
@@ -207,6 +221,7 @@ class MojaloopRequests {
         }
 
         try {
+            this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
         }
         catch (e) {

@@ -11,6 +11,7 @@ npm install @modusbox/mojaloop-sdk-standard-components
  1. JWS (JSON Web Signature) - For signing and signature verification
  2. Interledger Protocol - For generating and verifying Interledger message content
  3. Mojaloop Requests - An abstration that simplifies making HTTP requests to Mojaloop API compliant peers demonstrating specification compliant HTTP header handling and JSON Web Signatures
+ 4. Errors - Mojaloop API specification compliant error helpers
 
 For an example usage of these components please see the Mojaloop SDK Example Scheme Adapter available [here](http://www.github.com/modusbox/mojaloop-sdk-example-scheme-adapter).
 
