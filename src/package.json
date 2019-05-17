@@ -1,6 +1,6 @@
 {
   "name": "@modusbox/mojaloop-sdk-standard-components",
-  "version": "0.0.9",
+  "version": "0.0.20",
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "request": "^2.34",
     "request-promise-native": "^1.0.7",
     "base64url": "^3.0.1",
-    "ilp-packet": "^3.0.8",
+    "ilp-packet": "2.2.0",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {}

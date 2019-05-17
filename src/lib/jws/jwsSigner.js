@@ -11,12 +11,14 @@
 'use strict';
 
 const util = require('util');
-const url = require('url');
 const base64url = require('base64url');
 const jwt = require('jsonwebtoken');
 
 // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
 const SIGNATURE_ALGORITHM = 'RS256';
+
+// a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
+const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers)(\/.*))$/;
 
 
 /**
@@ -42,9 +44,14 @@ class JwsSigner {
     sign(requestOptions) {
         this.logger.log(`JWS Signing request: ${util.inspect(requestOptions)}`);
 
+        const uriMatches = uriRegex.exec(requestOptions.uri);
+        if(!uriMatches || uriMatches.length < 2) {
+            throw new Error(`URI not valid for protected header: ${requestOptions.uri}`);
+        }
+
         // add required JWS headers to the request options
         requestOptions.headers['fspiop-http-method'] = requestOptions.method.toUpperCase();
-        requestOptions.headers['fspiop-uri'] = url.parse(requestOptions.uri).pathname;
+        requestOptions.headers['fspiop-uri'] = uriMatches[1];
 
         // generate the protected header as base64url encoding of UTF-8 encoding of JSON string
 
@@ -59,12 +66,12 @@ class JwsSigner {
 
         // set destination in the protected header object if it is present in the request headers
         if(requestOptions.headers['fspiop-destination']) {
-            protectedHeaderObject['fspiop-destination'] = requestOptions.headers['fspiop-destination'];
+            protectedHeaderObject['FSPIOP-Destination'] = requestOptions.headers['fspiop-destination'];
         }
 
         // set date in the protected header object if it is present in the request headers
         if(requestOptions.headers['date']) {
-            protectedHeaderObject['date'] = requestOptions.headers['date'];
+            protectedHeaderObject['Date'] = requestOptions.headers['date'];
         }
 
         // get a base64url encoding of a UTF-8 version of the protected header JSON
