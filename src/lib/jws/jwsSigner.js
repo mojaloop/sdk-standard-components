@@ -11,7 +11,6 @@
 'use strict';
 
 const util = require('util');
-const base64url = require('base64url');
 const jwt = require('jsonwebtoken');
 
 // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
@@ -25,8 +24,8 @@ const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers)(\/.*))$/;
  * Provides methods for Mojaloop compliant JWS signing and signature verification
  */
 class JwsSigner {
-    constructor(config = { logger: console }) {
-        this.logger = config.logger;
+    constructor(config) {
+        this.logger = config.logger || console;
 
         if(!config.signingKey) {
             throw new Error('Signing key must be supplied as config argument');
@@ -39,10 +38,15 @@ class JwsSigner {
     /**
      * Adds JWS headers to an outgoing HTTP request options object
      *
-     * @param requestOptions {object} a request-promise-native request options object (see https://github.com/request/request-promise-native)
+     * @param requestOptions {object} a request-promise-native request options object
+     *   (see https://github.com/request/request-promise-native)
      */
     sign(requestOptions) {
         this.logger.log(`JWS Signing request: ${util.inspect(requestOptions)}`);
+
+        if(!requestOptions.body) {
+            throw new Error('Cannot sign with no body');
+        }
 
         const uriMatches = uriRegex.exec(requestOptions.uri);
         if(!uriMatches || uriMatches.length < 2) {
@@ -74,29 +78,23 @@ class JwsSigner {
             protectedHeaderObject['Date'] = requestOptions.headers['date'];
         }
 
-        // get a base64url encoding of a UTF-8 version of the protected header JSON
-        // we first encode the string into a buffer explicitly as UTF-8
-        const protectedHeaderBase64 = base64url(Buffer.from(JSON.stringify(protectedHeaderObject), 'utf8'), 'utf8');
-
         // generate the signature.
 
         // we might have an empty body (e.g. for a GET request) so start with an empty buffer
         let bodyBytes = Buffer.alloc(0);        
 
-        if(requestOptions.body) {
-            // if we have a body, use JSON.stringify to turn it into its JSON representation, whatever that may be
-            bodyBytes = Buffer.from(JSON.stringify(requestOptions.body), 'utf8');
-        }
+        // now we sign
+        const signOptions = {
+            algorithm: SIGNATURE_ALGORITHM,
+            header: protectedHeaderObject,
+            noTimestamp: true
+        };
 
-        // now we can base64url encode the body
-        const bodyBase64 = base64url(bodyBytes, 'utf8');
+        const token = jwt.sign(requestOptions.body || '', this.signingKey, signOptions);
 
-        // now we sign the two strings, concatenated thus: "protectedHeaderBase64.bodyBase64"
-        const signature = jwt.sign(`${protectedHeaderBase64}.${bodyBase64}`, this.signingKey, {
-            algorithm: SIGNATURE_ALGORITHM
-        });
-        
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
+        const [ protectedHeaderBase64, , signature ] = token.split('.');
+
         const signatureObject = {
             signature: signature,
             protectedHeader: protectedHeaderBase64
@@ -104,7 +102,8 @@ class JwsSigner {
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
 
-        //now if we had a body, replace it with the bytestream we signed, to make sure it gets encoded/serialised correctly across the wire
+        //now if we had a body, replace it with the bytestream we signed, to make sure it gets encoded/serialised
+        //correctly across the wire
         if(requestOptions.body) {
             requestOptions.body = bodyBytes;
         }

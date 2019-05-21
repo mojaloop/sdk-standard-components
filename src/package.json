@@ -4,7 +4,9 @@
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "ava"
   },
   "author": "James Bush, ModusBox Inc.",
   "license": "Apache-2.0",
@@ -15,11 +17,16 @@
     }
   ],
   "dependencies": {
-    "request": "^2.34",
-    "request-promise-native": "^1.0.7",
     "base64url": "^3.0.1",
     "ilp-packet": "2.2.0",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "request": "^2.34",
+    "request-promise-native": "^1.0.7"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "ava": "^1.4.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.1"
+  }
 }
