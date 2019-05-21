@@ -166,9 +166,7 @@ class MojaloopRequests {
             simple: false 
         };
 
-        if(this.jwsSign) {
-            this.jwsSigner.sign(reqOpts);
-        }
+        // Note we do not JWS sign requests with no body i.e. GET requests
 
         try {
             this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
