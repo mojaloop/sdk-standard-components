@@ -80,9 +80,6 @@ class JwsSigner {
 
         // generate the signature.
 
-        // we might have an empty body (e.g. for a GET request) so start with an empty buffer
-        let bodyBytes = Buffer.alloc(0);        
-
         // now we sign
         const signOptions = {
             algorithm: SIGNATURE_ALGORITHM,
@@ -101,13 +98,6 @@ class JwsSigner {
         };
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
-
-        //now if we had a body, replace it with the bytestream we signed, to make sure it gets encoded/serialised
-        //correctly across the wire
-        if(requestOptions.body) {
-            requestOptions.body = bodyBytes;
-        }
-        requestOptions.json = false;
     }
 }
 
