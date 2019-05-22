@@ -98,6 +98,8 @@ class JwsSigner {
         };
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
+
+        requestOptions.body = JSON.stringify(requestOptions.body);
     }
 }
 
