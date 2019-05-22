@@ -87,7 +87,7 @@ class JwsSigner {
             noTimestamp: true
         };
 
-        const token = jwt.sign(requestOptions.body || '', this.signingKey, signOptions);
+        const token = jwt.sign(requestOptions.body, this.signingKey, signOptions);
 
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
         const [ protectedHeaderBase64, , signature ] = token.split('.');
