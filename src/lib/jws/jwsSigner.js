@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 const SIGNATURE_ALGORITHM = 'RS256';
 
 // a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
-const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers)(\/.*))$/;
+const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers)(\/.*)*)$/;
 
 
 /**
