@@ -10,7 +10,6 @@
 
 'use strict';
 
-const util = require('util');
 const test = require('ava');
 
 const Jws = require('../lib/jws');
@@ -95,8 +94,6 @@ test('Should generate a valid signature header when request body present', t => 
         t.fail();
     }
  
-    console.log(`signed headers: ${util.inspect(testOpts)}`);
-
     // is the signature valid?
     const request = {
         headers: testOpts.headers,
@@ -106,4 +103,194 @@ test('Should generate a valid signature header when request body present', t => 
     t.context.validator.validate(request);
 
     t.pass();
+});
+
+
+test('Should throw when trying to sign with no body', t => {
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678'
+    };
+
+    try {
+        t.context.signer.sign(testOpts);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with no body', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.body;
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with no fspiop-signature header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-signature'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with no fspiop-uri header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-uri'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with no fspiop-http-method header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-http-method'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with modified body', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    body.abc = 456;
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
 });
