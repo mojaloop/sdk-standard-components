@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/modusbox/mojaloop-sdk-standard-components/tree/master.svg?style=svg&circle-token=3a545ba78f7989a312b177e60095c658e1349383)](https://circleci.com/gh/modusbox/mojaloop-sdk-standard-components/tree/master)
+
 # Mojaloop DFSP SDK Standard Components
 
 This package contains a set of  components that encode standard practices for enabling the following features of a DFSP to Mojaloop switch interface:
