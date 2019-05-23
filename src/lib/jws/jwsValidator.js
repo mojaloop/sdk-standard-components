@@ -151,7 +151,7 @@ class JwsValidator {
             throw new Error(`FSPIOP-Destination header is present in protected header but not in HTTP request: ${util.inspect(headers)}`);
         }
         if(headers['fspiop-destination'] && (headers['fspiop-destination'] !== decodedProtectedHeader['FSPIOP-Destination'])) {
-            throw new Error(`HTTP date header: ${headers['date']} does not match protected header Date value: ${decodedProtectedHeader['Date']}`);
+            throw new Error(`HTTP FSPIOP-Destination header: ${headers['fspiop-destination']} does not match protected header FSPIOP-Destination value: ${decodedProtectedHeader['FSPIOP-Destination']}`);
         }
     }
 }

@@ -74,7 +74,7 @@ test.beforeEach(t => {
 });
 
 
-test('Should generate a valid signature header when request body present', t => {
+test('Should generate valid JWS headers and signature', t => {
     let body = { test: 123 };
 
     let testOpts = {
@@ -93,6 +93,20 @@ test('Should generate a valid signature header when request body present', t => 
     if(!testOpts.headers['fspiop-signature']) {
         t.fail();
     }
+
+    if(!testOpts.headers['fspiop-uri']) {
+        t.fail();
+    }
+    if(testOpts.headers['fspiop-uri'] !== '/parties/MSISDN/12345678') {
+        t.fail();
+    }
+
+    if(!testOpts.headers['fspiop-http-method']) {
+        t.fail();
+    }
+    if(testOpts.headers['fspiop-http-method'] !== 'PUT') {
+        t.fail();
+    }
  
     // is the signature valid?
     const request = {
@@ -100,8 +114,12 @@ test('Should generate a valid signature header when request body present', t => 
         body: body
     };
 
-    t.context.validator.validate(request);
-
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        t.fail();
+    }
     t.pass();
 });
 
@@ -279,6 +297,210 @@ test('Should throw when trying to validate with modified body', t => {
     t.context.signer.sign(testOpts);
 
     body.abc = 456;
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with missing fspiop-source header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-source'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with missing fspiop-uri header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-uri'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with missing fspiop-http-method header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    delete testOpts.headers['fspiop-http-method'];
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with modified fspiop-destination header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    testOpts.headers['fspiop-destination'] = 'fail';
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with modified date header', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    testOpts.headers['date'] = '1985-01-01T00:00:00.000Z';
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+});
+
+
+test('Should throw when trying to validate with modified fspiop-uri', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'mojaloop-sdk',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    testOpts.headers['fspiop-uri'] = '/parties/MSISDN/12345679';
 
     // is the signature valid?
     const request = {
