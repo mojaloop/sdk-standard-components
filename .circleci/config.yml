@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - run:
+          name: install-npm-dependencies
+          command: cd src && npm install
+      - run:
+          name: lint
+          command: cd src && npm run lint
+      - run:
+          name: test
+          command: cd src && npm test
+
