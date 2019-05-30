@@ -80,6 +80,14 @@ class MojaloopRequests {
 
 
     /**
+     * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
+     */
+    async putPartiesError(idType, idValue, error, destFspId) {
+        return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId);
+    }
+
+
+    /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
     async putParticipants(idType, idValue, body, destFspId) {
