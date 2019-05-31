@@ -516,3 +516,37 @@ test('Should throw when trying to validate with modified fspiop-uri', t => {
     }
     t.fail();
 });
+
+
+test('should throw when trying to validate without matching public key', t => {
+    let body = { test: 123 };
+
+    let testOpts = {
+        headers: {
+            'fspiop-source': 'unknownFsp',
+            'fspiop-destination': otherFspId,
+            'date': new Date().toISOString(),
+        },
+        method: 'PUT',
+        uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+        body: body
+    };
+
+    t.context.signer.sign(testOpts);
+
+    // is the signature valid?
+    const request = {
+        headers: testOpts.headers,
+        body: body
+    };
+
+    try {
+        t.context.validator.validate(request);
+    }
+    catch(e) {
+        return t.pass();
+    }
+    t.fail();
+
+
+});

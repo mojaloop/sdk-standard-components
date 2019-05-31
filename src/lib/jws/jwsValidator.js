@@ -53,7 +53,7 @@ class JwsValidator {
             const pubKey = this.validationKeys[headers['fspiop-source']];
 
             if(!pubKey) {
-                throw new Error(`JWS public key for '${headers['fspiop-source']}' not available. Unable to verify JWS`);
+                throw new Error(`JWS public key for '${headers['fspiop-source']}' not available. Unable to verify JWS. Only have keys for: ${util.inspect(Object.keys(this.validationKeys))}`);
             }
 
             // first we check the required headers are present 
