@@ -148,16 +148,20 @@ class MojaloopRequests {
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    _buildHeaders (resourceType, dest) {
+    _buildHeaders (method, resourceType, dest) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
-            'accept': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
             'fspiop-source': this.dfspId
         };
 
         if(dest) {
             headers['fspiop-destination'] = dest;
+        }
+
+        // dont add accept header to PUT requests
+        if(method.toUpperCase() !== 'PUT') {
+            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
         }
 
         return headers;
@@ -168,7 +172,7 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders(resourceType, dest),
+            headers: this._buildHeaders('GET', resourceType, dest),
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false 
@@ -191,7 +195,7 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders(resourceType, dest),
+            headers: this._buildHeaders('PUT', resourceType, dest),
             body: body,
             resolveWithFullResponse: true,
             simple: false
@@ -216,7 +220,7 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders(resourceType, dest),
+            headers: this._buildHeaders('POST', resourceType, dest),
             body: body,
             resolveWithFullResponse: true,
             simple: false
