@@ -96,6 +96,14 @@ class MojaloopRequests {
 
 
     /**
+     * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
+     */
+    async putParticipantsError(idType, idValue, error, destFspId) {
+        return this._put(`participants/${idType}/${idValue}/error`, 'participants', error, destFspId);
+    }
+
+
+    /**
      * Executes a POST /quotes request for the specified quote request
      *
      * @returns {object} - JSON response body if one was received
