@@ -39,7 +39,7 @@ class Ilp {
     getQuoteResponseIlp(quoteRequest, quoteResponse) {
         const transactionObject = {
             transactionId: quoteRequest.transactionId,
-            quoteId: quoteResponse.quoteId,
+            quoteId: quoteRequest.quoteId,
             payee: quoteRequest.payee,
             payer: quoteRequest.payer,
             amount: quoteResponse.transferAmount,
@@ -47,7 +47,7 @@ class Ilp {
             note: quoteResponse.note
         };
 
-        const ilpData = Buffer.from(Buffer.from(JSON.stringify(transactionObject)).toString('base64'));
+        const ilpData = Buffer.from(base64url(JSON.stringify(transactionObject)));
         const packetInput = {
             amount: this._getIlpCurrencyAmount(quoteResponse.transferAmount), // unsigned 64bit integer as a string
             account: this._getIlpAddress(quoteRequest.payee), // ilp address
@@ -56,18 +56,20 @@ class Ilp {
 
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
-        let base64encodedIlpPacket = packet.toString('base64');
+        let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64'));
 
-        let generatedFulfilment = this.caluclateFulfil(base64encodedIlpPacket);
-        let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment);
+        let generatedFulfilment = this.caluclateFulfil(base64encodedIlpPacket).replace('"', '');
+        let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
-        this.logger.log(`Generated ILP transaction object: ${util.inspect(transactionObject)}\nPacket input: ${util.inspect(packetInput)}`);
-
-        return {
+        const ret = {
             fulfilment: generatedFulfilment,
             ilpPacket: base64encodedIlpPacket,
             condition: generatedCondition
         };
+
+        this.logger.log(`Generated ILP: transaction object: ${util.inspect(transactionObject)}\nPacket input: ${util.inspect(packetInput)}\nOutput: ${util.inspect(ret)}`);
+
+        return ret;
     }
 
 
@@ -154,8 +156,6 @@ class Ilp {
 
         var generatedFulfilment = hmacsignature.digest('base64');
 
-        this.logger.log(`ILP: caluclated fulfil: generatedFulfilment=${generatedFulfilment} length: ${generatedFulfilment.length}`);
-
         return base64url.fromBase64(generatedFulfilment);
     }
 
@@ -173,7 +173,6 @@ class Ilp {
         }
         
         var calculatedConditionDigest = this._sha256(preimage);
-        this.logger.log(`ILP: calculated condition digest: ${calculatedConditionDigest}`);
         return base64url.fromBase64(calculatedConditionDigest);
     }
 
