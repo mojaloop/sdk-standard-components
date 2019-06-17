@@ -56,7 +56,7 @@ class Ilp {
 
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
-        let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64'));
+        let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
 
         let generatedFulfilment = this.caluclateFulfil(base64encodedIlpPacket).replace('"', '');
         let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
