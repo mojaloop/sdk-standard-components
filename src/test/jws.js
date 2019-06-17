@@ -547,6 +547,4 @@ test('should throw when trying to validate without matching public key', t => {
         return t.pass();
     }
     t.fail();
-
-
 });

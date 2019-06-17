@@ -11,7 +11,7 @@
 'use strict';
 
 const util = require('util');
-const jwt = require('jsonwebtoken');
+const jws = require('jws');
 
 // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
 const SIGNATURE_ALGORITHM = 'RS256';
@@ -62,7 +62,7 @@ class JwsSigner {
         // Note: Property names are case sensitive in the protected header object even though they are
         // not case sensitive in the actual HTTP headers
         const protectedHeaderObject = {
-            alg: 'RS256',
+            alg: SIGNATURE_ALGORITHM,
             'FSPIOP-URI': requestOptions.headers['fspiop-uri'],
             'FSPIOP-HTTP-Method': requestOptions.headers['fspiop-http-method'],
             'FSPIOP-Source': requestOptions.headers['fspiop-source']
@@ -78,23 +78,19 @@ class JwsSigner {
             protectedHeaderObject['Date'] = requestOptions.headers['date'];
         }
 
-        // generate the signature.
-
         // now we sign
-        const signOptions = {
-            algorithm: SIGNATURE_ALGORITHM,
+        const token = jws.sign({
             header: protectedHeaderObject,
-            noTimestamp: true
-        };
-
-        const token = jwt.sign(requestOptions.body, this.signingKey, signOptions);
+            payload: requestOptions.body,
+            secret: this.signingKey,
+            encoding: 'utf8'});
 
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
         const [ protectedHeaderBase64, , signature ] = token.split('.');
 
         const signatureObject = {
-            signature: signature,
-            protectedHeader: protectedHeaderBase64
+            signature: signature.replace('"', ''),
+            protectedHeader: protectedHeaderBase64.replace('"', '')
         };
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
