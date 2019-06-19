@@ -14,8 +14,12 @@
 const util = require('util');
 
 
-/**
- * See section 7.6 of "API Definition v1.0.docx"
+/** See section 7.6 of "API Definition v1.0.docx". Note that some of the these
+ * error objects contain an httpStatusCode property that indicates the HTTP
+ * response code for cases where errors are returned immediately i.e. upon
+ * request, rather than on callback.  Those error objects that do not contain
+ * an httpStatusCode property are expected to only be returned to callers in
+ * error callbacks after the initial request was accepted with a 202/200.
  */
 const MojaloopApiErrorCodes = {
     //Generic communication errors
@@ -25,26 +29,26 @@ const MojaloopApiErrorCodes = {
     //Generic server errors
     SERVER_ERROR:                     { code: '2000', message: 'Server error' },
     INTERNAL_SERVER_ERROR:            { code: '2001', message: 'Internal server error' },
-    NOT_IMPLEMENTED:                  { code: '2002', message: 'Not implemented' },
-    SERVICE_CURRENTLY_UNAVAILABLE:    { code: '2003', message: 'Service currently unavailable' },
+    NOT_IMPLEMENTED:                  { code: '2002', message: 'Not implemented' , httpStatusCode: 501},
+    SERVICE_CURRENTLY_UNAVAILABLE:    { code: '2003', message: 'Service currently unavailable', httpStatusCode: 503 },
     SERVER_TIMED_OUT:                 { code: '2004', message: 'Server timed out' },
     SERVER_BUSY:                      { code: '2005', message: 'Server busy' },
 
     //Generic client errors
-    CLIENT_ERROR:                     { code: '3000', message: 'Client error' },
-    UNACCEPTABLE_VERSION:             { code: '3001', message: 'Unacceptable version' },
-    UNKNOWN_URI:                      { code: '3002', message: 'Unknown URI' },
+    CLIENT_ERROR:                     { code: '3000', message: 'Client error', httpStatusCode: 400 },
+    UNACCEPTABLE_VERSION:             { code: '3001', message: 'Unacceptable version', httpStatusCode: 406 },
+    UNKNOWN_URI:                      { code: '3002', message: 'Unknown URI', httpStatusCode: 404 },
     ADD_PARTY_INFO_ERROR:             { code: '3003', message: 'Error updating or adding party information' },
 
     //Client validation errors
-    VALIDATION_ERROR:                 { code: '3100', message: 'Validation error' },
-    MALFORMED_SYNTAX:                 { code: '3101', message: 'Malformed syntax' },
-    MISSING_ELEMENT:                  { code: '3102', message: 'Missing mandatory element' },
-    TOO_MANY_ELEMENTS:                { code: '3103', message: 'Too many elements' },
-    TOO_LARGE_PAYLOAD:                { code: '3104', message: 'Payload too large' },
-    INVALID_SIGNATURE:                { code: '3105', message: 'Invalid signature' },
-    MODIFIED_REQUEST:                 { code: '3106', message: 'Modified request' },
-    MISSING_MANDATORY_EXTENSION:      { code: '3107', message: 'Missing mandatory extension' },
+    VALIDATION_ERROR:                 { code: '3100', message: 'Validation error', httpStatusCode: 400 },
+    MALFORMED_SYNTAX:                 { code: '3101', message: 'Malformed syntax', httpStatusCode: 400 },
+    MISSING_ELEMENT:                  { code: '3102', message: 'Missing mandatory element', httpStatusCode: 400 },
+    TOO_MANY_ELEMENTS:                { code: '3103', message: 'Too many elements', httpStatusCode: 400 },
+    TOO_LARGE_PAYLOAD:                { code: '3104', message: 'Payload too large', httpStatusCode: 400 },
+    INVALID_SIGNATURE:                { code: '3105', message: 'Invalid signature', httpStatusCode: 400 },
+    MODIFIED_REQUEST:                 { code: '3106', message: 'Modified request', httpStatusCode: 400 },
+    MISSING_MANDATORY_EXTENSION:      { code: '3107', message: 'Missing mandatory extension', httpStatusCode: 400 },
 
     //identifier errors
     ID_NOT_FOUND:                     { code: '3200', message: 'ID not found' },
@@ -95,7 +99,7 @@ const MojaloopApiErrorCodes = {
 /**
  * Returns an object representing a Mojaloop API spec error object given its error code
  *
- * @param code {string} - Error code
+ * @param code {string} - Mojaloop API spec error code (four digit integer as string)
  * @returns {object} - Object representing the Mojaloop API spec error
  */
 function MojaloopApiErrorCodeFromCode(code) {
@@ -117,6 +121,12 @@ class MojaloopFSPIOPError extends Error {
 
     /**
      * Constructs a new error object
+     *
+     * @param cause {object} - Underlying error object or any type that represents the cause of this error
+     * @param message {string} - A friendly error message
+     * @param replyTo {string} - FSPID of the participant to whom this error is addressed
+     * @param apiErrorCode {object} - The MojaloopApiErrorCodes object representing the API spec error
+     * @param extensions {object} - API spec extensions object (if applicable)
      */
     constructor(cause, message, replyTo, apiErrorCode, extensions) {
         super(message);
@@ -124,6 +134,7 @@ class MojaloopFSPIOPError extends Error {
         this.cause = cause;
         this.replyTo = replyTo;
         this.apiErrorCode = apiErrorCode;
+        this.httpStatusCode = apiErrorCode.httpStatusCode;
         this.extensions = extensions;
     }
 
@@ -163,6 +174,16 @@ class MojaloopFSPIOPError extends Error {
             extensions: this.extensions,
             cause: this.cause ? this.cause.stack || util.inspect(this.cause) : undefined
         };
+    }
+
+
+    /**
+     * Returns a string representation of the error
+     *
+     * @returns {string}
+     */
+    toString() {
+        return `${util.inspect(this.toFullErrorObject())}`;
     }
 }
 
