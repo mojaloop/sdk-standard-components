@@ -153,7 +153,7 @@ class MojaloopFSPIOPError extends Error {
             }
         };
 
-        if(this.extensionList) {
+        if(this.extensions) {
             e.errorInformation.extensionList = this.extensions;
         }
 
