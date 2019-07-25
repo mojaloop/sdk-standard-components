@@ -116,8 +116,8 @@ class MojaloopRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteResponse, destFspId) {
-        return this._put(`quotes/${quoteResponse.quoteId}`, 'quotes', quoteResponse, destFspId);
+    async putQuotes(quoteId, quoteResponse, destFspId) {
+        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
     }
 
 
