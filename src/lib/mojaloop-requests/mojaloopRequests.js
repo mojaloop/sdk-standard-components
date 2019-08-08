@@ -213,6 +213,7 @@ class MojaloopRequests {
             uri: buildUrl(this.peerEndpoint, url),
             headers: this._buildHeaders('PUT', resourceType, dest),
             body: body,
+            agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
         };
@@ -238,6 +239,7 @@ class MojaloopRequests {
             uri: buildUrl(this.peerEndpoint, url),
             headers: this._buildHeaders('POST', resourceType, dest),
             body: body,
+            agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
         };
