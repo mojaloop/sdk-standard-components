@@ -175,6 +175,11 @@ class MojaloopRequests {
             headers['fspiop-destination'] = dest;
         }
 
+        //Need to populate Bearer Token for WS02 if Sim is pointing to WS02
+        if(this.config.wso2BearerToken) {
+            headers['Authorization'] = `Bearer ${this.config.wso2BearerToken}`;
+        }
+
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
             headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
