@@ -36,7 +36,7 @@ defaults_license_scanner: &defaults_license_scanner
 
 defaults_npm_auth: &defaults_npm_auth
   name: Update NPM registry auth token
-  command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+  command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > src/.npmrc
 
 defaults_npm_publish_version: &defaults_npm_publish
   name: Update version to prerelease
