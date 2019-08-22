@@ -43,14 +43,14 @@ defaults_npm_publish_version: &defaults_npm_publish
   command: |
     source $BASH_ENV
     echo "Publishing tag $CIRCLE_TAG"
-    npm publish --tag $CIRCLE_TAG --access public
+    cd src && npm publish --tag $CIRCLE_TAG --access public
 
 defaults_npm_publish_release: &defaults_npm_publish_release
   name: Publish NPM $RELEASE_TAG artifact
   command: |
     source $BASH_ENV
     echo "Publishing tag $RELEASE_TAG"
-    npm publish --tag $RELEASE_TAG --access public
+    cd src && npm publish --tag $RELEASE_TAG --access public
 
 defaults_slack_announcement: &defaults_slack_announcement
   name: Slack announcement for tag releases
