@@ -76,7 +76,7 @@ jobs:
           name: Update NPM install
           command: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "src/package.json" }}
           paths:
             - node_modules
 
@@ -89,7 +89,7 @@ jobs:
           command: *defaults_Dependencies
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "src/package.json" }}
       - run:
           name: Install tape, tapes and tap-xunit
           command: npm install tape tapes tap-xunit
