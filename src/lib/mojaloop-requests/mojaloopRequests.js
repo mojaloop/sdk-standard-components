@@ -23,6 +23,7 @@ const throwOrJson = common.throwOrJson;
 
 const JwsSigner = require('../jws').signer;
 
+const bodyStringifier = require('./toString');
 
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
@@ -227,6 +228,8 @@ class MojaloopRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
+        reqOpts.body = bodyStringifier(reqOpts.body);
+
         try {
             this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
@@ -252,6 +255,8 @@ class MojaloopRequests {
         if(this.jwsSign) {
             this.jwsSigner.sign(reqOpts);
         }
+
+        reqOpts.body = bodyStringifier(reqOpts.body);
 
         try {
             this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
