@@ -65,10 +65,10 @@ const throwOrJson = async (res) => {
     }
 
     
-    if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
-        // we should have got a valid mojaloop content-type in the response
-        throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
-    }
+    // if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
+    //     // we should have got a valid mojaloop content-type in the response
+    //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
+    // }
 
     try {
         // try parsing the body as JSON
