@@ -68,7 +68,7 @@ const throwOrJson = async (res) => {
     }
     
     // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
-    if ((res.headers['content-length'] && (res.headers['content-length'] !== '0' ) || res.body || res.body.length > 0)) {
+    if ((res.headers['content-length']  && (res.headers['content-length'] !== '0' ) || res.body || res.body.length > 0)) {
         throw new HTTPResponseError({ msg: `Expected empty response body but got content: ${res.body}`,
             res
         });
