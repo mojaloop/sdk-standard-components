@@ -50,37 +50,33 @@ const buildUrl = (...args) => {
 
 
 const throwOrJson = async (res) => {
-    // TODO: will a 503 or 500 with content-length zero generate an error?
-    // or a 404 for that matter?!
-
-    if (res.headers['content-length'] === '0' || res.status === 204 || res.status === 404) {
-        // success but no content, return null
-        return null;
-    }
+    // Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec. 
+    // This needs to be un-commented once the corresponding bug in the backend is fixed
+    // if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
+    //     // we should have got a valid mojaloop content-type in the response
+    //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
+    // }
+    
+    
+    // do this first - fail fast if we KNOW the request got an error response back    
+    // note that 404 will throw. This is correct  behavior for the mojaloop api.
     if(res.statusCode < 200 || res.statusCode >= 300) {
         // not a successful request
         throw new HTTPResponseError({ msg: `Request returned non-success status code ${res.statusCode}`,
             res
         });
     }
-
     
-    // Commented by Murthy on 9/9/2019. Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec. 
-    // This needs to be un-commented once the corresponding bug in the backend is fixed
-    // if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
-    //     // we should have got a valid mojaloop content-type in the response
-    //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
-    // }
-
-    try {
-        // try parsing the body as JSON
-        const resp = JSON.parse(res.body);
-        return resp;
+    // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
+    if ((res.headers['content-length'] && (res.headers['content-length'] !== '0' ) || res.body || res.body.length > 0)) {
+        throw new HTTPResponseError({ msg: `Expected empty response body but got content: ${res.body}`,
+            res
+        });
     }
-    catch(err) {
-        throw new HTTPResponseError({ msg: `Error parsing response as JSON: ${err.stack || util.inspect(err)}`, res });
-    }
-};
+    
+    //return undefined as we do not expect body responses to mojaloop api requests
+    return;
+  };
 
 
 module.exports = {
