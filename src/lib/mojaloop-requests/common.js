@@ -65,10 +65,12 @@ const throwOrJson = async (res) => {
     }
 
     
-    if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
-        // we should have got a valid mojaloop content-type in the response
-        throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
-    }
+    // Commented by Murthy on 9/9/2019. Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec. 
+    // This needs to be un-commented once the corresponding bug in the backend is fixed
+    // if(!res.headers['content-type'] || (res.headers['content-type'].match(/^application\/vnd\.interoperability\.[a-z]+\+json$/) === null)) {
+    //     // we should have got a valid mojaloop content-type in the response
+    //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
+    // }
 
     try {
         // try parsing the body as JSON
