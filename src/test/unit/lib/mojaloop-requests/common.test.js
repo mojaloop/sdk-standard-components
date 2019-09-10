@@ -1,60 +1,60 @@
-const Test = require('tape')
-const Common = require('../../../../lib/mojaloop-requests/common')
-const util = require('util');
+/**************************************************************************
+ *  (C) Copyright ModusBox Inc. 2019 - All rights reserved.               *
+ *                                                                        *
+ *  This file is made available under the terms of the license agreement  *
+ *  specified in the corresponding source code repository.                *
+ *                                                                        *
+ *  ORIGINAL AUTHOR:                                                      *
+ *       Murthy Kakarlamudi - murthy@modusbox.com                             *
+ **************************************************************************/
 
-Test( 'common.js', commonTest => {
+const test = require('ava');
+const Common = require('../../../../lib/mojaloop-requests/common');
 
-    commonTest.test('throwOrJson should', throwOrJsonTest => {
+test('pass if content-length is not populated in incoming http response', async t => {
+    try {
+        const response = {
+            statusCode: 200,
+            headers: {
+                'content-type': 'application-json'
+            },
+            body: ''
+        };
+        await Common.throwOrJson(response);
+        t.pass();
+    } catch (error) {
+        t.fail('Expect validation to pass');
+    }
+});
 
-        throwOrJsonTest.test('pass if content-length is not populated in incoming http response', test => {
-            try {
-                const response = {
-                    statusCode : 200,
-                    headers : {
-                        'content-type' : 'application-json'
-                    },
-                    body: ''
-                }
-                const result = Common.throwOrJson(response)
-                test.deepEquals(result,{})
-            } catch (error) {
-                test.fail('Expect validation to pass')
-            }
-            test.end()
-        })
+test('throw an error if content-length is greater than 0', async t => {
+    try {
+        const response = {
+            statusCode: 200,
+            headers: {
+                'content-length': 10
+            },
+            body: ''
+        };
+        await Common.throwOrJson(response);
 
-        throwOrJsonTest.test('throw an error if content-length is greater than 0', async test => {
-            try {
-                const response = {
-                    statusCode : 200,
-                    headers : {
-                        'content-length' : 10
-                    },
-                    body: ''
-                }
-                await Common.throwOrJson(response)
-                
-            } catch (error) {
-                test.deepEquals(error.message,'Expected empty response body but got content: ')
-            }
-            test.end()
-        })
+    } catch (error) {
+        t.is(error.message, 'Expected empty response body but got content: ');
+    }
+});
 
-        throwOrJsonTest.test('throw an error if response code is <200', async test => {
-            try {
-                const response = {
-                    statusCode : 100,
-                    headers : {
-                        'content-length1' : 0
-                    },
-                    body: ''
-                }
-                const result = await Common.throwOrJson(response)
-                
-            } catch (err) {
-                test.deepEquals(err.message,'Request returned non-success status code 100')
-            }
-            test.end()
-        })
-    })
-})
+test('throw an error if response code is <200', async t => {
+    try {
+        const response = {
+            statusCode: 100,
+            headers: {
+                'content-length1': 0
+            },
+            body: ''
+        };
+        await Common.throwOrJson(response);
+
+    } catch (err) {
+        t.is(err.message, 'Request returned non-success status code 100');
+    }
+});

@@ -76,7 +76,7 @@ const throwOrJson = async (res) => {
     
     //return undefined as we do not expect body responses to mojaloop api requests
     return;
-  };
+};
 
 
 module.exports = {
