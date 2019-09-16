@@ -128,3 +128,31 @@ test('ILP packet should contain a valid transaction object', t => {
         t.fail();
     }
 });
+
+
+test('ILP fulfilment should match condition', t => {
+    try {
+        const { fulfilment, ilpPacket, condition } = t.context.ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+
+        const binaryPacket = Buffer.from(ilpPacket, 'base64');
+        const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
+        console.log(`Decoded ILP packet: ${util.inspect(jsonPacket)}`);
+
+        const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
+
+        console.log(`Decoded ILP packet data element: ${util.inspect(dataElement)}`);
+
+        const valid = t.context.ilp.validateFulfil(fulfilment, condition);
+
+        console.log(`Valudate fulfilment returned ${valid}`);
+
+        if(!valid) {
+            t.fail();
+        }
+
+        t.pass();
+    }
+    catch(e) {
+        t.fail();
+    }
+});
