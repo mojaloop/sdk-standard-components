@@ -44,7 +44,7 @@ class WSO2Auth {
                 .toString('base64');
             this.endpoint = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this.logger.info('WSO2 auth config token API data not set, fallback to static token');
+            this.logger.log('WSO2 auth config token API data not set, fallback to static token');
             this.token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
