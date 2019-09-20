@@ -44,7 +44,7 @@ class WSO2Auth {
                 .toString('base64');
             this.endpoint = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this.logger.info('WSO2 auth config token API data not set, fallback to static token');
+            this.logger.log('WSO2 auth config token API data not set, fallback to static token');
             this.token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
@@ -53,7 +53,7 @@ class WSO2Auth {
     }
 
     async refreshToken() {
-        this.logger.debug('WSO2 token refresh initiated');
+        this.logger.log('WSO2 token refresh initiated');
         const reqOpts = {
             method: 'POST',
             uri: this.endpoint,
@@ -69,9 +69,9 @@ class WSO2Auth {
         try {
             const response = await request(reqOpts);
             this.token = response.access_token;
-            this.logger.debug('WSO2 token refreshed successfully');
+            this.logger.log('WSO2 token refreshed successfully');
         } catch (error) {
-            this.logger.error(`Error performing WSO2 token refresh: ${error.cause}`);
+            this.logger.log(`Error performing WSO2 token refresh: ${error.cause}`);
         }
     }
 
