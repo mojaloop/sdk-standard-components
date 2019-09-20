@@ -14,9 +14,7 @@ const WSO2Auth = require('../../../../lib/mojaloop-requests/wso2auth');
 const sinon = require('sinon');
 
 const loggerStub = {
-    info() {},
-    debug() {},
-    error() {},
+    log() {}
 };
 
 test.afterEach(() => {
