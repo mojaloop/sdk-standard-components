@@ -227,7 +227,8 @@ class MojaloopRequests {
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
-            simple: false
+            simple: false,
+            json: true
         };
 
         if(this.jwsSign) {
