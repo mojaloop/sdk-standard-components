@@ -250,10 +250,11 @@ class MojaloopRequests {
             method: 'POST',
             uri: buildUrl(this.peerEndpoint, url),
             headers: await this._buildHeaders('POST', resourceType, dest),
-            body: body,
+            body: JSON.stringify(body),
             agent: this.agent,
             resolveWithFullResponse: true,
-            simple: false
+            simple: false,
+            json: true
         };
 
         if(this.jwsSign) {
