@@ -224,11 +224,10 @@ class MojaloopRequests {
             method: 'PUT',
             uri: buildUrl(this.peerEndpoint, url),
             headers: await this._buildHeaders('PUT', resourceType, dest),
-            body: body,
+            body: JSON.stringify(body),
             agent: this.agent,
             resolveWithFullResponse: true,
-            simple: false,
-            json: true
+            simple: false
         };
 
         if(this.jwsSign) {
