@@ -54,9 +54,6 @@ class WSO2Auth {
 
     async refreshToken() {
         this.logger.log('WSO2 token refresh initiated');
-        if (this.tokenRefreshInterval) {
-            clearInterval(this.tokenRefreshInterval);
-        }
         const reqOpts = {
             method: 'POST',
             uri: this.endpoint,
@@ -72,10 +69,9 @@ class WSO2Auth {
         try {
             const response = await request(reqOpts);
             this.token = response.access_token;
-            this.refreshSeconds = Math.min(this.refreshSeconds, response.expires_in - 5);
             this.logger.log('WSO2 token refreshed successfully');
         } catch (error) {
-            this.logger.log(`Error performing WSO2 token refresh: ${error.message}`);
+            this.logger.log(`Error performing WSO2 token refresh: ${error.cause}`);
         }
         this.tokenRefreshInterval = setInterval(this.refreshToken.bind(this), this.refreshSeconds * 1000);
     }
