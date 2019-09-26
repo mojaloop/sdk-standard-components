@@ -51,7 +51,7 @@ const MojaloopApiErrorCodes = {
     MISSING_MANDATORY_EXTENSION:      { code: '3107', message: 'Missing mandatory extension parameter', httpStatusCode: 400 },
 
     //identifier errors
-    ID_NOT_FOUND:                     { code: '3200', message: 'Generic ID not found', httpStatusCode: 404 },
+    ID_NOT_FOUND:                     { code: '3200', message: 'Generic ID not found', httpStatusCode: 202 },
     DESTINATION_FSP_ERROR:            { code: '3201', message: 'Destination FSP Error' },
     PAYER_FSP_ID_NOT_FOUND:           { code: '3202', message: 'Payer FSP ID not found' },
     PAYEE_FSP_ID_NOT_FOUND:           { code: '3203', message: 'Payee FSP ID not found' },
