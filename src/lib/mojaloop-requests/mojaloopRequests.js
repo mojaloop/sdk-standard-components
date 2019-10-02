@@ -22,6 +22,7 @@ const buildUrl = common.buildUrl;
 const throwOrJson = common.throwOrJson;
 
 const JwsSigner = require('../jws').signer;
+const WSO2Auth = require('./wso2auth');
 
 
 /**
@@ -58,11 +59,16 @@ class MojaloopRequests {
 
         // Switch or peer DFSP endpoint
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
+
+        this.wso2Auth = new WSO2Auth({
+            ...config.wso2Auth,
+            logger: config.logger
+        });
     }
 
 
     /**
-     * Executes a GET /parties request for the specified identifier type and identifier 
+     * Executes a GET /parties request for the specified identifier type and identifier
      *
      * @returns {object} - JSON response body if one was received
      */
@@ -116,8 +122,8 @@ class MojaloopRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteResponse, destFspId) {
-        return this._put(`quotes/${quoteResponse.quoteId}`, 'quotes', quoteResponse, destFspId);
+    async putQuotes(quoteId, quoteResponse, destFspId) {
+        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
     }
 
 
@@ -127,7 +133,7 @@ class MojaloopRequests {
     async putQuotesError(quoteId, error, destFspId) {
         return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId);
     }
-    
+
 
     /**
      * Executes a POST /transfers request for the specified transfer prepare
@@ -157,14 +163,14 @@ class MojaloopRequests {
     async putTransfersError(transferId, error, destFspId) {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
     }
- 
+
 
     /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    _buildHeaders (method, resourceType, dest) {
+    async _buildHeaders (method, resourceType, dest) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
@@ -173,6 +179,12 @@ class MojaloopRequests {
 
         if(dest) {
             headers['fspiop-destination'] = dest;
+        }
+
+        //Need to populate Bearer Token for WS02 if Sim is pointing to WS02
+        const token = await this.wso2Auth.getToken();
+        if(token) {
+            headers['Authorization'] = `Bearer ${token}`;
         }
 
         // dont add accept header to PUT requests
@@ -188,10 +200,10 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders('GET', resourceType, dest),
+            headers: await this._buildHeaders('GET', resourceType, dest),
             agent: this.agent,
             resolveWithFullResponse: true,
-            simple: false 
+            simple: false
         };
 
         // Note we do not JWS sign requests with no body i.e. GET requests
@@ -211,8 +223,9 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders('PUT', resourceType, dest),
+            headers: await this._buildHeaders('PUT', resourceType, dest),
             body: body,
+            agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
         };
@@ -236,8 +249,9 @@ class MojaloopRequests {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this.peerEndpoint, url),
-            headers: this._buildHeaders('POST', resourceType, dest),
+            headers: await this._buildHeaders('POST', resourceType, dest),
             body: body,
+            agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
         };
