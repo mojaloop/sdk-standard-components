@@ -113,6 +113,14 @@ function MojaloopApiErrorCodeFromCode(code) {
     return undefined;
 }
 
+function MojaloopApiErrorObjectFromCode(ec) {
+    return {
+        errorInformation: {
+            errorCode: ec.code,
+            errorDescription: ec.message
+        }
+    };
+}
 
 /**
  * Encapsulates an error and the required information to pass is back to a client for processing
@@ -146,12 +154,7 @@ class MojaloopFSPIOPError extends Error {
      * @returns {object}
      */
     toApiErrorObject() {
-        let e = {
-            errorInformation: {
-                errorCode: this.apiErrorCode.code,
-                errorDescription: this.apiErrorCode.message
-            }
-        };
+        const e = MojaloopApiErrorObjectFromCode(this.apiErrorCode);
 
         if(this.extensions) {
             e.errorInformation.extensionList = this.extensions;
@@ -190,6 +193,7 @@ class MojaloopFSPIOPError extends Error {
 
 module.exports = {
     MojaloopApiErrorCodes: MojaloopApiErrorCodes,
+    MojaloopApiErrorObjectFromCode,
     MojaloopFSPIOPError: MojaloopFSPIOPError,
     MojaloopApiErrorCodeFromCode: MojaloopApiErrorCodeFromCode
 };
