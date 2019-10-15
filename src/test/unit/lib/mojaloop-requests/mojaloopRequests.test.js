@@ -45,8 +45,9 @@ Oyqsp6pzAWFrCD3JAoTLxClV+j5m+SXZ/ItD6ziGpl/h7DyayrFZ
 -----END RSA PRIVATE KEY-----`;
 
 
-test.serial('signs put parties when jwsSign and jwsSignPutParties are true', async t => {
+async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
     try {
+        // Everything is false by default
         const conf = {
             logger: console,
             tls: {
@@ -54,159 +55,60 @@ test.serial('signs put parties when jwsSign and jwsSignPutParties are true', asy
                     enabled: false
                 }
             },
-            jwsSign: true,
-            jwsSignPutParties: true,
-            jwsSigningKey: jwsSigningKey
+            jwsSign: jwsSign,
+            jwsSignPutParties: jwsSignPutParties,
+            jwsSigningKey: jwsSigningKey,
         };
 
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
+        const stub = sinon.stub(request, 'Request');
+        stub.callsFake(() => Promise.resolve({
+           statusCode: 200,
+           headers: {
+              'content-length': 0
+           },
+        }));
 
         const testMr = new mr(conf);
         const ret = await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
 
         request.Request.restore();
 
-        t.assert(reqArgs[0].headers['fspiop-signature']);
+        if (expectUndefined) {
+           t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+        } else {
+           t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+        }
 
         t.pass();
     } catch (err) {
         t.fail(err.stack || util.inspect(err));
     }
+}
+
+
+test.serial('signs put parties when jwsSign and jwsSignPutParties are true', async t => {
+    await testPutParties(t, true, true, false);
 });
 
 
 test.serial('does not sign put parties when jwsSign is true and jwsSignPutParties is false', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: true,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(typeof (reqArgs[0].headers['fspiop-signature']) === 'undefined');
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutParties(t, true, false, true);
 });
 
 
 test.serial('does not sign put parties when jwsSign and jwsSignPutParties are false', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: false,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(typeof (reqArgs[0].headers['fspiop-signature']) === 'undefined');
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutParties(t, false, false, true);
 });
 
 
 test.serial('does not sign put parties when jwsSign is false and jwsSignPutParties is true', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: false,
-            jwsSignPutParties: true,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(typeof (reqArgs[0].headers['fspiop-signature']) === 'undefined');
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutParties(t, false, true, true);
 });
 
 
-test.serial('signs put quotes when jwsSign is true and jwsSignPutParties is false', async t => {
+async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
     try {
+        // Everything is false by default
         const conf = {
             logger: console,
             tls: {
@@ -214,190 +116,57 @@ test.serial('signs put quotes when jwsSign is true and jwsSignPutParties is fals
                     enabled: false
                 }
             },
-            jwsSign: true,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey
+            jwsSign: jwsSign,
+            jwsSignPutParties: jwsSignPutParties,
+            jwsSigningKey: jwsSigningKey,
         };
 
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
+        const stub = sinon.stub(request, 'Request');
+        stub.callsFake(() => Promise.resolve({
+           statusCode: 200,
+           headers: {
+              'content-length': 0
+           },
+        }));
 
         const testMr = new mr(conf);
         const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
 
         request.Request.restore();
 
-        t.assert(reqArgs[0].headers['fspiop-signature']);
+        if (expectUndefined) {
+           t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+        } else {
+           t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+        }
 
         t.pass();
     } catch (err) {
         t.fail(err.stack || util.inspect(err));
     }
+}
+
+
+test.serial('signs put quotes when jwsSign is true and jwsSignPutParties is false', async t => {
+    await testPutQuotes(t, true, false, false);
 });
 
 
 test.serial('does not sign put quotes when jwsSign is false and jwsSignPutParties is true', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: true,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(reqArgs[0].headers['fspiop-signature']);
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutQuotes(t, false, true, true);
 });
 
 
 test.serial('does not sign put quotes when jwsSign is false and jwsSignPutParties is false', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: false,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(typeof (reqArgs[0].headers['fspiop-signature']) === 'undefined');
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutQuotes(t, false, false, true);
 });
 
 
 test.serial('signs put parties when jwsSign is true and jwsSignPutParties is not supplied', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: true,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(reqArgs[0].headers['fspiop-signature']);
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutQuotes(t, true, undefined, false);
 });
 
 
 test.serial('does not sign put parties when jwsSign is false and jwsSignPutParties is not supplied', async t => {
-    try {
-        const conf = {
-            logger: console,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: false,
-            jwsSigningKey: jwsSigningKey
-        };
-
-        let reqArgs;
-
-        let stub = sinon.stub(request, 'Request').callsFake((...args) => {
-            reqArgs = args;
-            return Promise.resolve({
-                statusCode: 200,
-                headers: {
-                    'content-length': 0
-                }
-            });
-        });
-
-        const testMr = new mr(conf);
-        const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
-
-        request.Request.restore();
-
-        t.assert(typeof (reqArgs[0].headers['fspiop-signature']) === 'undefined');
-
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
-    }
+    await testPutQuotes(t, false, undefined, true);
 });
