@@ -52,6 +52,14 @@ class MojaloopRequests {
         // flag to turn jws signing on/off
         this.jwsSign = config.jwsSign;
 
+        // if no jwsSignPutParties config is supplied it inherits the value of config.jwsSign
+        if(typeof (config.jwsSignPutParties) === 'undefined') {
+            this.jwsSignPutParties = config.jwsSign;
+        }
+        else {
+            this.jwsSignPutParties = config.jwsSignPutParties;
+        }
+
         this.jwsSigner = new JwsSigner({
             logger: config.logger,
             signingKey: config.jwsSigningKey
@@ -230,7 +238,7 @@ class MojaloopRequests {
             simple: false
         };
 
-        if(this.jwsSign) {
+        if(this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
             this.jwsSigner.sign(reqOpts);
         }
 
