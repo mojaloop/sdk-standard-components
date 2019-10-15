@@ -62,21 +62,21 @@ async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
 
         const stub = sinon.stub(request, 'Request');
         stub.callsFake(() => Promise.resolve({
-           statusCode: 200,
-           headers: {
-              'content-length': 0
-           },
+            statusCode: 200,
+            headers: {
+                'content-length': 0
+            },
         }));
 
         const testMr = new mr(conf);
-        const ret = await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
+        await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
 
         request.Request.restore();
 
         if (expectUndefined) {
-           t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+            t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
         } else {
-           t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+            t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
         }
 
         t.pass();
@@ -123,21 +123,21 @@ async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
 
         const stub = sinon.stub(request, 'Request');
         stub.callsFake(() => Promise.resolve({
-           statusCode: 200,
-           headers: {
-              'content-length': 0
-           },
+            statusCode: 200,
+            headers: {
+                'content-length': 0
+            },
         }));
 
         const testMr = new mr(conf);
-        const ret = await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
+        await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
 
         request.Request.restore();
 
         if (expectUndefined) {
-           t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+            t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
         } else {
-           t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+            t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
         }
 
         t.pass();
