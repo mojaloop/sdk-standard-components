@@ -1,3 +1,9 @@
+[![Git Commit](https://img.shields.io/github/last-commit/mojaloop/sdk-standard-components.svg?style=flat)](https://github.com/mojaloop/sdk-standard-components/commits/master)
+[![Git Releases](https://img.shields.io/github/release/mojaloop/sdk-standard-components.svg?style=flat)](https://github.com/mojaloop/sdk-standard-components/releases)
+[![Npm Version](https://img.shields.io/npm/v/@mojaloop/sdk-standard-components.svg?style=flat)](https://www.npmjs.com/package/@mojaloop/sdk-standard-components)
+[![NPM Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@mojaloop/sdk-standard-components.svg?style=flat)](https://www.npmjs.com/package/@mojaloop/sdk-standard-components)
+[![CircleCI](https://circleci.com/gh/mojaloop/sdk-standard-components.svg?style=svg)](https://circleci.com/gh/mojaloop/sdk-standard-components)
+
 # Mojaloop DFSP SDK Standard Components
 
 This package contains a set of  components that encode standard practices for enabling the following features of a DFSP to Mojaloop switch interface:
