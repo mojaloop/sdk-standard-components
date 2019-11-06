@@ -67,7 +67,7 @@ class MojaloopRequests {
 
         // Switch or peer DFSP endpoint
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`
-        this.directoryEndpoint = config.directoryEndpoint ? `${this.transportScheme}://${config.directoryEndpoint}` : null
+        this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null
         
@@ -213,10 +213,10 @@ class MojaloopRequests {
         var returnEndpoint
         switch(resourceType) {
             case 'parties':
-                returnEndpoint = this.directoryEndpoint ? this.directoryEndpoint : this.peerEndpoint
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
                 break
             case 'participants':
-                returnEndpoint = this.directoryEndpoint ? this.directoryEndpoint : this.peerEndpoint
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
                 break
             case 'quotes':
                 returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint
