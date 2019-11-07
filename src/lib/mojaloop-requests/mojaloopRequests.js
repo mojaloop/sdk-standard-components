@@ -103,6 +103,14 @@ class MojaloopRequests {
         return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId);
     }
 
+    /**
+     * Executes a POST /participants request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postParticipants(request, destFspId) {
+        return this._post('participants', 'participants', request, destFspId);
+    }
 
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
