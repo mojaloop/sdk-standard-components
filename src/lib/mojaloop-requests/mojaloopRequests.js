@@ -36,9 +36,9 @@ class MojaloopRequests {
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
 
-        if(config.tls.mutualTLS.enabled) {
+        if(config.tls.outbound.mutualTLS.enabled) {
             this.agent = new https.Agent({
-                ...config.tls.outboundCreds,
+                ...config.tls.outbound.creds,
                 keepAlive: true
             });
 
@@ -66,11 +66,11 @@ class MojaloopRequests {
         });
 
         // Switch or peer DFSP endpoint
-        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`
-        this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null
-        this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null
-        this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null
-        
+        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
+        this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
+        this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
+        this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
+
         this.wso2Auth = new WSO2Auth({
             ...config.wso2Auth,
             logger: config.logger
@@ -218,24 +218,24 @@ class MojaloopRequests {
      * Utility function for picking up the right endpoint based on the resourceType
      */
     _pickPeerEndpoint(resourceType) {
-        var returnEndpoint
+        let returnEndpoint;
         switch(resourceType) {
             case 'parties':
-                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
-                break
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
+                break;
             case 'participants':
-                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
-                break
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
+                break;
             case 'quotes':
-                returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint
-                break    
+                returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint;
+                break;
             case 'transfers':
-                returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint
-                break
+                returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
+                break;
             default:
-                returnEndpoint = this.peerEndpoint
+                returnEndpoint = this.peerEndpoint;
         }
-        return returnEndpoint
+        return returnEndpoint;
     }
 
 
