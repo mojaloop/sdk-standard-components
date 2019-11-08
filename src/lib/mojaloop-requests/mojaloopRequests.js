@@ -53,14 +53,25 @@ class MojaloopRequests {
         // flag to turn jws signing on/off
         this.jwsSign = config.jwsSign;
 
+        // if no jwsSignPutParties config is supplied it inherits the value of config.jwsSign
+        if(typeof (config.jwsSignPutParties) === 'undefined') {
+            this.jwsSignPutParties = config.jwsSign;
+        }
+        else {
+            this.jwsSignPutParties = config.jwsSignPutParties;
+        }
+
         this.jwsSigner = new JwsSigner({
             logger: config.logger,
             signingKey: config.jwsSigningKey
         });
 
         // Switch or peer DFSP endpoint
-        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
-
+        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`
+        this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null
+        this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null
+        this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null
+        
         this.wso2Auth = new WSO2Auth({
             ...config.wso2Auth,
             logger: config.logger
@@ -93,6 +104,14 @@ class MojaloopRequests {
         return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId);
     }
 
+    /**
+     * Executes a POST /participants request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postParticipants(request, destFspId) {
+        return this._post('participants', 'participants', request, destFspId);
+    }
 
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
@@ -196,11 +215,35 @@ class MojaloopRequests {
         return headers;
     }
 
+    /**
+     * Utility function for picking up the right endpoint based on the resourceType
+     */
+    _pickPeerEndpoint(resourceType) {
+        var returnEndpoint
+        switch(resourceType) {
+            case 'parties':
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
+                break
+            case 'participants':
+                returnEndpoint = this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint
+                break
+            case 'quotes':
+                returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint
+                break    
+            case 'transfers':
+                returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint
+                break
+            default:
+                returnEndpoint = this.peerEndpoint
+        }
+        return returnEndpoint
+    }
+
 
     async _get(url, resourceType, dest) {
         const reqOpts = {
             method: 'GET',
-            uri: buildUrl(this.peerEndpoint, url),
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: await this._buildHeaders('GET', resourceType, dest),
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -223,7 +266,7 @@ class MojaloopRequests {
     async _put(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'PUT',
-            uri: buildUrl(this.peerEndpoint, url),
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: await this._buildHeaders('PUT', resourceType, dest),
             body: body,
             agent: this.agent,
@@ -231,7 +274,7 @@ class MojaloopRequests {
             simple: false
         };
 
-        if(this.jwsSign) {
+        if(this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
             this.jwsSigner.sign(reqOpts);
         }
 
@@ -251,7 +294,7 @@ class MojaloopRequests {
     async _post(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'POST',
-            uri: buildUrl(this.peerEndpoint, url),
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: await this._buildHeaders('POST', resourceType, dest),
             body: body,
             agent: this.agent,
