@@ -24,7 +24,6 @@ const throwOrJson = common.throwOrJson;
 const JwsSigner = require('../jws').signer;
 const WSO2Auth = require('./wso2auth');
 
-
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
  */
@@ -277,6 +276,8 @@ class MojaloopRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
+        reqOpts.body = this._bodyStringifier(reqOpts.body);
+
         try {
             this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
@@ -303,6 +304,8 @@ class MojaloopRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
+        reqOpts.body = this._bodyStringifier(reqOpts.body);
+
         try {
             this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
             return await request(reqOpts).then(throwOrJson);
@@ -312,8 +315,18 @@ class MojaloopRequests {
             throw e;
         }
     }
+
+    _bodyStringifier (obj) {
+        if (typeof obj === 'string' || Buffer.isBuffer(obj))
+            return obj;
+        if (typeof obj === 'number')
+            return obj.toString();
+        return JSON.stringify(obj);
+    };
+    
 }
 
 
 
 module.exports = MojaloopRequests;
+
