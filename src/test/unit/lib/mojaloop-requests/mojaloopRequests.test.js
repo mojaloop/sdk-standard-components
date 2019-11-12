@@ -170,3 +170,58 @@ test.serial('signs put parties when jwsSign is true and jwsSignPutParties is not
 test.serial('does not sign put parties when jwsSign is false and jwsSignPutParties is not supplied', async t => {
     await testPutQuotes(t, false, undefined, true);
 });
+
+
+async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
+    let jwsSign = false;
+    let jwsSignPutParties = false;
+
+    // Everything is false by default
+    const conf = {
+        logger: console,
+        tls: {
+            mutualTLS: {
+                enabled: false
+            }
+        },
+        jwsSign: jwsSign,
+        jwsSignPutParties: jwsSignPutParties,
+        jwsSigningKey: jwsSigningKey,
+        peerEndpoint: '127.0.0.1:9999',
+    };
+
+    const testMr = new mr(conf);
+    let url = '/';
+    let resourceType = 'parties';
+    let body = { a: 1 };
+    let dest = '42';
+    let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
+    await mojaloopRequestMethod(url, resourceType, body, dest);
+    t.pass();
+};
+
+test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _post', async t => {
+    try {
+        await primRequestSerializationTest('_post');
+    } catch (err) {
+        if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
+            // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
+            t.pass();
+            return;
+        }
+        t.fail(err.stack || util.inspect(err));
+    }
+});
+
+test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _put', async t => {
+    try {
+        await primRequestSerializationTest('_put');
+    } catch (err) {
+        if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
+            // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
+            t.pass();
+            return;
+        }
+        t.fail(err.stack || util.inspect(err));
+    }
+});
