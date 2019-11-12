@@ -51,8 +51,10 @@ async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
         const conf = {
             logger: console,
             tls: {
-                mutualTLS: {
-                    enabled: false
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
                 }
             },
             jwsSign: jwsSign,
@@ -112,9 +114,11 @@ async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
         const conf = {
             logger: console,
             tls: {
-                mutualTLS: {
-                    enabled: false
-                }
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                },
             },
             jwsSign: jwsSign,
             jwsSignPutParties: jwsSignPutParties,
@@ -180,9 +184,11 @@ async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
     const conf = {
         logger: console,
         tls: {
-            mutualTLS: {
-                enabled: false
-            }
+            outbound: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
         },
         jwsSign: jwsSign,
         jwsSignPutParties: jwsSignPutParties,
