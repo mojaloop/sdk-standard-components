@@ -184,9 +184,11 @@ async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
     const conf = {
         logger: console,
         tls: {
-            mutualTLS: {
-                enabled: false
-            }
+            outbound: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
         },
         jwsSign: jwsSign,
         jwsSignPutParties: jwsSignPutParties,
