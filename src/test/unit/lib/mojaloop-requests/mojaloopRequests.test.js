@@ -203,12 +203,12 @@ async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
     let dest = '42';
     let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
     await mojaloopRequestMethod(url, resourceType, body, dest);
-    t.pass();
-};
+}
 
 test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _post', async t => {
     try {
         await primRequestSerializationTest('_post');
+        t.pass();
     } catch (err) {
         if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
             // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server

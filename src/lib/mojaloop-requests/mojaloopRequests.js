@@ -82,24 +82,24 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue) {
-        return this._get(`parties/${idType}/${idValue}`, 'parties');
+    async getParties(idType, idValue, span) {
+        return this._get(`parties/${idType}/${idValue}`, 'parties', span);
     }
 
 
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
-    async putParties(idType, idValue, body, destFspId) {
-        return this._put(`parties/${idType}/${idValue}`, 'parties', body, destFspId);
+    async putParties(idType, idValue, body, destFspId, span) {
+        return this._put(`parties/${idType}/${idValue}`, 'parties', body, destFspId, span);
     }
 
 
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
      */
-    async putPartiesError(idType, idValue, error, destFspId) {
-        return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId);
+    async putPartiesError(idType, idValue, error, destFspId, span) {
+        return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId, span);
     }
 
     /**
@@ -107,23 +107,23 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postParticipants(request, destFspId) {
-        return this._post('participants', 'participants', request, destFspId);
+    async postParticipants(request, destFspId, span) {
+        return this._post('participants', 'participants', request, destFspId, span);
     }
 
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
-    async putParticipants(idType, idValue, body, destFspId) {
-        return this._put(`participants/${idType}/${idValue}`, 'participants', body, destFspId);
+    async putParticipants(idType, idValue, body, destFspId, span) {
+        return this._put(`participants/${idType}/${idValue}`, 'participants', body, destFspId,span);
     }
 
 
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
-    async putParticipantsError(idType, idValue, error, destFspId) {
-        return this._put(`participants/${idType}/${idValue}/error`, 'participants', error, destFspId);
+    async putParticipantsError(idType, idValue, error, destFspId, span) {
+        return this._put(`participants/${idType}/${idValue}/error`, 'participants', error, destFspId, span);
     }
 
 
@@ -132,24 +132,24 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postQuotes(quoteRequest, destFspId) {
-        return this._post('quotes', 'quotes', quoteRequest, destFspId);
+    async postQuotes(quoteRequest, destFspId, span) {
+        return this._post('quotes', 'quotes', quoteRequest, destFspId, span);
     }
 
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteId, quoteResponse, destFspId) {
-        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
+    async putQuotes(quoteId, quoteResponse, destFspId, span) {
+        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, span);
     }
 
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotesError(quoteId, error, destFspId) {
-        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId);
+    async putQuotesError(quoteId, error, destFspId, span) {
+        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId, span);
     }
 
 
@@ -158,8 +158,8 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransfers(prepare, destFspId) {
-        return this._post('transfers', 'transfers', prepare, destFspId);
+    async postTransfers(prepare, destFspId, span) {
+        return this._post('transfers', 'transfers', prepare, destFspId, span);
     }
 
 
@@ -168,8 +168,8 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransfers(transferId, fulfilment, destFspId) {
-        return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId);
+    async putTransfers(transferId, fulfilment, destFspId, span) {
+        return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId, span);
     }
 
 
@@ -178,8 +178,8 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransfersError(transferId, error, destFspId) {
-        return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
+    async putTransfersError(transferId, error, destFspId, span) {
+        return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId, span);
     }
 
 
@@ -188,7 +188,7 @@ class MojaloopRequests {
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    async _buildHeaders (method, resourceType, dest) {
+    async _buildHeaders (method, resourceType, dest, span = undefined) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
@@ -209,8 +209,12 @@ class MojaloopRequests {
         if(method.toUpperCase() !== 'PUT') {
             headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
         }
-
-        return headers;
+        if(span) {
+            let request = await span.injectContextToHttpRequest({headers});
+            return request.headers;
+        } else {
+            return headers;
+        }
     }
 
     /**
@@ -238,11 +242,11 @@ class MojaloopRequests {
     }
 
 
-    async _get(url, resourceType, dest) {
+    async _get(url, resourceType, dest, span) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('GET', resourceType, dest),
+            headers: await this._buildHeaders('GET', resourceType, dest, span),
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -261,11 +265,11 @@ class MojaloopRequests {
     }
 
 
-    async _put(url, resourceType, body, dest) {
+    async _put(url, resourceType, body, dest, span) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('PUT', resourceType, dest),
+            headers: await this._buildHeaders('PUT', resourceType, dest, span),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -289,11 +293,11 @@ class MojaloopRequests {
     }
 
 
-    async _post(url, resourceType, body, dest) {
+    async _post(url, resourceType, body, dest, span) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('POST', resourceType, dest),
+            headers: await this._buildHeaders('POST', resourceType, dest, span),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -322,8 +326,7 @@ class MojaloopRequests {
         if (typeof obj === 'number')
             return obj.toString();
         return JSON.stringify(obj);
-    };
-    
+    }
 }
 
 
