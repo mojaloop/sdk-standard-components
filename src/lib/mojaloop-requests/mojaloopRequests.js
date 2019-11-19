@@ -322,7 +322,7 @@ class MojaloopRequests {
         if (typeof obj === 'number')
             return obj.toString();
         return JSON.stringify(obj);
-    };
+    }
     
 }
 
