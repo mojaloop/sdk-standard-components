@@ -176,7 +176,7 @@ test.serial('does not sign put parties when jwsSign is false and jwsSignPutParti
 });
 
 
-async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
+async function primRequestSerializationTest(t, mojaloopRequestMethodName) {
     let jwsSign = false;
     let jwsSignPutParties = false;
 
@@ -204,11 +204,11 @@ async function primRequestSerializationTest ( mojaloopRequestMethodName ) {
     let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
     await mojaloopRequestMethod(url, resourceType, body, dest);
     t.pass();
-};
+}
 
 test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _post', async t => {
     try {
-        await primRequestSerializationTest('_post');
+        await primRequestSerializationTest(t, '_post');
     } catch (err) {
         if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
             // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
@@ -221,7 +221,7 @@ test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argumen
 
 test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _put', async t => {
     try {
-        await primRequestSerializationTest('_put');
+        await primRequestSerializationTest(t, '_put');
     } catch (err) {
         if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
             // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
