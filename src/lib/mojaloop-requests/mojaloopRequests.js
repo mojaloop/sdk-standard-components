@@ -83,7 +83,7 @@ class MojaloopRequests {
      * @returns {object} - JSON response body if one was received
      */
     async getParties(idType, idValue, span) {
-        return this._get(`parties/${idType}/${idValue}`, 'parties', span);
+        return this._get(`parties/${idType}/${idValue}`, 'parties', undefined, span);
     }
 
 
