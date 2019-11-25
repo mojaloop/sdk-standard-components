@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "8.5.0-perf.1",
+  "version": "8.5.0-perf.2",
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
