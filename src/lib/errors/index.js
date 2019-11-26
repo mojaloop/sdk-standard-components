@@ -39,7 +39,7 @@ const MojaloopApiErrorCodes = {
     UNACCEPTABLE_VERSION:             { code: '3001', message: 'Unacceptable version requested', httpStatusCode: 406 },
     UNKNOWN_URI:                      { code: '3002', message: 'Unknown URI', httpStatusCode: 404 },
     ADD_PARTY_INFO_ERROR:             { code: '3003', message: 'Add Party information error' },
-    DELETE_PARTY_INFO_ERROR:          { code: '3040', message: 'Delete Party information error' },
+    DELETE_PARTY_INFO_ERROR:          { code: '3040', message: 'Delete Party information error' }, // Error code thrown in ALS when deleting participant info fails
 
     //Client validation errors
     VALIDATION_ERROR:                 { code: '3100', message: 'Generic validation error', httpStatusCode: 400 },
