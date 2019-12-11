@@ -8,6 +8,7 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
+const http = require('http');
 const test = require('ava');
 const request = require('request-promise-native');
 const WSO2Auth = require('../../../../lib/mojaloop-requests/wso2auth');
@@ -24,6 +25,7 @@ test.afterEach(() => {
 test('should return static token when static token was provided', async t => {
     const TOKEN = 'abc123';
     const auth = new WSO2Auth({
+        agent: http.globalAgent,
         logger: loggerStub,
         staticToken: TOKEN
     });
@@ -33,6 +35,7 @@ test('should return static token when static token was provided', async t => {
 test('should return new token when token API info was provided', async t => {
     const TOKEN = 'new-token';
     const opts = {
+        agent: http.globalAgent,
         logger: loggerStub,
         clientKey: 'client-key',
         clientSecret: 'client-secret',

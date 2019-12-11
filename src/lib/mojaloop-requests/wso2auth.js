@@ -30,6 +30,7 @@ class WSO2Auth {
      */
     constructor(opts) {
         this.logger = opts.logger;
+        this.agent = opts.agent;
         this.refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
 
         if (this.refreshSeconds <= 0) {
@@ -37,6 +38,9 @@ class WSO2Auth {
         }
         if (!this.logger) {
             throw new Error('WSO2 auth config requires logger property');
+        }
+        if(!this.agent) {
+            throw new Error('WSO2 auth config requires agent property');
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
@@ -58,6 +62,7 @@ class WSO2Auth {
             clearInterval(this.tokenRefreshInterval);
         }
         const reqOpts = {
+            agent: this.agent,
             method: 'POST',
             uri: this.endpoint,
             headers: {
