@@ -30,7 +30,8 @@ test.afterEach.always(() => {
 
 async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     const TOKEN = 'new-token';
-    const tokenExpiry = tokenExpiresMs > 0 ? tokenExpiresMs : Infinity;
+    const tokenExpiry = ((typeof tokenExpiresMs === 'number') && (tokenExpiresMs > 0))
+        ? tokenExpiresMs : Infinity;
     const actualRefreshMs = Math.min(userRefreshSeconds * 1000, tokenExpiry);
     const opts = {
         agent: http.globalAgent,
@@ -98,6 +99,9 @@ test.serial('should refresh token using user provided interval value',  t =>
 
 test.serial('should refresh token using user provided interval value when token expiry is negative',  t =>
     testTokenRefresh(t, 3, -1));
+
+test.serial('should refresh token using user provided interval value when token expiry is string',  t =>
+    testTokenRefresh(t, 3, '1'));
 
 test.serial('should refresh token using OAuth2 token expiry value',  t =>
     testTokenRefresh(t, 3600, 3e3));
