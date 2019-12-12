@@ -113,6 +113,15 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a POST /participants/{idType}/{idValue} request for identifier type and identifier
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postParticipantsIndividual(idType, idValue, body, destFspId) {
+        return this._post(`participants/${idType}/${idValue}`, 'participants', body, destFspId);
+    }
+
+    /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
     async putParticipants(idType, idValue, body, destFspId) {
@@ -324,7 +333,7 @@ class MojaloopRequests {
             return obj.toString();
         return JSON.stringify(obj);
     }
-    
+
 }
 
 
