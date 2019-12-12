@@ -32,6 +32,7 @@ class WSO2Auth {
         this.logger = opts.logger;
         this.agent = opts.agent;
         this.refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
+        this.stopped = false;
 
         if (this.refreshSeconds <= 0) {
             throw new Error('WSO2 auth config: token must be a positive integer value');
@@ -58,9 +59,6 @@ class WSO2Auth {
 
     async refreshToken() {
         this.logger.log('WSO2 token refresh initiated');
-        if (this.tokenRefreshInterval) {
-            clearInterval(this.tokenRefreshInterval);
-        }
         const reqOpts = {
             agent: this.agent,
             method: 'POST',
@@ -77,12 +75,15 @@ class WSO2Auth {
         try {
             const response = await request(reqOpts);
             this.token = response.access_token;
-            this.refreshSeconds = Math.min(this.refreshSeconds, response.expires_in - 5);
+            const tokenExpiry = response.expires_in > 0 ? response.expires_in : Infinity;
+            this.refreshSeconds = Math.min(this.refreshSeconds * 1000, tokenExpiry) / 1000;
             this.logger.log('WSO2 token refreshed successfully');
         } catch (error) {
             this.logger.log(`Error performing WSO2 token refresh: ${error.message}`);
         }
-        this.tokenRefreshInterval = setInterval(this.refreshToken.bind(this), this.refreshSeconds * 1000);
+        if (!this.stopped) {
+            this.tokenRefreshInterval = setTimeout(this.refreshToken.bind(this), this.refreshSeconds * 1000);
+        }
     }
 
     async getToken() {
@@ -90,6 +91,10 @@ class WSO2Auth {
             await this.refreshToken();
         }
         return this.token;
+    }
+
+    stop() {
+        this.stopped = true;
     }
 }
 
