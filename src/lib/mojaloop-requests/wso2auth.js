@@ -75,7 +75,8 @@ class WSO2Auth {
         try {
             const response = await request(reqOpts);
             this.token = response.access_token;
-            const tokenExpiry = response.expires_in > 0 ? response.expires_in : Infinity;
+            const tokenExpiry = ((typeof response.expires_in === 'number') && (response.expires_in > 0))
+                ? response.expires_in : Infinity;
             this.refreshSeconds = Math.min(this.refreshSeconds * 1000, tokenExpiry) / 1000;
             this.logger.log('WSO2 token refreshed successfully');
         } catch (error) {
