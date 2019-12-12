@@ -34,7 +34,7 @@ class WSO2Auth {
         this.refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this.stopped = false;
 
-        if ((typeof response.expires_in !== 'number') || (this.refreshSeconds <= 0)) {
+        if ((typeof this.refreshSeconds !== 'number') || (this.refreshSeconds <= 0)) {
             throw new Error('WSO2 auth config: token must be a positive integer value');
         }
         if (!this.logger) {
