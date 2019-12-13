@@ -72,7 +72,8 @@ class MojaloopRequests {
 
         this.wso2Auth = new WSO2Auth({
             ...config.wso2Auth,
-            logger: config.logger
+            logger: config.logger,
+            agent: this.agent
         });
     }
 
@@ -199,7 +200,7 @@ class MojaloopRequests {
             headers['fspiop-destination'] = dest;
         }
 
-        //Need to populate Bearer Token for WS02 if Sim is pointing to WS02
+        //Need to populate Bearer Token if we are in OAuth2.0 environment
         const token = await this.wso2Auth.getToken();
         if(token) {
             headers['Authorization'] = `Bearer ${token}`;
