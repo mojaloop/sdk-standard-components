@@ -10,6 +10,8 @@
 
 'use strict';
 
+const http = require('http');
+const https = require('https');
 const request = require('request-promise-native');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
@@ -22,6 +24,10 @@ class WSO2Auth {
      *
      * @param {Object} opts
      * @param {String} opts.logger
+     * @param {String} [opts.tlsCreds]
+     * @param {String} opts.tlsCreds.ca
+     * @param {String} opts.tlsCreds.cert
+     * @param {String} opts.tlsCreds.key
      * @param {String} [opts.clientKey] Customer Key
      * @param {String} [opts.clientSecret] Customer Secret
      * @param {String} [opts.tokenEndpoint] WSO2 Endpoint URL
@@ -30,7 +36,6 @@ class WSO2Auth {
      */
     constructor(opts) {
         this.logger = opts.logger;
-        this.agent = opts.agent;
         this.refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this.stopped = false;
 
@@ -40,8 +45,12 @@ class WSO2Auth {
         if (!this.logger) {
             throw new Error('WSO2 auth config requires logger property');
         }
-        if(!this.agent) {
-            throw new Error('WSO2 auth config requires agent property');
+
+        if(opts.tlsCreds) {
+            this.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
+        }
+        else {
+            this.agent = http.globalAgent;
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
@@ -57,7 +66,7 @@ class WSO2Auth {
         }
     }
 
-    async refreshToken() {
+    async _refreshToken() {
         this.logger.log('WSO2 token refresh initiated');
         const reqOpts = {
             agent: this.agent,
@@ -83,13 +92,13 @@ class WSO2Auth {
             this.logger.log(`Error performing WSO2 token refresh: ${error.message}`);
         }
         if (!this.stopped) {
-            this.tokenRefreshInterval = setTimeout(this.refreshToken.bind(this), this.refreshSeconds * 1000);
+            this.tokenRefreshInterval = setTimeout(this._refreshToken.bind(this), this.refreshSeconds * 1000);
         }
     }
 
     async getToken() {
         if (this.token === undefined && !this.tokenRefreshInterval) {
-            await this.refreshToken();
+            await this._refreshToken();
         }
         return this.token;
     }

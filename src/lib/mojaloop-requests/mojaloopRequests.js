@@ -22,14 +22,12 @@ const buildUrl = common.buildUrl;
 const throwOrJson = common.throwOrJson;
 
 const JwsSigner = require('../jws').signer;
-const WSO2Auth = require('./wso2auth');
 
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
  */
 class MojaloopRequests {
     constructor(config) {
-        this.config = config;
         this.logger = config.logger;
 
         // FSPID of THIS DFSP
@@ -70,11 +68,7 @@ class MojaloopRequests {
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
 
-        this.wso2Auth = new WSO2Auth({
-            ...config.wso2Auth,
-            logger: config.logger,
-            agent: this.agent
-        });
+        this.wso2Auth = config.wso2Auth;
     }
 
 
@@ -324,7 +318,7 @@ class MojaloopRequests {
             return obj.toString();
         return JSON.stringify(obj);
     }
-    
+
 }
 
 
