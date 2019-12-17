@@ -8,7 +8,6 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-const http = require('http');
 const test = require('ava');
 const request = require('request-promise-native');
 const WSO2Auth = require('../lib/WSO2Auth');
