@@ -14,6 +14,7 @@ const request = require('request-promise-native');
 const sinon = require('sinon');
 
 const mr = require('../../../../lib/mojaloop-requests/mojaloopRequests.js');
+const WSO2Auth = require('../../../../lib/WSO2Auth');
 
 
 const jwsSigningKey = `-----BEGIN RSA PRIVATE KEY-----
@@ -47,6 +48,8 @@ Oyqsp6pzAWFrCD3JAoTLxClV+j5m+SXZ/ItD6ziGpl/h7DyayrFZ
 
 async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
     try {
+        const wso2Auth = new WSO2Auth({ logger: console });
+
         // Everything is false by default
         const conf = {
             logger: console,
@@ -60,6 +63,7 @@ async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
             jwsSign: jwsSign,
             jwsSignPutParties: jwsSignPutParties,
             jwsSigningKey: jwsSigningKey,
+            wso2Auth,
         };
 
         const stub = sinon.stub(request, 'Request');
@@ -110,6 +114,8 @@ test.serial('does not sign put parties when jwsSign is false and jwsSignPutParti
 
 async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
     try {
+        const wso2Auth = new WSO2Auth({ logger: console });
+
         // Everything is false by default
         const conf = {
             logger: console,
@@ -123,6 +129,7 @@ async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
             jwsSign: jwsSign,
             jwsSignPutParties: jwsSignPutParties,
             jwsSigningKey: jwsSigningKey,
+            wso2Auth,
         };
 
         const stub = sinon.stub(request, 'Request');
@@ -180,6 +187,8 @@ async function primRequestSerializationTest(t, mojaloopRequestMethodName) {
     let jwsSign = false;
     let jwsSignPutParties = false;
 
+    const wso2Auth = new WSO2Auth({ logger: console });
+
     // Everything is false by default
     const conf = {
         logger: console,
@@ -194,6 +203,7 @@ async function primRequestSerializationTest(t, mojaloopRequestMethodName) {
         jwsSignPutParties: jwsSignPutParties,
         jwsSigningKey: jwsSigningKey,
         peerEndpoint: '127.0.0.1:9999',
+        wso2Auth,
     };
 
     const testMr = new mr(conf);
