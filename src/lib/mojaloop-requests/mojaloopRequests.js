@@ -183,7 +183,7 @@ class MojaloopRequests {
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    async _buildHeaders (method, resourceType, dest) {
+    _buildHeaders(method, resourceType, dest) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
@@ -195,7 +195,7 @@ class MojaloopRequests {
         }
 
         //Need to populate Bearer Token if we are in OAuth2.0 environment
-        const token = await this.wso2Auth.getToken();
+        const token = this.wso2Auth.getToken();
         if(token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
@@ -233,11 +233,11 @@ class MojaloopRequests {
     }
 
 
-    async _get(url, resourceType, dest) {
+    _get(url, resourceType, dest) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('GET', resourceType, dest),
+            headers: this._buildHeaders('GET', resourceType, dest),
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -247,7 +247,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
@@ -256,11 +256,11 @@ class MojaloopRequests {
     }
 
 
-    async _put(url, resourceType, body, dest) {
+    _put(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('PUT', resourceType, dest),
+            headers: this._buildHeaders('PUT', resourceType, dest),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -275,7 +275,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
@@ -284,11 +284,11 @@ class MojaloopRequests {
     }
 
 
-    async _post(url, resourceType, body, dest) {
+    _post(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('POST', resourceType, dest),
+            headers: this._buildHeaders('POST', resourceType, dest),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -303,7 +303,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);

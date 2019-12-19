@@ -67,6 +67,9 @@ class WSO2Auth {
     }
 
     async _refreshToken() {
+        if (this.stopped) {
+            return;
+        }
         this.logger.log('WSO2 token refresh initiated');
         const reqOpts = {
             agent: this.agent,
@@ -91,16 +94,17 @@ class WSO2Auth {
         } catch (error) {
             this.logger.log(`Error performing WSO2 token refresh: ${error.message}`);
         }
-        if (!this.stopped) {
-            this.tokenRefreshInterval = setTimeout(this._refreshToken.bind(this), this.refreshSeconds * 1000);
-        }
+        setTimeout(this._refreshToken.bind(this), this.refreshSeconds * 1000);
     }
 
-    async getToken() {
-        if (this.token === undefined && !this.tokenRefreshInterval) {
+    getToken() {
+        return this.token;
+    }
+
+    async start() {
+        if (this.token === undefined) {
             await this._refreshToken();
         }
-        return this.token;
     }
 
     stop() {
