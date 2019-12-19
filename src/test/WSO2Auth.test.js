@@ -27,11 +27,11 @@ test.afterEach.always(() => {
     sandbox.restore();
 });
 
-async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
+async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresSeconds) {
     const TOKEN = 'new-token';
-    const tokenExpiry = ((typeof tokenExpiresMs === 'number') && (tokenExpiresMs > 0))
-        ? tokenExpiresMs : Infinity;
-    const actualRefreshMs = Math.min(userRefreshSeconds * 1000, tokenExpiry);
+    const tokenExpirySeconds = ((typeof tokenExpiresSeconds === 'number') && (tokenExpiresSeconds > 0))
+        ? tokenExpiresSeconds : Infinity;
+    const actualRefreshMs = Math.min(userRefreshSeconds, tokenExpirySeconds) * 1000;
     const opts = {
         logger: loggerStub,
         clientKey: 'client-key',
@@ -45,7 +45,7 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     let tokenRefreshTime = now;
     sandbox.stub(request, 'Request').callsFake(async () => {
         tokenRefreshTime = Date.now();
-        return {access_token: TOKEN, expires_in: tokenExpiresMs};
+        return {access_token: TOKEN, expires_in: tokenExpiresSeconds};
     });
     const auth = new WSO2Auth(opts);
     await auth.start();
@@ -59,7 +59,7 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     });
     t.assert(request.Request.calledTwice);
     const tokenRefreshInterval = tokenRefreshTime - now;
-    t.assert((tokenRefreshInterval - actualRefreshMs) < 1000);
+    t.assert((tokenRefreshInterval - actualRefreshMs) < 500);
     auth.stop();
 }
 
@@ -96,7 +96,7 @@ test.serial('should return new token when token API info was provided', async t 
 });
 
 test.serial('should refresh token using user provided interval value',  t =>
-    testTokenRefresh(t, 3, 1000e3));
+    testTokenRefresh(t, 3, 1000));
 
 test.serial('should refresh token using user provided interval value when token expiry is negative',  t =>
     testTokenRefresh(t, 3, -1));
@@ -105,4 +105,4 @@ test.serial('should refresh token using user provided interval value when token 
     testTokenRefresh(t, 3, '1'));
 
 test.serial('should refresh token using OAuth2 token expiry value',  t =>
-    testTokenRefresh(t, 3600, 3e3));
+    testTokenRefresh(t, 4, 3));
