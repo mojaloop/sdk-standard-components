@@ -48,8 +48,8 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
         return {access_token: TOKEN, expires_in: tokenExpiresMs};
     });
     const auth = new WSO2Auth(opts);
-    const token = await auth.getToken();
-    auth.stop();
+    await auth.start();
+    const token = auth.getToken();
     t.assert(request.Request.calledOnce);
     t.is(request.Request.getCall(0).args[0].headers['Authorization'], `Basic ${basicToken}`);
     t.is(token, TOKEN);
@@ -60,6 +60,7 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     t.assert(request.Request.calledTwice);
     const tokenRefreshInterval = tokenRefreshTime - now;
     t.assert((tokenRefreshInterval - actualRefreshMs) < 1000);
+    auth.stop();
 }
 
 test('should return static token when static token was provided', async t => {
@@ -68,7 +69,10 @@ test('should return static token when static token was provided', async t => {
         logger: loggerStub,
         staticToken: TOKEN
     });
-    t.is(await auth.getToken(), TOKEN);
+    await auth.start();
+    const token = auth.getToken();
+    t.is(token, TOKEN);
+    auth.stop();
 });
 
 test.serial('should return new token when token API info was provided', async t => {
@@ -83,7 +87,8 @@ test.serial('should return new token when token API info was provided', async t 
         .toString('base64');
     sandbox.stub(request, 'Request').resolves({access_token: TOKEN});
     const auth = new WSO2Auth(opts);
-    const token = await auth.getToken();
+    await auth.start();
+    const token = auth.getToken();
     t.assert(request.Request.calledOnce);
     t.is(request.Request.getCall(0).args[0].headers['Authorization'], `Basic ${basicToken}`);
     t.is(token, TOKEN);
