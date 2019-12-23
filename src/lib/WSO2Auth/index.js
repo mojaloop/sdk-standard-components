@@ -87,10 +87,12 @@ class WSO2Auth {
         try {
             const response = await request(reqOpts);
             this.token = response.access_token;
-            const tokenExpiry = ((typeof response.expires_in === 'number') && (response.expires_in > 0))
-                ? response.expires_in : Infinity;
+            const tokenIsValidNumber = (typeof response.expires_in === 'number') && (response.expires_in > 0);
+            const tokenExpiry = tokenIsValidNumber ? response.expires_in : Infinity;
             this.refreshSeconds = Math.min(this.refreshSeconds, tokenExpiry);
-            this.logger.log('WSO2 token refreshed successfully');
+            this.logger.log('WSO2 token refreshed successfully. ' +
+                `Token expiry is ${response.expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
+                `next refresh in ${this.refreshSeconds}s`);
         } catch (error) {
             this.logger.log(`Error performing WSO2 token refresh: ${error.message}`);
         }
