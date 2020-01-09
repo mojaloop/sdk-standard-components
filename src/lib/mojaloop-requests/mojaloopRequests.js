@@ -177,6 +177,32 @@ class MojaloopRequests {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
     }
 
+    /**
+     * Executes a POST /transactionRequests request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postTransactionRequests(transactionRequest, destFspId) {
+        return this._post('transactionRequests', 'transactionRequests', transactionRequest, destFspId);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID} request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequests(transactionRequestId, transactionRequestResponse, destFspId) {
+        return this._put(`transactionRequests/${transactionRequestId}`, 'transactionRequests', transactionRequestResponse, destFspId);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequestsError(transferId, error, destFspId) {
+        return this._put(`transactionRequests/${transferId}/error`, 'transactionRequests', error, destFspId);
+    }
 
     /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
