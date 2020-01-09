@@ -200,8 +200,8 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransactionRequestsError(transferId, error, destFspId) {
-        return this._put(`transactionRequests/${transferId}/error`, 'transactionRequests', error, destFspId);
+    async putTransactionRequestsError(transactionRequestId, error, destFspId) {
+        return this._put(`transactionRequests/${transactionRequestId}/error`, 'transactionRequests', error, destFspId);
     }
 
     /**
