@@ -195,9 +195,11 @@ class MojaloopRequests {
         }
 
         //Need to populate Bearer Token if we are in OAuth2.0 environment
-        const token = this.wso2Auth.getToken();
-        if(token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        if (this.wso2Auth) {
+            const token = this.wso2Auth.getToken();
+            if(token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
         }
 
         // dont add accept header to PUT requests
