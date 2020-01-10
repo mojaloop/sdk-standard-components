@@ -13,74 +13,10 @@
 const util = require('util');
 const test = require('ava');
 const Ilp = require('../lib/ilp');
-const IlpPacket = require('ilp-packet'); 
+const IlpPacket = require('ilp-packet');
 
-
-const quoteRequest = {
-    quoteId: '20508186-1458-4ac0-a824-d4b07e37d7b3',
-    transactionId: '20508186-1458-4ac0-a824-d4b07e37d7b3',
-    payee: {
-        partyIdInfo: {
-            partyIdType: 'MSISDN',
-            partyIdentifier: '123456789',
-            fspId: 'MobileMoney'
-        }
-    },
-    payer: {
-        personalInfo: {
-            complexName: {
-                firstName: 'Mats',
-                lastName: 'Hagman'
-            }
-        },
-        partyIdInfo: {
-            partyIdType: 'MSISDN',
-            partyIdentifier: '9876543',
-            fspId: 'BankNrOne'
-        }
-    },
-    amountType: 'RECEIVE',
-    amount: {
-        amount: '100',
-        currency: 'USD'
-    },
-    transactionType: {
-        scenario: 'TRANSFER',
-        initiator: 'PAYER',
-        initiatorType: 'CONSUMER',
-        balanceOfPayments: '110'
-    },
-    geoCode: {
-        latitude: '52.295971',
-        longitude: '-0.038400'
-    },
-    note: 'From Mats',
-    expiration: '2017-11-15T22:17:28.985-01:00'
-};
-
-const partialResponse = {
-    transferAmount: {
-        amount: '500',
-        currency: 'USD'
-    },
-    payeeReceiveAmount: {
-        amount: '490',
-        currency: 'USD'
-    },
-    payeeFspFee: {
-        amount: '5',
-        currency: 'USD'
-    },
-    payeeFspCommission: {
-        amount: '5',
-        currency: 'USD'
-    },
-    geoCode: {
-        latitude: '53.295971',
-        longitude: '-0.038500'
-    },
-    expiration: '2017-11-15T14:17:09.663+01:00'
-};
+const quoteRequest = require('./data/quoteRequest');
+const partialResponse = require('./data/partialResponse');
 
 test.beforeEach(t => {
     t.context = {

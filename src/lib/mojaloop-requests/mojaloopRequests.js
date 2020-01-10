@@ -77,24 +77,31 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue) {
-        return this._get(`parties/${idType}/${idValue}`, 'parties');
+    async getParties(idType, idValue, idSubValue) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._get(url, 'parties');
     }
 
 
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
-    async putParties(idType, idValue, body, destFspId) {
-        return this._put(`parties/${idType}/${idValue}`, 'parties', body, destFspId);
+    async putParties(idType, idValue, idSubValue, body, destFspId) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._put(url, 'parties', body, destFspId);
     }
 
 
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
      */
-    async putPartiesError(idType, idValue, error, destFspId) {
-        return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId);
+    async putPartiesError(idType, idValue, idSubValue, error, destFspId) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '')
+            + '/error';
+        return this._put(url, 'parties', error, destFspId);
     }
 
     /**
@@ -109,16 +116,21 @@ class MojaloopRequests {
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
-    async putParticipants(idType, idValue, body, destFspId) {
-        return this._put(`participants/${idType}/${idValue}`, 'participants', body, destFspId);
+    async putParticipants(idType, idValue, idSubValue, body, destFspId) {
+        const url = `participants/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._put(url, 'participants', body, destFspId);
     }
 
 
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
-    async putParticipantsError(idType, idValue, error, destFspId) {
-        return this._put(`participants/${idType}/${idValue}/error`, 'participants', error, destFspId);
+    async putParticipantsError(idType, idValue, idSubValue, error, destFspId) {
+        const url = `participants/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '')
+            + '/error';
+        return this._put(url, 'participants', error, destFspId);
     }
 
 
@@ -177,6 +189,32 @@ class MojaloopRequests {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
     }
 
+    /**
+     * Executes a POST /transactionRequests request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postTransactionRequests(transactionRequest, destFspId) {
+        return this._post('transactionRequests', 'transactionRequests', transactionRequest, destFspId);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID} request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequests(transactionRequestId, transactionRequestResponse, destFspId) {
+        return this._put(`transactionRequests/${transactionRequestId}`, 'transactionRequests', transactionRequestResponse, destFspId);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequestsError(transactionRequestId, error, destFspId) {
+        return this._put(`transactionRequests/${transactionRequestId}/error`, 'transactionRequests', error, destFspId);
+    }
 
     /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
