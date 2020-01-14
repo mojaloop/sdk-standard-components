@@ -223,7 +223,7 @@ class MojaloopRequests {
      * @returns {object} - JSON response body if one was received
      */
     async getAuthorizations(transactionRequestId, authorizationParameters, destFspId) {
-        const url = `authorizations/${transactionRequestId}?${authorizationParameters}`
+        const url = `authorizations/${transactionRequestId}?${authorizationParameters}`;
         return this._get(url , 'authorizations', destFspId);
     }
 
