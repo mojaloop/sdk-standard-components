@@ -67,6 +67,7 @@ class MojaloopRequests {
         this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
+        this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
 
         this.wso2Auth = config.wso2Auth;
     }
@@ -217,6 +218,34 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a GET /authorizations request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getAuthorizations(transactionRequestId, authorizationParameters, destFspId) {
+        const url = `authorizations/${transactionRequestId}?${authorizationParameters}`;
+        return this._get(url , 'authorizations', destFspId);
+    }
+
+    /**
+     * Executes a PUT /authorizations/{ID} request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putAuthorizations(transactionRequestId, authorizationResponse, destFspId) {
+        return this._put(`authorizations/${transactionRequestId}`, 'authorizations', authorizationResponse, destFspId);
+    }
+
+    /**
+     * Executes a PUT /authorizations/{ID}/error request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putAuthorizationsError(transactionRequestId, error, destFspId) {
+        return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
+    }
+
+    /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
@@ -265,6 +294,12 @@ class MojaloopRequests {
                 break;
             case 'transfers':
                 returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
+                break;
+            case 'transactionRequests':
+                returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
+                break;
+            case 'authorizations':
+                returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
                 break;
             default:
                 returnEndpoint = this.peerEndpoint;
