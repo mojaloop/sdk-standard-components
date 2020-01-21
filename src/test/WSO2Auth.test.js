@@ -8,10 +8,9 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-const http = require('http');
 const test = require('ava');
 const request = require('request-promise-native');
-const WSO2Auth = require('../../../../lib/mojaloop-requests/wso2auth');
+const WSO2Auth = require('../lib/WSO2Auth');
 const sinon = require('sinon');
 
 const loggerStub = {
@@ -28,13 +27,12 @@ test.afterEach.always(() => {
     sandbox.restore();
 });
 
-async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
+async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresSeconds) {
     const TOKEN = 'new-token';
-    const tokenExpiry = ((typeof tokenExpiresMs === 'number') && (tokenExpiresMs > 0))
-        ? tokenExpiresMs : Infinity;
-    const actualRefreshMs = Math.min(userRefreshSeconds * 1000, tokenExpiry);
+    const tokenExpirySeconds = ((typeof tokenExpiresSeconds === 'number') && (tokenExpiresSeconds > 0))
+        ? tokenExpiresSeconds : Infinity;
+    const actualRefreshMs = Math.min(userRefreshSeconds, tokenExpirySeconds) * 1000;
     const opts = {
-        agent: http.globalAgent,
         logger: loggerStub,
         clientKey: 'client-key',
         clientSecret: 'client-secret',
@@ -47,11 +45,11 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     let tokenRefreshTime = now;
     sandbox.stub(request, 'Request').callsFake(async () => {
         tokenRefreshTime = Date.now();
-        return {access_token: TOKEN, expires_in: tokenExpiresMs};
+        return {access_token: TOKEN, expires_in: tokenExpiresSeconds};
     });
     const auth = new WSO2Auth(opts);
-    const token = await auth.getToken();
-    auth.stop();
+    await auth.start();
+    const token = auth.getToken();
     t.assert(request.Request.calledOnce);
     t.is(request.Request.getCall(0).args[0].headers['Authorization'], `Basic ${basicToken}`);
     t.is(token, TOKEN);
@@ -61,23 +59,25 @@ async function testTokenRefresh(t, userRefreshSeconds, tokenExpiresMs) {
     });
     t.assert(request.Request.calledTwice);
     const tokenRefreshInterval = tokenRefreshTime - now;
-    t.assert((tokenRefreshInterval - actualRefreshMs) < 1000);
+    t.assert((tokenRefreshInterval - actualRefreshMs) < 500);
+    auth.stop();
 }
 
 test('should return static token when static token was provided', async t => {
     const TOKEN = 'abc123';
     const auth = new WSO2Auth({
-        agent: http.globalAgent,
         logger: loggerStub,
         staticToken: TOKEN
     });
-    t.is(await auth.getToken(), TOKEN);
+    await auth.start();
+    const token = auth.getToken();
+    t.is(token, TOKEN);
+    auth.stop();
 });
 
 test.serial('should return new token when token API info was provided', async t => {
     const TOKEN = 'new-token';
     const opts = {
-        agent: http.globalAgent,
         logger: loggerStub,
         clientKey: 'client-key',
         clientSecret: 'client-secret',
@@ -87,7 +87,8 @@ test.serial('should return new token when token API info was provided', async t 
         .toString('base64');
     sandbox.stub(request, 'Request').resolves({access_token: TOKEN});
     const auth = new WSO2Auth(opts);
-    const token = await auth.getToken();
+    await auth.start();
+    const token = auth.getToken();
     t.assert(request.Request.calledOnce);
     t.is(request.Request.getCall(0).args[0].headers['Authorization'], `Basic ${basicToken}`);
     t.is(token, TOKEN);
@@ -95,7 +96,7 @@ test.serial('should return new token when token API info was provided', async t 
 });
 
 test.serial('should refresh token using user provided interval value',  t =>
-    testTokenRefresh(t, 3, 1000e3));
+    testTokenRefresh(t, 3, 1000));
 
 test.serial('should refresh token using user provided interval value when token expiry is negative',  t =>
     testTokenRefresh(t, 3, -1));
@@ -104,4 +105,4 @@ test.serial('should refresh token using user provided interval value when token 
     testTokenRefresh(t, 3, '1'));
 
 test.serial('should refresh token using OAuth2 token expiry value',  t =>
-    testTokenRefresh(t, 3600, 3e3));
+    testTokenRefresh(t, 4, 3));

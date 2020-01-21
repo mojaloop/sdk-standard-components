@@ -32,7 +32,7 @@ class Ilp {
 
 
     /**
-     * Generates the required fulfilment, ilpPacket and condition for a quote response 
+     * Generates the required fulfilment, ilpPacket and condition for a quote response
      *
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
@@ -104,23 +104,32 @@ class Ilp {
      */
     _getIlpAddress(mojaloopParty) {
         // validate input
-        if(!mojaloopParty || typeof(mojaloopParty) !== 'object') {
+        if (!mojaloopParty || typeof(mojaloopParty) !== 'object') {
             throw new Error('ILP party must be an objcet');
         }
-        if(!mojaloopParty.partyIdInfo || typeof(mojaloopParty.partyIdInfo) !== 'object') {
+
+        const { partyIdInfo } = mojaloopParty;
+
+        if (!partyIdInfo || typeof(partyIdInfo) !== 'object') {
             throw new Error('ILP party does not contain required partyIdInfo object');
         }
-        if(!mojaloopParty.partyIdInfo.partyIdType || typeof(mojaloopParty.partyIdInfo.partyIdType) !== 'string') {
+
+        const { fspId, partyIdType, partyIdentifier, partySubIdOrType } = partyIdInfo;
+        if (!partyIdType || typeof(partyIdType) !== 'string') {
             throw new Error('ILP party does not contain required partyIdInfo.partyIdType string value');
         }
-        if(!mojaloopParty.partyIdInfo.partyIdentifier || typeof(mojaloopParty.partyIdInfo.partyIdType) !== 'string') {
+        if (!partyIdentifier || typeof(partyIdType) !== 'string') {
             throw new Error('ILP party does not contain required partyIdInfo.partyIdentifier string value');
+        }
+        if (partySubIdOrType !== undefined && typeof(partySubIdOrType) !== 'string') {
+            throw new Error('ILP party partyIdInfo.partySubIdOrType should be a string value');
         }
 
         return 'g' // ILP global address allocation scheme
-            + `.${mojaloopParty.partyIdInfo.fspId}` // fspId of the party account
-            + `.${mojaloopParty.partyIdInfo.partyIdType.toLowerCase()}` // identifier type
-            + `.${mojaloopParty.partyIdInfo.partyIdentifier.toLowerCase()}`; // identifier value
+            + `.${fspId}` // fspId of the party account
+            + `.${partyIdType.toLowerCase()}` // identifier type
+            + `.${partyIdentifier.toLowerCase()}` // identifier value
+            + (partySubIdOrType ? `.${partySubIdOrType.toLowerCase()}` : '');
     }
 
 
@@ -167,11 +176,11 @@ class Ilp {
      */
     calculateConditionFromFulfil (fulfilment) {
         var preimage = base64url.toBuffer(fulfilment);
-        
+
         if (preimage.length !== 32) {
             throw new Error('Interledger preimages must be exactly 32 bytes.');
         }
-        
+
         var calculatedConditionDigest = this._sha256(preimage);
         return base64url.fromBase64(calculatedConditionDigest);
     }

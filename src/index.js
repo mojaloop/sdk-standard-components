@@ -15,11 +15,13 @@ const Jws = require('./lib/jws');
 const MojaloopRequests = require('./lib/mojaloop-requests');
 const Ilp = require('./lib/ilp');
 const Errors = require('./lib/errors');
+const WSO2Auth = require('./lib/WSO2Auth');
 
 
 module.exports = {
-    Jws: Jws,
-    MojaloopRequests: MojaloopRequests,
-    Ilp: Ilp,
-    Errors: Errors
+    Jws,
+    MojaloopRequests,
+    Ilp,
+    Errors,
+    WSO2Auth,
 };

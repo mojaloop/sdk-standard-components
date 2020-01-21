@@ -22,14 +22,12 @@ const buildUrl = common.buildUrl;
 const throwOrJson = common.throwOrJson;
 
 const JwsSigner = require('../jws').signer;
-const WSO2Auth = require('./wso2auth');
 
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
  */
 class MojaloopRequests {
     constructor(config) {
-        this.config = config;
         this.logger = config.logger;
 
         // FSPID of THIS DFSP
@@ -69,12 +67,9 @@ class MojaloopRequests {
         this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
+        this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
 
-        this.wso2Auth = new WSO2Auth({
-            ...config.wso2Auth,
-            logger: config.logger,
-            agent: this.agent
-        });
+        this.wso2Auth = config.wso2Auth;
     }
 
 
@@ -83,24 +78,30 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue, span) {
-        return this._get(`parties/${idType}/${idValue}`, 'parties', undefined, span);
+    async getParties(idType, idValue, idSubValue, span) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._get(url, 'parties', span);
     }
 
 
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
-    async putParties(idType, idValue, body, destFspId, span) {
-        return this._put(`parties/${idType}/${idValue}`, 'parties', body, destFspId, span);
+    async putParties(idType, idValue, idSubValue, body, destFspId, span) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._put(url, 'parties', body, destFspId, span);
     }
-
 
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
      */
-    async putPartiesError(idType, idValue, error, destFspId, span) {
-        return this._put(`parties/${idType}/${idValue}/error`, 'parties', error, destFspId, span);
+    async putPartiesError(idType, idValue, idSubValue, error, destFspId, span) {
+        const url = `parties/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '')
+            + '/error';
+        return this._put(url, 'parties', error, destFspId, span);
     }
 
     /**
@@ -115,16 +116,21 @@ class MojaloopRequests {
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
-    async putParticipants(idType, idValue, body, destFspId, span) {
-        return this._put(`participants/${idType}/${idValue}`, 'participants', body, destFspId,span);
+    async putParticipants(idType, idValue, idSubValue, body, destFspId, span) {
+        const url = `participants/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '');
+        return this._put(url, 'participants', body, destFspId, span);
     }
 
 
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
-    async putParticipantsError(idType, idValue, error, destFspId, span) {
-        return this._put(`participants/${idType}/${idValue}/error`, 'participants', error, destFspId, span);
+    async putParticipantsError(idType, idValue, idSubValue, error, destFspId, span) {
+        const url = `participants/${idType}/${idValue}`
+            + (idSubValue ? `/${idSubValue}` : '')
+            + '/error';
+        return this._put(url, 'participants', error, destFspId, span);
     }
 
 
@@ -183,13 +189,67 @@ class MojaloopRequests {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId, span);
     }
 
+    /**
+     * Executes a POST /transactionRequests request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postTransactionRequests(transactionRequest, destFspId, span) {
+        return this._post('transactionRequests', 'transactionRequests', transactionRequest, destFspId, span);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID} request for the specified transaction request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequests(transactionRequestId, transactionRequestResponse, destFspId, span) {
+        return this._put(`transactionRequests/${transactionRequestId}`, 'transactionRequests', transactionRequestResponse, destFspId, span);
+    }
+
+    /**
+     * Executes a PUT /transactionRequests/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putTransactionRequestsError(transactionRequestId, error, destFspId, span) {
+        return this._put(`transactionRequests/${transactionRequestId}/error`, 'transactionRequests', error, destFspId, span);
+    }
+
+    /**
+     * Executes a GET /authorizations request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getAuthorizations(transactionRequestId, authorizationParameters, destFspId, span) {
+        const url = `authorizations/${transactionRequestId}?${authorizationParameters}`;
+        return this._get(url , 'authorizations', destFspId, span);
+    }
+
+    /**
+     * Executes a PUT /authorizations/{ID} request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putAuthorizations(transactionRequestId, authorizationResponse, destFspId, span) {
+        return this._put(`authorizations/${transactionRequestId}`, 'authorizations', authorizationResponse, destFspId, span);
+    }
+
+    /**
+     * Executes a PUT /authorizations/{ID}/error request for the specified transactionRequestId
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putAuthorizationsError(transactionRequestId, error, destFspId, span) {
+        return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId, span);
+    }
 
     /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    async _buildHeaders (method, resourceType, dest, span = undefined) {
+    async _buildHeaders (method, resourceType, dest) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
@@ -201,9 +261,11 @@ class MojaloopRequests {
         }
 
         //Need to populate Bearer Token if we are in OAuth2.0 environment
-        const token = await this.wso2Auth.getToken();
-        if(token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        if (this.wso2Auth) {
+            const token = this.wso2Auth.getToken();
+            if(token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
         }
 
         // dont add accept header to PUT requests
@@ -236,6 +298,12 @@ class MojaloopRequests {
             case 'transfers':
                 returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
                 break;
+            case 'transactionRequests':
+                returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
+                break;
+            case 'authorizations':
+                returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
+                break;
             default:
                 returnEndpoint = this.peerEndpoint;
         }
@@ -243,11 +311,11 @@ class MojaloopRequests {
     }
 
 
-    async _get(url, resourceType, dest, span) {
+    async _get(url, resourceType, dest) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('GET', resourceType, dest, span),
+            headers: await this._buildHeaders('GET', resourceType, dest),
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -257,7 +325,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
@@ -266,11 +334,11 @@ class MojaloopRequests {
     }
 
 
-    async _put(url, resourceType, body, dest, span) {
+    async _put(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('PUT', resourceType, dest, span),
+            headers: await this._buildHeaders('PUT', resourceType, dest),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -285,7 +353,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
@@ -294,11 +362,11 @@ class MojaloopRequests {
     }
 
 
-    async _post(url, resourceType, body, dest, span) {
+    async _post(url, resourceType, body, dest) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('POST', resourceType, dest, span),
+            headers: await this._buildHeaders('POST', resourceType, dest),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -313,7 +381,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-            return await request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then(throwOrJson);
         }
         catch (e) {
             this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
@@ -328,6 +396,7 @@ class MojaloopRequests {
             return obj.toString();
         return JSON.stringify(obj);
     }
+    
 }
 
 
