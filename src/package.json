@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "8.6.3-perf.1",
+  "version": "8.8.0",
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,8 @@
   },
   "author": "James Bush, ModusBox Inc.",
   "contributors": [
-    "Rajiv Mothilal <rajiv.mothilal@modusbox.com>"
+    "Rajiv Mothilal <rajiv.mothilal@modusbox.com>",
+    "Miguel de Barros <miguel.debarros@modusbox.com>"
   ],
   "license": "Apache-2.0",
   "licenses": [
