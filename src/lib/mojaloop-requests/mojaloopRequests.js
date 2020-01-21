@@ -273,7 +273,7 @@ class MojaloopRequests {
             headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
         }
         if(span) {
-            let request = await span.injectContextToHttpRequest({headers});
+            const request = await span.injectContextToHttpRequest({headers});
             return request.headers;
         } else {
             return headers;
