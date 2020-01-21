@@ -81,7 +81,7 @@ class MojaloopRequests {
     async getParties(idType, idValue, idSubValue, span) {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._get(url, 'parties', span);
+        return this._get(url, 'parties', undefined, span);
     }
 
 
@@ -249,7 +249,7 @@ class MojaloopRequests {
      *
      * @returns {object} - headers object for use in requests to mojaloop api endpoints
      */
-    async _buildHeaders (method, resourceType, dest) {
+    async _buildHeaders (method, resourceType, dest, span) {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
@@ -311,11 +311,11 @@ class MojaloopRequests {
     }
 
 
-    async _get(url, resourceType, dest) {
+    async _get(url, resourceType, dest, span) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('GET', resourceType, dest),
+            headers: await this._buildHeaders('GET', resourceType, dest, span),
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -334,11 +334,11 @@ class MojaloopRequests {
     }
 
 
-    async _put(url, resourceType, body, dest) {
+    async _put(url, resourceType, body, dest, span) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('PUT', resourceType, dest),
+            headers: await this._buildHeaders('PUT', resourceType, dest, span),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -362,11 +362,11 @@ class MojaloopRequests {
     }
 
 
-    async _post(url, resourceType, body, dest) {
+    async _post(url, resourceType, body, dest, span) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: await this._buildHeaders('POST', resourceType, dest),
+            headers: await this._buildHeaders('POST', resourceType, dest, span),
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
