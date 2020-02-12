@@ -6,7 +6,7 @@ defaults_working_directory: &defaults_working_directory
 
 defaults_docker_node: &defaults_docker_node
   docker:
-    - image: node:12.15.0-alpine3.11
+    - image: mhart/alpine-node:12.16.0
 
 defaults_Dependencies: &defaults_Dependencies |
     apk --no-cache add git
