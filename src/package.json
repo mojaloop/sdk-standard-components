@@ -17,18 +17,18 @@
     }
   ],
   "dependencies": {
-    "base64url": "^3.0.1",
-    "ilp-packet": "2.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "jws": "^3.2.2",
-    "request": "^2.34",
-    "request-promise-native": "^1.0.7"
+    "base64url": "3.0.1",
+    "ilp-packet": "3.0.9",
+    "jsonwebtoken": "8.5.1",
+    "jws": "4.0.0",
+    "request": "2.88",
+    "request-promise-native": "1.0.8"
   },
   "devDependencies": {
-    "ava": "^1.4.1",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.1",
-    "sinon": "^7.4.2"
+    "ava": "3.3.0",
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.20.1",
+    "sinon": "8.1.1"
   }
 }
