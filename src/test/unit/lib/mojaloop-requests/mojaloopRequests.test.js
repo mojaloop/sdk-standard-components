@@ -8,10 +8,9 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const util = require('util');
-const test = require('ava');
+jest.mock('request-promise-native');
 const request = require('request-promise-native');
-const sinon = require('sinon');
+const requestActual = jest.requireActual('request-promise-native');
 
 const mr = require('../../../../lib/mojaloop-requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
@@ -46,9 +45,10 @@ Oyqsp6pzAWFrCD3JAoTLxClV+j5m+SXZ/ItD6ziGpl/h7DyayrFZ
 -----END RSA PRIVATE KEY-----`;
 
 
-async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
-    try {
-        const wso2Auth = new WSO2Auth({ logger: console });
+describe('PUT /parties', () => {
+
+    async function testPutParties(jwsSign, jwsSignPutParties, expectUndefined) {
+        const wso2Auth = new WSO2Auth({logger: console});
 
         // Everything is false by default
         const conf = {
@@ -66,8 +66,7 @@ async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
             wso2Auth,
         };
 
-        const stub = sinon.stub(request, 'Request');
-        stub.callsFake(() => Promise.resolve({
+        const requestSpy = request.mockImplementation(async () => ({
             statusCode: 200,
             headers: {
                 'content-length': 0
@@ -75,46 +74,54 @@ async function testPutParties(t, jwsSign, jwsSignPutParties, expectUndefined) {
         }));
 
         const testMr = new mr(conf);
-        await testMr.putParties('MSISDN', '123456', { fspid: 'dummy' }, 'dummy');
+        await testMr.putParties('MSISDN', '123456', {fspid: 'dummy'}, 'dummy');
 
-        request.Request.restore();
 
         if (expectUndefined) {
-            t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+            expect(requestSpy.mock.calls[0][0].headers['fspiop-signature']).toBeUndefined();
         } else {
-            t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+            expect(requestSpy.mock.calls[0][0].headers['fspiop-signature']).toBeTruthy();
         }
 
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
+        requestSpy.mockClear();
     }
-}
+
+    test(
+        'signs put parties when jwsSign and jwsSignPutParties are true',
+        async () => {
+            await testPutParties(true, true, false);
+        }
+    );
 
 
-test.serial('signs put parties when jwsSign and jwsSignPutParties are true', async t => {
-    await testPutParties(t, true, true, false);
+    test(
+        'does not sign put parties when jwsSign is true and jwsSignPutParties is false',
+        async () => {
+            await testPutParties(true, false, true);
+        }
+    );
+
+
+    test(
+        'does not sign put parties when jwsSign and jwsSignPutParties are false',
+        async () => {
+            await testPutParties(false, false, true);
+        }
+    );
+
+
+    test(
+        'does not sign put parties when jwsSign is false and jwsSignPutParties is true',
+        async () => {
+            await testPutParties(false, true, true);
+        }
+    );
 });
 
+describe('PUT /quotes', () => {
 
-test.serial('does not sign put parties when jwsSign is true and jwsSignPutParties is false', async t => {
-    await testPutParties(t, true, false, true);
-});
-
-
-test.serial('does not sign put parties when jwsSign and jwsSignPutParties are false', async t => {
-    await testPutParties(t, false, false, true);
-});
-
-
-test.serial('does not sign put parties when jwsSign is false and jwsSignPutParties is true', async t => {
-    await testPutParties(t, false, true, true);
-});
-
-
-async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
-    try {
-        const wso2Auth = new WSO2Auth({ logger: console });
+    async function testPutQuotes(jwsSign, jwsSignPutParties, expectUndefined) {
+        const wso2Auth = new WSO2Auth({logger: console});
 
         // Everything is false by default
         const conf = {
@@ -132,8 +139,7 @@ async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
             wso2Auth,
         };
 
-        const stub = sinon.stub(request, 'Request');
-        stub.callsFake(() => Promise.resolve({
+        const requestSpy = request.mockImplementation(async () => ({
             statusCode: 200,
             headers: {
                 'content-length': 0
@@ -141,103 +147,120 @@ async function testPutQuotes(t, jwsSign, jwsSignPutParties, expectUndefined) {
         }));
 
         const testMr = new mr(conf);
-        await testMr.putQuotes('fake-quote', { quoteId: 'dummy' }, 'dummy');
-
-        request.Request.restore();
+        await testMr.putQuotes('fake-quote', {quoteId: 'dummy'}, 'dummy');
 
         if (expectUndefined) {
-            t.assert(typeof stub.getCall(0).args[0].headers['fspiop-signature'] === 'undefined');
+            expect(requestSpy.mock.calls[0][0].headers['fspiop-signature']).toBeUndefined();
         } else {
-            t.assert(stub.getCall(0).args[0].headers['fspiop-signature']);
+            expect(requestSpy.mock.calls[0][0].headers['fspiop-signature']).toBeTruthy();
         }
 
-        t.pass();
-    } catch (err) {
-        t.fail(err.stack || util.inspect(err));
+        requestSpy.mockClear();
     }
-}
 
 
-test.serial('signs put quotes when jwsSign is true and jwsSignPutParties is false', async t => {
-    await testPutQuotes(t, true, false, false);
+    test(
+        'signs put quotes when jwsSign is true and jwsSignPutParties is false',
+        async () => {
+            await testPutQuotes(true, false, false);
+        }
+    );
+
+
+    test(
+        'does not sign put quotes when jwsSign is false and jwsSignPutParties is true',
+        async () => {
+            await testPutQuotes(false, true, true);
+        }
+    );
+
+
+    test(
+        'does not sign put quotes when jwsSign is false and jwsSignPutParties is false',
+        async () => {
+            await testPutQuotes(false, false, true);
+        }
+    );
+
+
+    test(
+        'signs put parties when jwsSign is true and jwsSignPutParties is not supplied',
+        async () => {
+            await testPutQuotes(true, undefined, false);
+        }
+    );
+
+
+    test(
+        'does not sign put parties when jwsSign is false and jwsSignPutParties is not supplied',
+        async () => {
+            await testPutQuotes(false, undefined, true);
+        }
+    );
 });
 
+describe('request serialization', () => {
 
-test.serial('does not sign put quotes when jwsSign is false and jwsSignPutParties is true', async t => {
-    await testPutQuotes(t, false, true, true);
-});
+    async function primRequestSerializationTest(mojaloopRequestMethodName) {
+        let jwsSign = false;
+        let jwsSignPutParties = false;
 
+        const requestSpy = request.mockImplementation(async (...args) => requestActual(...args));
 
-test.serial('does not sign put quotes when jwsSign is false and jwsSignPutParties is false', async t => {
-    await testPutQuotes(t, false, false, true);
-});
+        const wso2Auth = new WSO2Auth({logger: console});
 
-
-test.serial('signs put parties when jwsSign is true and jwsSignPutParties is not supplied', async t => {
-    await testPutQuotes(t, true, undefined, false);
-});
-
-
-test.serial('does not sign put parties when jwsSign is false and jwsSignPutParties is not supplied', async t => {
-    await testPutQuotes(t, false, undefined, true);
-});
-
-
-async function primRequestSerializationTest(t, mojaloopRequestMethodName) {
-    let jwsSign = false;
-    let jwsSignPutParties = false;
-
-    const wso2Auth = new WSO2Auth({ logger: console });
-
-    // Everything is false by default
-    const conf = {
-        logger: console,
-        tls: {
-            outbound: {
-                mutualTLS: {
-                    enabled: false
-                }
+        // Everything is false by default
+        const conf = {
+            logger: console,
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                },
             },
-        },
-        jwsSign: jwsSign,
-        jwsSignPutParties: jwsSignPutParties,
-        jwsSigningKey: jwsSigningKey,
-        peerEndpoint: '127.0.0.1:9999',
-        wso2Auth,
-    };
+            jwsSign: jwsSign,
+            jwsSignPutParties: jwsSignPutParties,
+            jwsSigningKey: jwsSigningKey,
+            peerEndpoint: '127.0.0.1:9999',
+            wso2Auth,
+        };
 
-    const testMr = new mr(conf);
-    let url = '/';
-    let resourceType = 'parties';
-    let body = { a: 1 };
-    let dest = '42';
-    let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
-    await mojaloopRequestMethod(url, resourceType, body, dest);
-    t.pass();
-}
-
-test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _post', async t => {
-    try {
-        await primRequestSerializationTest(t, '_post');
-    } catch (err) {
-        if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
-            // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
-            t.pass();
-            return;
-        }
-        t.fail(err.stack || util.inspect(err));
+        const testMr = new mr(conf);
+        let url = '/';
+        let resourceType = 'parties';
+        let body = {a: 1};
+        let dest = '42';
+        let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
+        await mojaloopRequestMethod(url, resourceType, body, dest);
+        requestSpy.mockClear();
     }
-});
 
-test.serial('does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _put', async t => {
-    try {
-        await primRequestSerializationTest(t, '_put');
-    } catch (err) {
-        if ( err.cause && err.cause.code === 'ECONNREFUSED' && err.cause.address === '127.0.0.1'  && err.cause.port === 9999) {
-            // request() was able to recognize the body, and failed afterwards when trying to connect, this is expected since we're not mocking the server
-            t.pass();
-            return;
+    test(
+        'does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _post',
+        async () => {
+            expect.hasAssertions();
+            try {
+                await primRequestSerializationTest('_post');
+            } catch (err) {
+                expect(err.cause.code).toBe('ECONNREFUSED');
+                expect(err.cause.address).toBe('127.0.0.1');
+                expect(err.cause.port).toBe(9999);
+            }
         }
-        t.fail(err.stack || util.inspect(err));
-    }
+    );
+
+    test(
+        'does not throw "TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be one of type string or Buffer. Received type object when sending an Object" on _put',
+        async () => {
+            expect.hasAssertions();
+            try {
+                await primRequestSerializationTest('_put');
+            } catch (err) {
+                expect(err.cause.code).toBe('ECONNREFUSED');
+                expect(err.cause.address).toBe('127.0.0.1');
+                expect(err.cause.port).toBe(9999);
+            }
+        }
+    );
 });

@@ -24,7 +24,7 @@ class WSO2Auth {
     /**
      *
      * @param {Object} opts
-     * @param {String} opts.logger
+     * @param {Object} opts.logger
      * @param {String} [opts.tlsCreds]
      * @param {String} opts.tlsCreds.ca
      * @param {String} opts.tlsCreds.cert
@@ -33,55 +33,57 @@ class WSO2Auth {
      * @param {String} [opts.clientSecret] Customer Secret
      * @param {String} [opts.tokenEndpoint] WSO2 Endpoint URL
      * @param {String} [opts.refreshSeconds] WSO2 token refresh interval in seconds
+     * @param {String} [opts.refreshRetrySeconds] WSO2 token refresh retry interval in seconds
      * @param {String} [opts.staticToken] WSO2 static bearer token
      */
     constructor(opts) {
-        this.logger = opts.logger;
-        this.refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
-        this.refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
-        this.stopped = false;
+        this._logger = opts.logger;
+        this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
+        this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
+        this._stopped = false;
 
-        if ((typeof this.refreshSeconds !== 'number') || (this.refreshSeconds <= 0)) {
+        if ((typeof this._refreshSeconds !== 'number') || (this._refreshSeconds <= 0)) {
             throw new Error('WSO2 auth config: refreshSeconds must be a positive integer value');
         }
-        if ((typeof this.refreshRetrySeconds !== 'number') || (this.refreshRetrySeconds <= 0)) {
+        if ((typeof this._refreshRetrySeconds !== 'number') || (this._refreshRetrySeconds <= 0)) {
             throw new Error('WSO2 auth config: refreshRetrySeconds must be a positive integer value');
         }
-        if (!this.logger) {
+        if (!this._logger) {
             throw new Error('WSO2 auth config requires logger property');
         }
 
         if(opts.tlsCreds) {
-            this.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
+            this._agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
         }
         else {
-            this.agent = http.globalAgent;
+            this._agent = http.globalAgent;
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
-            this.basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
+            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
                 .toString('base64');
-            this.endpoint = opts.tokenEndpoint;
+            this._endpoint = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this.logger.log('WSO2 auth config token API data not set, fallback to static token');
-            this.token = opts.staticToken;
+            this._logger.log('WSO2 auth config token API data not set, fallback to static token');
+            this._token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
-            this.token = null;
+            this._token = null;
         }
     }
 
     async _refreshToken() {
-        if (this.stopped) {
+        if (this._stopped) {
+            this._logger.log('WSO2 token refresh stopped');
             return;
         }
-        this.logger.log('WSO2 token refresh initiated');
+        this._logger.log('WSO2 token refresh initiated');
         const reqOpts = {
-            agent: this.agent,
+            agent: this._agent,
             method: 'POST',
-            uri: this.endpoint,
+            uri: this._endpoint,
             headers: {
-                'Authorization': `Basic ${this.basicToken}`,
+                'Authorization': `Basic ${this._basicToken}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             form: {
@@ -92,33 +94,38 @@ class WSO2Auth {
         let refreshSeconds;
         try {
             const response = await request(reqOpts);
-            this.token = response.access_token;
+            this._token = response.access_token;
             const tokenIsValidNumber = (typeof response.expires_in === 'number') && (response.expires_in > 0);
             const tokenExpiry = tokenIsValidNumber ? response.expires_in : Infinity;
-            refreshSeconds = Math.min(this.refreshSeconds, tokenExpiry);
-            this.logger.log('WSO2 token refreshed successfully. ' +
+            refreshSeconds = Math.min(this._refreshSeconds, tokenExpiry);
+            this._logger.log('WSO2 token refreshed successfully. ' +
                 `Token expiry is ${response.expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this.logger.log(`Error performing WSO2 token refresh: ${error.message}. `
-                + `Retry in ${this.refreshRetrySeconds}s`);
-            refreshSeconds = this.refreshRetrySeconds;
+            this._logger.log(`Error performing WSO2 token refresh: ${error.message}. `
+                + `Retry in ${this._refreshRetrySeconds}s`);
+            refreshSeconds = this._refreshRetrySeconds;
         }
-        setTimeout(this._refreshToken.bind(this), refreshSeconds * 1000);
+        if (!this._stopped) {
+            this._refreshTimer = setTimeout(this._refreshToken.bind(this), refreshSeconds * 1000);
+        } else {
+            this._logger.log('WSO2 token refresh stopped');
+        }
     }
 
     getToken() {
-        return this.token;
+        return this._token;
     }
 
     async start() {
-        if (this.token === undefined) {
+        if (this._token === undefined) {
             await this._refreshToken();
         }
     }
 
     stop() {
-        this.stopped = true;
+        this._stopped = true;
+        clearTimeout(this._refreshTimer);
     }
 }
 
