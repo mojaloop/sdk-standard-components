@@ -162,6 +162,17 @@ class MojaloopRequests {
 
 
     /**
+     * Executes a GET /transfers request for the specified transfer ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getTransfers(transferId) {
+        const url = `transfers/${transferId}`;
+        return this._get(url, 'transfers');
+    }
+
+
+    /**
      * Executes a POST /transfers request for the specified transfer prepare
      *
      * @returns {object} - JSON response body if one was received
