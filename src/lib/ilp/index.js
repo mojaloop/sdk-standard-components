@@ -58,7 +58,7 @@ class Ilp {
 
         let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
 
-        let generatedFulfilment = this.caluclateFulfil(base64encodedIlpPacket).replace('"', '');
+        let generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
         let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
         const ret = {
@@ -157,7 +157,7 @@ class Ilp {
      *
      * @returns {string} - string containing base64 encoded fulfilment
      */
-    caluclateFulfil(base64EncodedPacket) {
+    calculateFulfil(base64EncodedPacket) {
         var encodedSecret = Buffer.from(this.secret).toString('base64');
 
         var hmacsignature = Crypto.createHmac('sha256', new Buffer(encodedSecret, 'ascii'))
