@@ -30,27 +30,16 @@ class Ilp {
         this.logger = config.logger || console;
     }
 
-
     /**
-     * Generates the required fulfilment, ilpPacket and condition for a quote response
+     * Generates the required fulfilment, ilpPacket and condition
      *
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
-    getQuoteResponseIlp(quoteRequest, quoteResponse) {
-        const transactionObject = {
-            transactionId: quoteRequest.transactionId,
-            quoteId: quoteRequest.quoteId,
-            payee: quoteRequest.payee,
-            payer: quoteRequest.payer,
-            amount: quoteResponse.transferAmount,
-            transactionType: quoteRequest.transactionType,
-            note: quoteResponse.note
-        };
-
+    getResponseIlp(transactionObject) {
         const ilpData = Buffer.from(base64url(JSON.stringify(transactionObject)));
         const packetInput = {
-            amount: this._getIlpCurrencyAmount(quoteResponse.transferAmount), // unsigned 64bit integer as a string
-            account: this._getIlpAddress(quoteRequest.payee), // ilp address
+            amount: this._getIlpCurrencyAmount(transactionObject.amount), // unsigned 64bit integer as a string
+            account: this._getIlpAddress(transactionObject.payee), // ilp address
             data: ilpData // base64url encoded attached data
         };
 
@@ -72,6 +61,23 @@ class Ilp {
         return ret;
     }
 
+
+    /**
+     * Generates the required fulfilment, ilpPacket and condition for a quote response
+     *
+     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     */
+    getQuoteResponseIlp(quoteRequest, quoteResponse) {
+        return this.getResponseIlp({
+            transactionId: quoteRequest.transactionId,
+            quoteId: quoteRequest.quoteId,
+            payee: quoteRequest.payee,
+            payer: quoteRequest.payer,
+            amount: quoteResponse.transferAmount,
+            transactionType: quoteRequest.transactionType,
+            note: quoteResponse.note
+        });
+    }
 
     /**
      * Returns an ILP compatible amount as an unsigned 64bit integer as a string given a mojaloop
