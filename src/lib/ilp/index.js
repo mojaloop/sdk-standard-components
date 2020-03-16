@@ -30,27 +30,16 @@ class Ilp {
         this.logger = config.logger || console;
     }
 
-
     /**
-     * Generates the required fulfilment, ilpPacket and condition for a quote response
+     * Generates the required fulfilment, ilpPacket and condition
      *
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
-    getQuoteResponseIlp(quoteRequest, quoteResponse) {
-        const transactionObject = {
-            transactionId: quoteRequest.transactionId,
-            quoteId: quoteRequest.quoteId,
-            payee: quoteRequest.payee,
-            payer: quoteRequest.payer,
-            amount: quoteResponse.transferAmount,
-            transactionType: quoteRequest.transactionType,
-            note: quoteResponse.note
-        };
-
+    getResponseIlp(transactionObject) {
         const ilpData = Buffer.from(base64url(JSON.stringify(transactionObject)));
         const packetInput = {
-            amount: this._getIlpCurrencyAmount(quoteResponse.transferAmount), // unsigned 64bit integer as a string
-            account: this._getIlpAddress(quoteRequest.payee), // ilp address
+            amount: this._getIlpCurrencyAmount(transactionObject.amount), // unsigned 64bit integer as a string
+            account: this._getIlpAddress(transactionObject.payee), // ilp address
             data: ilpData // base64url encoded attached data
         };
 
@@ -58,7 +47,7 @@ class Ilp {
 
         let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
 
-        let generatedFulfilment = this.caluclateFulfil(base64encodedIlpPacket).replace('"', '');
+        let generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
         let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
         const ret = {
@@ -72,6 +61,23 @@ class Ilp {
         return ret;
     }
 
+
+    /**
+     * Generates the required fulfilment, ilpPacket and condition for a quote response
+     *
+     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     */
+    getQuoteResponseIlp(quoteRequest, quoteResponse) {
+        return this.getResponseIlp({
+            transactionId: quoteRequest.transactionId,
+            quoteId: quoteRequest.quoteId,
+            payee: quoteRequest.payee,
+            payer: quoteRequest.payer,
+            amount: quoteResponse.transferAmount,
+            transactionType: quoteRequest.transactionType,
+            note: quoteResponse.note
+        });
+    }
 
     /**
      * Returns an ILP compatible amount as an unsigned 64bit integer as a string given a mojaloop
@@ -157,7 +163,7 @@ class Ilp {
      *
      * @returns {string} - string containing base64 encoded fulfilment
      */
-    caluclateFulfil(base64EncodedPacket) {
+    calculateFulfil(base64EncodedPacket) {
         var encodedSecret = Buffer.from(this.secret).toString('base64');
 
         var hmacsignature = Crypto.createHmac('sha256', new Buffer(encodedSecret, 'ascii'))
