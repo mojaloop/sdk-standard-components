@@ -256,16 +256,16 @@ class MojaloopRequests {
         return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
     }
 
-    async putCustom(url, body, headers) {
-        return this._put(url, 'custom', body, null, headers, false);
+    async putCustom(url, body, headers, query) {
+        return this._put(url, 'custom', body, null, headers, query, false);
     }
 
-    async postCustom(url, body, headers) {
-        return this._post(url, 'custom', body, null, headers, false);
+    async postCustom(url, body, headers, query) {
+        return this._post(url, 'custom', body, null, headers, query, false);
     }
 
-    async getCustom(url, headers) {
-        return this._get(url, 'custom', null, headers, false);
+    async getCustom(url, headers, query) {
+        return this._get(url, 'custom', null, headers, query, false);
     }
 
     /**
@@ -331,7 +331,7 @@ class MojaloopRequests {
     }
 
 
-    _get(url, resourceType, dest, headers = {}, isMojaloopRequest = true) {
+    _get(url, resourceType, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -339,6 +339,7 @@ class MojaloopRequests {
                 ...this._buildHeaders('GET', resourceType, dest),
                 ...headers,
             },
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -357,7 +358,7 @@ class MojaloopRequests {
     }
 
 
-    _put(url, resourceType, body, dest, headers = {}, isMojaloopRequest = true) {
+    _put(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -366,6 +367,7 @@ class MojaloopRequests {
                 ...headers,
             },
             body: body,
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -388,7 +390,7 @@ class MojaloopRequests {
     }
 
 
-    _post(url, resourceType, body, dest, headers = {}, isMojaloopRequest = true) {
+    _post(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -397,6 +399,7 @@ class MojaloopRequests {
                 ...headers,
             },
             body: body,
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
