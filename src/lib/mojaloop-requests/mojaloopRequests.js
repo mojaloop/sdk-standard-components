@@ -256,6 +256,18 @@ class MojaloopRequests {
         return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
     }
 
+    async putCustom(url, body, headers) {
+        return this._put(url, 'custom', body, null, headers);
+    }
+
+    async postCustom(url, body, headers) {
+        return this._post(url, 'custom', body, null, headers);
+    }
+
+    async getCustom(url, body, headers) {
+        return this._get(url, 'custom', null, headers);
+    }
+
     /**
      * Utility function for building outgoing request headers as required by the mojaloop api spec
      *
@@ -319,11 +331,14 @@ class MojaloopRequests {
     }
 
 
-    _get(url, resourceType, dest) {
+    _get(url, resourceType, dest, headers = {}) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: this._buildHeaders('GET', resourceType, dest),
+            headers: {
+                ...this._buildHeaders('GET', resourceType, dest),
+                ...headers,
+            },
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -342,11 +357,14 @@ class MojaloopRequests {
     }
 
 
-    _put(url, resourceType, body, dest) {
+    _put(url, resourceType, body, dest, headers = {}) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: this._buildHeaders('PUT', resourceType, dest),
+            headers: {
+                ...this._buildHeaders('PUT', resourceType, dest),
+                ...headers,
+            },
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
@@ -370,11 +388,14 @@ class MojaloopRequests {
     }
 
 
-    _post(url, resourceType, body, dest) {
+    _post(url, resourceType, body, dest, headers = {}) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
-            headers: this._buildHeaders('POST', resourceType, dest),
+            headers: {
+                ...this._buildHeaders('POST', resourceType, dest),
+                ...headers,
+            },
             body: body,
             agent: this.agent,
             resolveWithFullResponse: true,
