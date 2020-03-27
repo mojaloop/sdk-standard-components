@@ -264,7 +264,7 @@ class MojaloopRequests {
         return this._post(url, 'custom', body, null, headers, false);
     }
 
-    async getCustom(url, body, headers) {
+    async getCustom(url, headers) {
         return this._get(url, 'custom', null, headers, false);
     }
 
