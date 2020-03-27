@@ -256,16 +256,16 @@ class MojaloopRequests {
         return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
     }
 
-    async putCustom(url, body, headers) {
-        return this._put(url, 'custom', body, null, headers);
+    async putCustom(url, body, headers, query) {
+        return this._put(url, 'custom', body, null, headers, query, false);
     }
 
-    async postCustom(url, body, headers) {
-        return this._post(url, 'custom', body, null, headers);
+    async postCustom(url, body, headers, query) {
+        return this._post(url, 'custom', body, null, headers, query, false);
     }
 
-    async getCustom(url, body, headers) {
-        return this._get(url, 'custom', null, headers);
+    async getCustom(url, headers, query) {
+        return this._get(url, 'custom', null, headers, query, false);
     }
 
     /**
@@ -331,7 +331,7 @@ class MojaloopRequests {
     }
 
 
-    _get(url, resourceType, dest, headers = {}) {
+    _get(url, resourceType, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -339,6 +339,7 @@ class MojaloopRequests {
                 ...this._buildHeaders('GET', resourceType, dest),
                 ...headers,
             },
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -348,7 +349,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
         }
         catch (e) {
             this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
@@ -357,7 +358,7 @@ class MojaloopRequests {
     }
 
 
-    _put(url, resourceType, body, dest, headers = {}) {
+    _put(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -366,6 +367,7 @@ class MojaloopRequests {
                 ...headers,
             },
             body: body,
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -379,7 +381,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
         }
         catch (e) {
             this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
@@ -388,7 +390,7 @@ class MojaloopRequests {
     }
 
 
-    _post(url, resourceType, body, dest, headers = {}) {
+    _post(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -397,6 +399,7 @@ class MojaloopRequests {
                 ...headers,
             },
             body: body,
+            qs: query,
             agent: this.agent,
             resolveWithFullResponse: true,
             simple: false
@@ -410,7 +413,7 @@ class MojaloopRequests {
 
         try {
             this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then(throwOrJson);
+            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
         }
         catch (e) {
             this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
