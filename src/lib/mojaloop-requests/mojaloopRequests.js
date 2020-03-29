@@ -72,6 +72,24 @@ class MojaloopRequests {
         this.wso2Auth = config.wso2Auth;
     }
 
+    /**
+     * Executes a GET /authorizations request for the specified transaction request id
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getAuthorizations(transactionRequestId) {
+        const url = `authorizations/${transactionRequestId}`;
+        return this._get(url, 'authorizations');
+    }
+
+    /**
+     * Executes a PUT /authorizations request for the specified transaction request id
+     */
+    async putAuthorizations(transactionRequestId, body, destFspId) {
+        const url = `authorizations/${transactionRequestId}`;
+        return this._put(url, 'parties', body, destFspId);
+    }
+
 
     /**
      * Executes a GET /parties request for the specified identifier type and identifier
