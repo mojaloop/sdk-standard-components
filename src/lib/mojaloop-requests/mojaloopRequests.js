@@ -87,7 +87,7 @@ class MojaloopRequests {
      */
     async putAuthorizations(transactionRequestId, body, destFspId) {
         const url = `authorizations/${transactionRequestId}`;
-        return this._put(url, 'parties', body, destFspId);
+        return this._put(url, 'authorizations', body, destFspId);
     }
 
     /**
