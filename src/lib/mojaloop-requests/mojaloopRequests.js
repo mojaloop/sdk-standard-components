@@ -90,7 +90,6 @@ class MojaloopRequests {
         return this._put(url, 'parties', body, destFspId);
     }
 
-
     /**
      * Executes a GET /parties request for the specified identifier type and identifier
      *
@@ -246,24 +245,7 @@ class MojaloopRequests {
         return this._put(`transactionRequests/${transactionRequestId}/error`, 'transactionRequests', error, destFspId);
     }
 
-    /**
-     * Executes a GET /authorizations request for the specified transactionRequestId
-     *
-     * @returns {object} - JSON response body if one was received
-     */
-    async getAuthorizations(transactionRequestId, authorizationParameters, destFspId) {
-        const url = `authorizations/${transactionRequestId}?${authorizationParameters}`;
-        return this._get(url , 'authorizations', destFspId);
-    }
-
-    /**
-     * Executes a PUT /authorizations/{ID} request for the specified transactionRequestId
-     *
-     * @returns {object} - JSON response body if one was received
-     */
-    async putAuthorizations(transactionRequestId, authorizationResponse, destFspId) {
-        return this._put(`authorizations/${transactionRequestId}`, 'authorizations', authorizationResponse, destFspId);
-    }
+    
 
     /**
      * Executes a PUT /authorizations/{ID}/error request for the specified transactionRequestId
