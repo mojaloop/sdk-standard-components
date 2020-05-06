@@ -44,13 +44,13 @@ class JwsSigner {
     sign(requestOptions) {
         this.logger.log(`JWS Signing request: ${util.inspect(requestOptions)}`);
 
-        if(!requestOptions.body) {
+        if(!(requestOptions.body || requestOptions.data)) {
             throw new Error('Cannot sign with no body');
         }
 
-        const uriMatches = uriRegex.exec(requestOptions.uri);
+        const uriMatches = uriRegex.exec(requestOptions.uri || requestOptions.url);
         if(!uriMatches || uriMatches.length < 2) {
-            throw new Error(`URI not valid for protected header: ${requestOptions.uri}`);
+            throw new Error(`URI not valid for protected header: ${requestOptions.uri || requestOptions.url}`);
         }
 
         // add required JWS headers to the request options
@@ -81,7 +81,7 @@ class JwsSigner {
         // now we sign
         const token = jws.sign({
             header: protectedHeaderObject,
-            payload: requestOptions.body,
+            payload: requestOptions.body || requestOptions.data,
             secret: this.signingKey,
             encoding: 'utf8'});
 
@@ -95,7 +95,9 @@ class JwsSigner {
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
 
-        requestOptions.body = JSON.stringify(requestOptions.body);
+        if(typeof(requestOptions.body || requestOptions.data) !== 'string') {
+            requestOptions.body = JSON.stringify(requestOptions.body || requestOptions.data);
+        }
     }
 }
 

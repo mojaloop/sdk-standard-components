@@ -55,6 +55,7 @@ xwIDAQAB
 describe('JWS', () => {
     let signer;
     let testOpts;
+    let testOptsData;
     let body;
 
     beforeEach(() => {
@@ -71,6 +72,16 @@ describe('JWS', () => {
             method: 'PUT',
             uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
             body,
+        };
+        testOptsData = {
+            headers: {
+                'fspiop-source': 'mojaloop-sdk',
+                'fspiop-destination': 'some-other-fsp',
+                'date': new Date().toISOString(),
+            },
+            method: 'PUT',
+            url: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
+            data: body,
         };
     });
 
@@ -96,8 +107,30 @@ describe('JWS', () => {
         }
     }
 
+    function testValidateSignedRequestData(shouldFail) {
+        const request = {
+            headers: testOptsData.headers,
+            data: body,
+        };
 
-    test('Should generate valid JWS headers and signature', () => {
+        const validate = () => {
+            const validator = new Validator({
+                validationKeys: {
+                    'mojaloop-sdk': validationKey
+                }
+            });
+            validator.validate(request);
+        };
+
+        if (shouldFail) {
+            expect(validate).toThrow();
+        } else {
+            validate();
+        }
+    }
+
+
+    test('Should generate valid JWS headers and signature for request with data', () => {
         signer.sign(testOpts);
 
         expect(testOpts.headers['fspiop-signature']).toBeTruthy();
@@ -105,6 +138,16 @@ describe('JWS', () => {
         expect(testOpts.headers['fspiop-http-method']).toBe('PUT');
 
         testValidateSignedRequest(false);
+    });
+
+    test('Should generate valid JWS headers and signature for request with data', () => {
+        signer.sign(testOptsData);
+
+        expect(testOptsData.headers['fspiop-signature']).toBeTruthy();
+        expect(testOptsData.headers['fspiop-uri']).toBe('/parties/MSISDN/12345678');
+        expect(testOptsData.headers['fspiop-http-method']).toBe('PUT');
+
+        testValidateSignedRequestData(false);
     });
 
 
@@ -116,12 +159,42 @@ describe('JWS', () => {
         }).toThrow();
     });
 
+    test('Should throw when trying to sign with no body(data)', () => {
+        delete testOptsData.data;
+
+        expect(() => {
+            signer.sign(testOptsData);
+        }).toThrow();
+    });
+
+    test('Should throw when trying to sign with no uri', () => {
+        delete testOpts.uri;
+
+        expect(() => {
+            signer.sign(testOpts);
+        }).toThrow();
+    });
+
+    test('Should throw when trying to sign with no url', () => {
+        delete testOptsData.url;
+
+        expect(() => {
+            signer.sign(testOptsData);
+        }).toThrow();
+    });
 
     test('Should throw when trying to validate with no body', () => {
         signer.sign(testOpts);
         delete testOpts.body;
         body = undefined;
         testValidateSignedRequest(true);
+    });
+
+    test('Should throw when trying to validate with no body(data)', () => {
+        signer.sign(testOptsData);
+        delete testOptsData.data;
+        body = undefined;
+        testValidateSignedRequestData(true);
     });
 
 
@@ -152,6 +225,11 @@ describe('JWS', () => {
         testValidateSignedRequest(true);
     });
 
+    test('Should throw when trying to validate with modified body(data)', () => {
+        signer.sign(testOptsData);
+        body.abc = 456;
+        testValidateSignedRequestData(true);
+    });
 
     test('Should throw when trying to validate with missing fspiop-source header', () => {
         signer.sign(testOpts);
