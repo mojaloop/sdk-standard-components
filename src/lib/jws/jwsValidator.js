@@ -40,8 +40,8 @@ class JwsValidator {
     validate(request) {
         try {
             const { headers, body, data } = request;
-
-            if(!(body || data)) {
+            const payload = body || data;
+            if(!payload) {
                 throw new Error('Cannot validate JWS without a body');
             }
 
@@ -65,7 +65,7 @@ class JwsValidator {
             const signatureHeader = JSON.parse(headers['fspiop-signature']);
             const { protectedHeader, signature } = signatureHeader;
 
-            const token = `${protectedHeader}.${base64url(JSON.stringify(body || data))}.${signature}`; 
+            const token = `${protectedHeader}.${base64url(JSON.stringify(payload))}.${signature}`; 
 
             // validate signature
             const result = jwt.verify(token, pubKey, { complete: true });

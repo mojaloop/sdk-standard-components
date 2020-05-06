@@ -63,6 +63,7 @@ describe('JWS', () => {
             signingKey: signingKey
         });
         body = { test: 123 };
+        // An request-promise-native style request uses the `.uri` and `.body` properties instead of the `.url` and `.data` properties.
         testOpts = {
             headers: {
                 'fspiop-source': 'mojaloop-sdk',
@@ -73,6 +74,7 @@ describe('JWS', () => {
             uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
             body,
         };
+        // An axios-style request uses the `.url` and `.data` properties instead of the `.uri` and `.body` properties.
         testOptsData = {
             headers: {
                 'fspiop-source': 'mojaloop-sdk',
