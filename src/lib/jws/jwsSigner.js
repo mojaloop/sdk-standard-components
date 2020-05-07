@@ -97,10 +97,10 @@ class JwsSigner {
 
         requestOptions.headers['fspiop-signature'] = JSON.stringify(signatureObject);
 
-        if(typeof(requestOptions.body) !== 'string') {
+        if(requestOptions.body && typeof(requestOptions.body) !== 'string') {
             requestOptions.body = JSON.stringify(requestOptions.body);
         }
-        if(typeof(requestOptions.data) !== 'string') {
+        if(requestOptions.data && typeof(requestOptions.data) !== 'string') {
             requestOptions.data = JSON.stringify(requestOptions.data);
         }
     }
