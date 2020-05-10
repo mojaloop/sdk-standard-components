@@ -132,7 +132,7 @@ describe('JWS', () => {
     }
 
 
-    test('Should generate valid JWS headers and signature for request with data', () => {
+    test('Should generate valid JWS headers and signature for request with body', () => {
         signer.sign(testOpts);
 
         expect(testOpts.headers['fspiop-signature']).toBeTruthy();
@@ -152,12 +152,52 @@ describe('JWS', () => {
         testValidateSignedRequestData(false);
     });
 
+    test('getSignature Should return valid JWS signature for request with body', () => {
+        testOpts.headers['fspiop-uri'] = '/parties/MSISDN/12345678';
+        testOpts.headers['fspiop-http-method'] = 'PUT';
+        const signature = signer.getSignature(testOpts);
+        testOpts.headers['fspiop-signature'] = signature;
+
+        expect(signature).toBeTruthy();
+        testValidateSignedRequest(false);
+    });
+
+    test('getSignature Should return valid JWS signature for request with data', () => {
+        testOptsData.headers['fspiop-uri'] = '/parties/MSISDN/12345678';
+        testOptsData.headers['fspiop-http-method'] = 'PUT';
+        const signature = signer.getSignature(testOptsData);
+        testOptsData.headers['fspiop-signature'] = signature;
+
+        expect(signature).toBeTruthy();
+        testValidateSignedRequestData(false);
+    });
+
 
     test('Should throw when trying to sign with no body', () => {
         delete testOpts.body;
 
         expect(() => {
             signer.sign(testOpts);
+        }).toThrow();
+    });
+
+    test('getSignature Should throw when trying to sign with no body', () => {
+        delete testOpts.body;
+        testOpts.headers['fspiop-uri'] = '/parties/MSISDN/12345678';
+        testOpts.headers['fspiop-http-method'] = 'PUT';
+
+        expect(() => {
+            signer.getSignature(testOpts);
+        }).toThrow();
+    });
+
+    test('getSignature Should throw when trying to sign with no body(data)', () => {
+        delete testOptsData.data;
+        testOptsData.headers['fspiop-uri'] = '/parties/MSISDN/12345678';
+        testOptsData.headers['fspiop-http-method'] = 'PUT';
+
+        expect(() => {
+            signer.getSignature(testOptsData);
         }).toThrow();
     });
 
@@ -177,11 +217,27 @@ describe('JWS', () => {
         }).toThrow();
     });
 
+    test('getSignature Should throw when trying to sign with no uri', () => {
+        delete testOpts.uri;
+
+        expect(() => {
+            signer.getSignature(testOpts);
+        }).toThrow();
+    });
+
     test('Should throw when trying to sign with no url', () => {
         delete testOptsData.url;
 
         expect(() => {
             signer.sign(testOptsData);
+        }).toThrow();
+    });
+
+    test('getSignature Should throw when trying to sign with no url', () => {
+        delete testOptsData.url;
+
+        expect(() => {
+            signer.getSignature(testOptsData);
         }).toThrow();
     });
 
