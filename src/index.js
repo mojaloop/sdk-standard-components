@@ -16,6 +16,7 @@ const MojaloopRequests = require('./lib/mojaloop-requests');
 const Ilp = require('./lib/ilp');
 const Errors = require('./lib/errors');
 const WSO2Auth = require('./lib/WSO2Auth');
+const request = require('./lib/request');
 
 
 module.exports = {
@@ -24,4 +25,5 @@ module.exports = {
     Ilp,
     Errors,
     WSO2Auth,
+    request,
 };

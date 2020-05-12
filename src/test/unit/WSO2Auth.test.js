@@ -8,8 +8,8 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-jest.mock('request-promise-native');
-const request = require('request-promise-native');
+jest.mock('http');
+const http = require('http');
 const WSO2Auth = require('../../lib/WSO2Auth');
 
 describe('WSO2Auth', () => {
@@ -27,7 +27,7 @@ describe('WSO2Auth', () => {
             logger: loggerStub,
             clientKey: 'client-key',
             clientSecret: 'client-secret',
-            tokenEndpoint: 'token-endpoint',
+            tokenEndpoint: 'http://token-endpoint.com/v2',
             refreshSeconds: userRefreshSeconds,
         };
         const basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
@@ -35,26 +35,32 @@ describe('WSO2Auth', () => {
         const now = Date.now();
         let tokenRefreshTime = now;
 
-        const requestSpy = request.mockImplementation(async () => {
+        http.__request = jest.fn(() => {
             tokenRefreshTime = Date.now();
-            return {access_token: TOKEN, expires_in: tokenExpiresSeconds};
+            return {
+                statusCode: 200,
+                data: {
+                    access_token: TOKEN,
+                    expires_in: tokenExpiresSeconds,
+                },
+            };
         });
 
         const auth = new WSO2Auth(opts);
         await auth.start();
         const token = auth.getToken();
-        expect(requestSpy).toHaveBeenCalledTimes(1);
-        expect(requestSpy.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(http.__request).toHaveBeenCalledTimes(1);
+        expect(http.__request.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
         expect(token).toBe(TOKEN);
         // Wait for token refresh
         await new Promise(resolve => {
             setTimeout(() => resolve(), actualRefreshMs + 100);
         });
-        expect(requestSpy).toHaveBeenCalledTimes(2);
+        expect(http.__request).toHaveBeenCalledTimes(2);
         const tokenRefreshInterval = tokenRefreshTime - now;
         expect(tokenRefreshInterval - actualRefreshMs).toBeLessThan(500);
         auth.stop();
-        requestSpy.mockClear();
+        http.__request.mockClear();
     }
 
     test('should return static token when static token was provided', async () => {
@@ -76,20 +82,25 @@ describe('WSO2Auth', () => {
             logger: loggerStub,
             clientKey: 'client-key',
             clientSecret: 'client-secret',
-            tokenEndpoint: 'token-endpoint',
+            tokenEndpoint: 'http://token-endpoint.com/v2',
             refreshSeconds: 2,
         };
         const basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
             .toString('base64');
-        const requestSpy = request.mockImplementation(async () => ({access_token: TOKEN}));
+        http.__request = jest.fn(() => ({
+            statusCode: 200,
+            data: {
+                access_token: TOKEN,
+            },
+        }));
         const auth = new WSO2Auth(opts);
         await auth.start();
         const token = auth.getToken();
-        expect(requestSpy).toHaveBeenCalledTimes(1);
-        expect(requestSpy.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(http.__request).toHaveBeenCalledTimes(1);
+        expect(http.__request.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
         expect(token).toBe(TOKEN);
         auth.stop();
-        requestSpy.mockClear();
+        http.__request.mockClear();
     });
 
     test(
