@@ -224,10 +224,7 @@ class Ilp {
      */
     validateIlpAgainstTransferRequest (transferRequestBody) {
         const transactionObject = this.getTransactionObject(transferRequestBody.ilpPacket);
-    
-        if (transferRequestBody.transferId !== transactionObject.transactionId) {
-            return false;
-        }
+
         if (transferRequestBody.payerFsp !== transactionObject.payer.partyIdInfo.fspId) {
             return false;
         }
