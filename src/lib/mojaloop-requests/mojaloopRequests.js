@@ -68,6 +68,7 @@ class MojaloopRequests {
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
         this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
+        this.bulkTransfersEndpoint = config.bulkTransfersEndpoint ? `${this.transportScheme}://${config.bulkTransfersEndpoint}` : null;
 
         this.wso2Auth = config.wso2Auth;
     }
@@ -256,6 +257,16 @@ class MojaloopRequests {
         return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
     }
 
+    /**
+     * Executes a GET /bulkTransfers request for the specified bulk transfer ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getBulkTransfers(bulkTransferId) {
+        const url = `bulkTransfers/${bulkTransferId}`;
+        return this._get(url, 'bulkTransfers');
+    }
+
     async putCustom(url, body, headers, query) {
         return this._put(url, 'custom', body, null, headers, query, false);
     }
@@ -323,6 +334,9 @@ class MojaloopRequests {
                 break;
             case 'authorizations':
                 returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
+                break;
+            case 'bulkTransfers':
+                returnEndpoint = this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
                 break;
             default:
                 returnEndpoint = this.peerEndpoint;
