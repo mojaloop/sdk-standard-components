@@ -17,7 +17,7 @@ const jws = require('jws');
 const SIGNATURE_ALGORITHM = 'RS256';
 
 // a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
-const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers|transactionRequests|authorizations|)(\/.*)*)$/;
+const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers|transactionRequests|authorizations)(\/.*)*)$/;
 
 
 /**
@@ -78,7 +78,7 @@ class JwsSigner {
      *   (see https://github.com/request/request-promise-native)
      *   (see https://github.com/axios/axios)
      *
-     * @returns {string} - JWS Signature as a string 
+     * @returns {string} - JWS Signature as a string
     */
     getSignature(requestOptions) {
         this.logger.log(`Get JWS Signature: ${util.inspect(requestOptions)}`);
@@ -114,7 +114,7 @@ class JwsSigner {
         if (requestOptions.headers['date']) {
             protectedHeaderObject['Date'] = requestOptions.headers['date'];
         }
-        
+
         // now we sign
         const token = jws.sign({
             header: protectedHeaderObject,
