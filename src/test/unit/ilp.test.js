@@ -77,8 +77,8 @@ describe('Ilp Packet Decoding and Validation', () => {
     beforeEach(() => {
         ilp = new Ilp({secret: 'test'});
         ilpCombo = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
-        transferRequest.ilpPacket = ilpCombo.ilpPacket
-        transferRequest.condition = ilpCombo.condition
+        transferRequest.ilpPacket = ilpCombo.ilpPacket;
+        transferRequest.condition = ilpCombo.condition;
     });
 
     test('Should decode the IlpPacket', () => {
