@@ -68,3 +68,51 @@ describe('ILP', () => {
         expect(valid).toBeTruthy();
     });
 });
+
+describe('Ilp Packet Decoding and Validation', () => {
+    let ilp;
+    let ilpCombo;
+    const transferRequest = require('./data/transferRequest');
+
+    beforeEach(() => {
+        ilp = new Ilp({secret: 'test'});
+        ilpCombo = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+        transferRequest.ilpPacket = ilpCombo.ilpPacket;
+        transferRequest.condition = ilpCombo.condition;
+    });
+
+    test('Should decode the IlpPacket', () => {
+        const decodedIlp = ilp.decodeIlpPacket(ilpCombo.ilpPacket);
+        
+        expect(decodedIlp).toBeTruthy();
+        expect(decodedIlp).toHaveProperty('amount');
+        expect(decodedIlp).toHaveProperty('account');
+        expect(decodedIlp).toHaveProperty('data');
+    });
+
+    test('Should generate transaction object from an Ilp packet', () => {
+        const transactionObject = ilp.getTransactionObject(ilpCombo.ilpPacket);
+        
+        expect(transactionObject).toBeTruthy();
+        expect(transactionObject).toHaveProperty('transactionId');
+        expect(transactionObject).toHaveProperty('quoteId');
+        expect(transactionObject).toHaveProperty('payee');
+        expect(transactionObject).toHaveProperty('payer');
+        expect(transactionObject).toHaveProperty('amount');
+        expect(transactionObject).toHaveProperty('transactionType');
+    });
+
+    test('Should validate the transfer request against the decoded Ilp packet', () => {
+        const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
+        
+        expect(validation).toBe(true);
+    });
+
+    test('Should fail the validation if the data in transfer request is changed', () => {
+        transferRequest.amount.amount = '200';
+        const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
+        
+        expect(validation).toBe(false);
+    });
+
+});
