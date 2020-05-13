@@ -194,7 +194,57 @@ class Ilp {
     _sha256 (preimage) {
         return Crypto.createHash('sha256').update(preimage).digest('base64');
     }
+
+    /**
+     * Decodes an Ilp Packet
+     *
+     * @returns {object} - Ilp packet as JSON object
+     */
+    decodeIlpPacket (inputIlpPacket) {
+        const binaryPacket = Buffer.from(inputIlpPacket, 'base64');
+        const jsonPacket = ilpPacket.deserializeIlpPayment(binaryPacket);
+        return jsonPacket;
+    }
+    
+    /**
+     * Get the transaction object in the data field of an Ilp packet
+     *
+     * @returns {object} - Transaction Object
+     */
+    getTransactionObject (inputIlpPacket) {
+        const jsonPacket = this.decodeIlpPacket(inputIlpPacket);
+        const decodedData = base64url.decode(jsonPacket.data.toString());
+        return JSON.parse(decodedData);
+    }
+    
+    /**
+     * Validate the transfer request against the decoded Ilp packet in it
+     *
+     * @returns {boolean} - True if the content in the transaction request is valid for Ilp packet
+     */
+    validateIlpAgainstTransferRequest (transferRequestBody) {
+        const transactionObject = this.getTransactionObject(transferRequestBody.ilpPacket);
+    
+        if (transferRequestBody.transferId !== transactionObject.transactionId) {
+            return false;
+        }
+        if (transferRequestBody.payerFsp !== transactionObject.payer.partyIdInfo.fspId) {
+            return false;
+        }
+        if (transferRequestBody.payeeFsp !== transactionObject.payee.partyIdInfo.fspId) {
+            return false;
+        }
+        if (transferRequestBody.amount.currency !== transactionObject.amount.currency) {
+            return false;
+        }
+        if (transferRequestBody.amount.amount !== transactionObject.amount.amount) {
+            return false;
+        }
+        return true;
+    }
+
 }
+
 
 
 module.exports = Ilp;
