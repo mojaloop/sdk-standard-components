@@ -33,6 +33,5 @@ function request(options, callback) {
 
 http.__request = jest.fn(() => {});
 http.request = request;
-http.globalAgent = {};
 
 module.exports = http;
