@@ -43,7 +43,7 @@ class JwsSigner {
      *   (see https://github.com/axios/axios)
      */
     sign(requestOptions) {
-        this.logger.log(`JWS Signing request: ${util.inspect(requestOptions)}`);
+        this.logger.log(`JWS Signing request: ${util.inspect({...requestOptions, agent: {}})}`);
         const payload = requestOptions.body || requestOptions.data;
         const uri = requestOptions.uri || requestOptions.url;
 
@@ -81,7 +81,7 @@ class JwsSigner {
      * @returns {string} - JWS Signature as a string
     */
     getSignature(requestOptions) {
-        this.logger.log(`Get JWS Signature: ${util.inspect(requestOptions)}`);
+        this.logger.log(`Get JWS Signature: ${util.inspect({...requestOptions, agent: {}})}`);
         const payload = requestOptions.body || requestOptions.data;
         const uri = requestOptions.uri || requestOptions.url;
 
