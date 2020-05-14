@@ -350,7 +350,6 @@ class MojaloopRequests {
                 ...headers,
             },
             qs: query,
-            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
@@ -360,7 +359,7 @@ class MojaloopRequests {
         // Note we do not JWS sign requests with no body i.e. GET requests
 
         this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-        return request(reqOpts)
+        return request({...reqOpts, agent: this.agent})
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
                 this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
@@ -379,7 +378,6 @@ class MojaloopRequests {
             },
             body: body,
             qs: query,
-            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
@@ -393,7 +391,7 @@ class MojaloopRequests {
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-        return request(reqOpts)
+        return request({...reqOpts, agent: this.agent})
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
                 this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
@@ -412,7 +410,6 @@ class MojaloopRequests {
             },
             body: body,
             qs: query,
-            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
@@ -426,7 +423,7 @@ class MojaloopRequests {
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-        return request(reqOpts)
+        return request({...reqOpts, agent: this.agent})
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
                 this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
