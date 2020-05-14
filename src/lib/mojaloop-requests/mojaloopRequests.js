@@ -359,7 +359,7 @@ class MojaloopRequests {
 
         // Note we do not JWS sign requests with no body i.e. GET requests
 
-        this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP GET: ${util.inspect({...reqOpts, agent: reqOpts.agent.protocol})}`);
         return request(reqOpts)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
@@ -392,7 +392,7 @@ class MojaloopRequests {
 
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP PUT: ${util.inspect({...reqOpts, agent: reqOpts.agent.protocol})}`);
         return request(reqOpts)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
@@ -425,7 +425,7 @@ class MojaloopRequests {
 
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP POST: ${util.inspect({...reqOpts, agent: reqOpts.agent.protocol})}`);
         return request(reqOpts)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch(e => {
