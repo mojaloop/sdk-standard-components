@@ -44,7 +44,7 @@ const request = async (opts) => {
         reqOpts.headers['content-length'] = Buffer.byteLength(opts.body);
     }
 
-    const adapter = (completeUrl.scheme === 'https:') ? https : http;
+    const adapter = (completeUrl.protocol === 'https:') ? https : http;
 
     return new Promise((resolve, reject) => {
         const req = adapter.request(reqOpts, (res) => {
