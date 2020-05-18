@@ -293,16 +293,6 @@ class MojaloopRequests {
         return this._put(`authorizations/${transactionRequestId}/error`, 'authorizations', error, destFspId);
     }
 
-    /**
-     * Executes a GET /bulkTransfers request for the specified bulk transfer ID
-     *
-     * @returns {object} - JSON response body if one was received
-     */
-    async getBulkTransfers(bulkTransferId) {
-        const url = `bulkTransfers/${bulkTransferId}`;
-        return this._get(url, 'bulkTransfers');
-    }
-
     async putCustom(url, body, headers, query, streamResponse = false) {
         return this._put(url, 'custom', body, null, headers, query,
             streamResponse ? ResponseType.Stream : ResponseType.Simple);
