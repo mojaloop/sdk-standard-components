@@ -66,13 +66,13 @@ class MojaloopRequests {
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
+        this.bulkQuotesEndpoint = config.bulkQuotesEndpoint ? `${this.transportScheme}://${config.bulkQuotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
-        this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
         this.bulkTransfersEndpoint = config.bulkTransfersEndpoint ? `${this.transportScheme}://${config.bulkTransfersEndpoint}` : null;
+        this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
 
         this.wso2Auth = config.wso2Auth;
     }
-
 
     /**
      * Executes a GET /parties request for the specified identifier type and identifier
@@ -85,7 +85,6 @@ class MojaloopRequests {
         return this._get(url, 'parties');
     }
 
-
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
@@ -94,7 +93,6 @@ class MojaloopRequests {
             + (idSubValue ? `/${idSubValue}` : '');
         return this._put(url, 'parties', body, destFspId);
     }
-
 
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
@@ -124,7 +122,6 @@ class MojaloopRequests {
         return this._put(url, 'participants', body, destFspId);
     }
 
-
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
@@ -135,7 +132,6 @@ class MojaloopRequests {
         return this._put(url, 'participants', error, destFspId);
     }
 
-
     /**
      * Executes a POST /quotes request for the specified quote request
      *
@@ -145,14 +141,12 @@ class MojaloopRequests {
         return this._post('quotes', 'quotes', quoteRequest, destFspId);
     }
 
-
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
     async putQuotes(quoteId, quoteResponse, destFspId) {
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
     }
-
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
@@ -161,6 +155,19 @@ class MojaloopRequests {
         return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId);
     }
 
+    /**
+    * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
+    */
+    async putBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
+        return this._put(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    }
+
+    /**
+    * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
+    */
+    async putBulkQuotesError(bulkQuoteId, error, destFspId) {
+        return this._put(`bulkQuotes/${bulkQuoteId}/error`, 'bulkQuotes', error, destFspId);
+    }
 
     /**
      * Executes a GET /transfers request for the specified transfer ID
@@ -172,7 +179,6 @@ class MojaloopRequests {
         return this._get(url, 'transfers');
     }
 
-
     /**
      * Executes a POST /transfers request for the specified transfer prepare
      *
@@ -182,7 +188,6 @@ class MojaloopRequests {
         return this._post('transfers', 'transfers', prepare, destFspId);
     }
 
-
     /**
      * Executes a PUT /transfers/{ID} request for the specified transfer fulfilment
      *
@@ -191,7 +196,6 @@ class MojaloopRequests {
     async putTransfers(transferId, fulfilment, destFspId) {
         return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId);
     }
-
 
     /**
      * Executes a PUT /transfers/{ID}/error request for the specified error
@@ -326,8 +330,14 @@ class MojaloopRequests {
             case 'quotes':
                 returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint;
                 break;
+            case 'bulkQuotes':
+                returnEndpoint = this.bulkQuotesEndpoint ? this.bulkQuotesEndpoint : this.peerEndpoint;
+                break;
             case 'transfers':
                 returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
+                break;
+            case 'bulkTransfers':
+                returnEndpoint = this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
                 break;
             case 'transactionRequests':
                 returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
@@ -335,15 +345,11 @@ class MojaloopRequests {
             case 'authorizations':
                 returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
                 break;
-            case 'bulkTransfers':
-                returnEndpoint = this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
-                break;
             default:
                 returnEndpoint = this.peerEndpoint;
         }
         return returnEndpoint;
     }
-
 
     _get(url, resourceType, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
@@ -370,7 +376,6 @@ class MojaloopRequests {
             throw e;
         }
     }
-
 
     _put(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
@@ -402,7 +407,6 @@ class MojaloopRequests {
             throw e;
         }
     }
-
 
     _post(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
         const reqOpts = {
@@ -442,7 +446,6 @@ class MojaloopRequests {
             return obj.toString();
         return JSON.stringify(obj);
     }
-
 }
 
 
