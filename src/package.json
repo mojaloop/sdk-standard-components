@@ -1,12 +1,12 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "10.2.0",
+  "version": "10.2.3",
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node test/unit"
+    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node --runInBand test/unit"
   },
   "author": "James Bush, ModusBox Inc.",
   "license": "Apache-2.0",
@@ -20,16 +20,15 @@
     "base64url": "3.0.1",
     "ilp-packet": "2.2.0",
     "jsonwebtoken": "8.5.1",
-    "jws": "4.0.0",
-    "request": "2.88",
-    "request-promise-native": "1.0.8"
+    "jws": "4.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "jest": "^25.1.0",
+    "@types/jest": "^25.2.1",
+    "eslint": "7.0.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-import": "2.20.2",
+    "jest": "^26.0.1",
     "jest-junit": "^10.0.0",
-    "eslint": "6.8.0",
-    "eslint-config-airbnb-base": "14.0.0",
-    "eslint-plugin-import": "2.20.1"
+    "nock": "^12.0.3"
   }
 }

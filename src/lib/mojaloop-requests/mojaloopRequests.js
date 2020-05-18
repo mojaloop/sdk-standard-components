@@ -12,16 +12,21 @@
 
 
 const util = require('util');
-const request = require('request-promise-native');
-
 const http = require('http');
 const https = require('https');
 
-const common = require('./common.js');
+const common = require('./common');
+const request = require('../request');
 const buildUrl = common.buildUrl;
 const throwOrJson = common.throwOrJson;
 
 const JwsSigner = require('../jws').signer;
+
+const ResponseType = Object.freeze({
+    Mojaloop:   Symbol('mojaloop'),
+    Simple:  Symbol('simple'),
+    Stream: Symbol('stream')
+});
 
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
@@ -271,16 +276,19 @@ class MojaloopRequests {
         return this._get(url, 'bulkTransfers');
     }
 
-    async putCustom(url, body, headers, query) {
-        return this._put(url, 'custom', body, null, headers, query, false);
+    async putCustom(url, body, headers, query, streamResponse = false) {
+        return this._put(url, 'custom', body, null, headers, query,
+            streamResponse ? ResponseType.Stream : ResponseType.Simple);
     }
 
-    async postCustom(url, body, headers, query) {
-        return this._post(url, 'custom', body, null, headers, query, false);
+    async postCustom(url, body, headers, query, streamResponse = false) {
+        return this._post(url, 'custom', body, null, headers, query,
+            streamResponse ? ResponseType.Stream : ResponseType.Simple);
     }
 
-    async getCustom(url, headers, query) {
-        return this._get(url, 'custom', null, headers, query, false);
+    async getCustom(url, headers, query, streamResponse = false) {
+        return this._get(url, 'custom', null, headers, query,
+            streamResponse ? ResponseType.Stream : ResponseType.Simple);
     }
 
     /**
@@ -292,8 +300,11 @@ class MojaloopRequests {
         let headers = {
             'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
             'date': new Date().toUTCString(),
-            'fspiop-source': this.dfspId
         };
+
+        if (this.dfspId) {
+            headers['fspiop-source'] = this.dfspId;
+        }
 
         if(dest) {
             headers['fspiop-destination'] = dest;
@@ -351,7 +362,8 @@ class MojaloopRequests {
         return returnEndpoint;
     }
 
-    _get(url, resourceType, dest, headers = {}, query = {}, isMojaloopRequest = true) {
+
+    _get(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -360,24 +372,25 @@ class MojaloopRequests {
                 ...headers,
             },
             qs: query,
-            agent: this.agent,
-            resolveWithFullResponse: true,
-            simple: false
         };
+
+        if (responseType === ResponseType.Stream) {
+            reqOpts.responseType = request.responseType.Stream;
+        }
 
         // Note we do not JWS sign requests with no body i.e. GET requests
 
-        try {
-            this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
-        }
-        catch (e) {
-            this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
-            throw e;
-        }
+        this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
+        return request({...reqOpts, agent: this.agent})
+            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
+            .catch(e => {
+                this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
+                throw e;
+            });
     }
 
-    _put(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
+
+    _put(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -387,28 +400,29 @@ class MojaloopRequests {
             },
             body: body,
             qs: query,
-            agent: this.agent,
-            resolveWithFullResponse: true,
-            simple: false
         };
 
-        if(this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
+        if (responseType === ResponseType.Stream) {
+            reqOpts.responseType = request.responseType.Stream;
+        }
+
+        if((responseType === ResponseType.Mojaloop) && this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
             this.jwsSigner.sign(reqOpts);
         }
 
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
-        try {
-            this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
-        }
-        catch (e) {
-            this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
-            throw e;
-        }
+        this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
+        return request({...reqOpts, agent: this.agent})
+            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
+            .catch(e => {
+                this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
+                throw e;
+            });
     }
 
-    _post(url, resourceType, body, dest, headers = {}, query = {}, isMojaloopRequest = true) {
+
+    _post(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -418,25 +432,25 @@ class MojaloopRequests {
             },
             body: body,
             qs: query,
-            agent: this.agent,
-            resolveWithFullResponse: true,
-            simple: false
         };
 
-        if(this.jwsSign) {
+        if (responseType === ResponseType.Stream) {
+            reqOpts.responseType = request.responseType.Stream;
+        }
+
+        if((responseType === ResponseType.Mojaloop) && this.jwsSign) {
             this.jwsSigner.sign(reqOpts);
         }
 
         reqOpts.body = this._bodyStringifier(reqOpts.body);
 
-        try {
-            this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-            return request(reqOpts).then((res) => isMojaloopRequest ? throwOrJson(res) : res);
-        }
-        catch (e) {
-            this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
-            throw e;
-        }
+        this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
+        return request({...reqOpts, agent: this.agent})
+            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
+            .catch(e => {
+                this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
+                throw e;
+            });
     }
 
     _bodyStringifier (obj) {
