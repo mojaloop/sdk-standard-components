@@ -212,6 +212,33 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a POST /bulkTransfers request for the specified bulk transfer prepare
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postBulkTransfers(prepare, destFspId) {
+        return this._post('bulkTransfers', 'bulkTransfers', prepare, destFspId);
+    }
+
+    /**
+     * Executes a PUT /bulkTransfers/{ID} request for the specified bulk transfer fulfilment
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putBulkTransfers(bulkTransferId, fulfilment, destFspId) {
+        return this._put(`bulkTransfers/${bulkTransferId}`, 'bulkTransfers', fulfilment, destFspId);
+    }
+
+    /**
+     * Executes a PUT /bulkTransfers/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putBulkTransfersError(bulkTransferId, error, destFspId) {
+        return this._put(`bulkTransfers/${bulkTransferId}/error`, 'bulkTransfers', error, destFspId);
+    }
+
+    /**
      * Executes a POST /transactionRequests request for the specified transaction request
      *
      * @returns {object} - JSON response body if one was received
