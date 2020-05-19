@@ -219,6 +219,16 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a GET /bulkTransfers request for the specified bulk transfer ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getBullTransfers(bulkTransferId) {
+        const url = `bulkTransfers/${bulkTransferId}`;
+        return this._get(url, 'bulkTransfers');
+    }
+
+    /**
      * Executes a POST /bulkTransfers request for the specified bulk transfer prepare
      *
      * @returns {object} - JSON response body if one was received
