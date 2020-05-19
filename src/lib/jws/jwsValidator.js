@@ -41,6 +41,9 @@ class JwsValidator {
         try {
             const { headers, body, data } = request;
             const payload = body || data;
+
+            this.logger.log(`Validing JWS on request with headers: ${util.inspect(headers)} and body: ${util.inspect(payload)}`);
+
             if(!payload) {
                 throw new Error('Cannot validate JWS without a body');
             }
@@ -61,14 +64,17 @@ class JwsValidator {
                 throw new Error(`fspiop-uri, fspiop-http-method and fspiop-signature HTTP headers are all required for JWS. Only got ${util.inspect(headers)}`);
             }
 
-            // if all required headers are present we start by checking the protected header
+            // if all required headers are present we start by extracting the components of the signature header 
             const signatureHeader = JSON.parse(headers['fspiop-signature']);
             const { protectedHeader, signature } = signatureHeader;
 
             const token = `${protectedHeader}.${base64url(JSON.stringify(payload))}.${signature}`; 
 
             // validate signature
-            const result = jwt.verify(token, pubKey, { complete: true });
+            const result = jwt.verify(token, pubKey, {
+                complete: true,
+                algorithms: [ SIGNATURE_ALGORITHM ]  //only allow our SIGNATURE_ALGORITHM
+            });
 
             // check protected header has all required fields and matches actual incoming headers
             this._validateProtectedHeader(headers, result.header);
