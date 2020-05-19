@@ -223,7 +223,7 @@ class MojaloopRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getBullTransfers(bulkTransferId) {
+    async getBulkTransfers(bulkTransferId) {
         const url = `bulkTransfers/${bulkTransferId}`;
         return this._get(url, 'bulkTransfers');
     }
