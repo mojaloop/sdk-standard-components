@@ -161,6 +161,13 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a POST /bulkQuotes/{ID} request for the specified bulk quote
+     */
+    async postBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
+        return this._post(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    }
+
+    /**
     * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
     */
     async putBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
