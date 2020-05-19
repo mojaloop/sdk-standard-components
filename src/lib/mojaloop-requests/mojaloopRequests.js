@@ -71,7 +71,9 @@ class MojaloopRequests {
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
+        this.bulkQuotesEndpoint = config.bulkQuotesEndpoint ? `${this.transportScheme}://${config.bulkQuotesEndpoint}` : null;
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
+        this.bulkTransfersEndpoint = config.bulkTransfersEndpoint ? `${this.transportScheme}://${config.bulkTransfersEndpoint}` : null;
         this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
 
         this.wso2Auth = config.wso2Auth;
@@ -88,7 +90,6 @@ class MojaloopRequests {
         return this._get(url, 'parties');
     }
 
-
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
@@ -97,7 +98,6 @@ class MojaloopRequests {
             + (idSubValue ? `/${idSubValue}` : '');
         return this._put(url, 'parties', body, destFspId);
     }
-
 
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
@@ -127,7 +127,6 @@ class MojaloopRequests {
         return this._put(url, 'participants', body, destFspId);
     }
 
-
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
@@ -138,7 +137,6 @@ class MojaloopRequests {
         return this._put(url, 'participants', error, destFspId);
     }
 
-
     /**
      * Executes a POST /quotes request for the specified quote request
      *
@@ -148,14 +146,12 @@ class MojaloopRequests {
         return this._post('quotes', 'quotes', quoteRequest, destFspId);
     }
 
-
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
     async putQuotes(quoteId, quoteResponse, destFspId) {
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
     }
-
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
@@ -164,6 +160,26 @@ class MojaloopRequests {
         return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId);
     }
 
+    /**
+     * Executes a POST /bulkQuotes/{ID} request for the specified bulk quote
+     */
+    async postBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
+        return this._post(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    }
+
+    /**
+    * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
+    */
+    async putBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
+        return this._put(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    }
+
+    /**
+    * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
+    */
+    async putBulkQuotesError(bulkQuoteId, error, destFspId) {
+        return this._put(`bulkQuotes/${bulkQuoteId}/error`, 'bulkQuotes', error, destFspId);
+    }
 
     /**
      * Executes a GET /transfers request for the specified transfer ID
@@ -175,7 +191,6 @@ class MojaloopRequests {
         return this._get(url, 'transfers');
     }
 
-
     /**
      * Executes a POST /transfers request for the specified transfer prepare
      *
@@ -184,7 +199,6 @@ class MojaloopRequests {
     async postTransfers(prepare, destFspId) {
         return this._post('transfers', 'transfers', prepare, destFspId);
     }
-
 
     /**
      * Executes a PUT /transfers/{ID} request for the specified transfer fulfilment
@@ -195,7 +209,6 @@ class MojaloopRequests {
         return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId);
     }
 
-
     /**
      * Executes a PUT /transfers/{ID}/error request for the specified error
      *
@@ -203,6 +216,43 @@ class MojaloopRequests {
      */
     async putTransfersError(transferId, error, destFspId) {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
+    }
+
+    /**
+     * Executes a GET /bulkTransfers request for the specified bulk transfer ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getBulkTransfers(bulkTransferId) {
+        const url = `bulkTransfers/${bulkTransferId}`;
+        return this._get(url, 'bulkTransfers');
+    }
+
+    /**
+     * Executes a POST /bulkTransfers request for the specified bulk transfer prepare
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postBulkTransfers(prepare, destFspId) {
+        return this._post('bulkTransfers', 'bulkTransfers', prepare, destFspId);
+    }
+
+    /**
+     * Executes a PUT /bulkTransfers/{ID} request for the specified bulk transfer fulfilment
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putBulkTransfers(bulkTransferId, fulfilment, destFspId) {
+        return this._put(`bulkTransfers/${bulkTransferId}`, 'bulkTransfers', fulfilment, destFspId);
+    }
+
+    /**
+     * Executes a PUT /bulkTransfers/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putBulkTransfersError(bulkTransferId, error, destFspId) {
+        return this._put(`bulkTransfers/${bulkTransferId}/error`, 'bulkTransfers', error, destFspId);
     }
 
     /**
@@ -325,8 +375,14 @@ class MojaloopRequests {
             case 'quotes':
                 returnEndpoint = this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint;
                 break;
+            case 'bulkQuotes':
+                returnEndpoint = this.bulkQuotesEndpoint ? this.bulkQuotesEndpoint : this.peerEndpoint;
+                break;
             case 'transfers':
                 returnEndpoint = this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
+                break;
+            case 'bulkTransfers':
+                returnEndpoint = this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
                 break;
             case 'transactionRequests':
                 returnEndpoint = this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
@@ -438,7 +494,6 @@ class MojaloopRequests {
             return obj.toString();
         return JSON.stringify(obj);
     }
-
 }
 
 
