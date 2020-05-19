@@ -12,7 +12,8 @@
 
 const http = require('http');
 const https = require('https');
-const request = require('request-promise-native');
+const qs = require('querystring');
+const request = require('../request');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -52,17 +53,24 @@ class WSO2Auth {
             throw new Error('WSO2 auth config requires logger property');
         }
 
+        this._reqOpts = {
+            method: 'POST',
+            body: qs.stringify({
+                grant_type: 'client_credentials'
+            }),
+        };
+
         if(opts.tlsCreds) {
-            this._agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
+            this._reqOpts.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
         }
         else {
-            this._agent = http.globalAgent;
+            this._reqOpts.agent = http.globalAgent;
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
             this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
                 .toString('base64');
-            this._endpoint = opts.tokenEndpoint;
+            this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
             this._logger.log('WSO2 auth config token API data not set, fallback to static token');
             this._token = opts.staticToken;
@@ -79,21 +87,15 @@ class WSO2Auth {
         }
         this._logger.log('WSO2 token refresh initiated');
         const reqOpts = {
-            agent: this._agent,
-            method: 'POST',
-            uri: this._endpoint,
+            ...this._reqOpts,
             headers: {
                 'Authorization': `Basic ${this._basicToken}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            form: {
-                grant_type: 'client_credentials'
-            },
-            json: true
         };
         let refreshSeconds;
         try {
-            const response = await request(reqOpts);
+            const response = (await request(reqOpts)).data;
             this._token = response.access_token;
             const tokenIsValidNumber = (typeof response.expires_in === 'number') && (response.expires_in > 0);
             const tokenExpiry = tokenIsValidNumber ? response.expires_in : Infinity;

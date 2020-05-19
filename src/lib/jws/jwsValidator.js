@@ -39,11 +39,12 @@ class JwsValidator {
      */
     validate(request) {
         try {
-            const { headers, body } = request;
+            const { headers, body, data } = request;
+            const payload = body || data;
 
-            this.logger.log(`Validing JWS on request with headers: ${util.inspect(headers)} and body: ${util.inspect(body)}`);
+            this.logger.log(`Validing JWS on request with headers: ${util.inspect(headers)} and body: ${util.inspect(payload)}`);
 
-            if(!body) {
+            if(!payload) {
                 throw new Error('Cannot validate JWS without a body');
             }
 
@@ -67,10 +68,7 @@ class JwsValidator {
             const signatureHeader = JSON.parse(headers['fspiop-signature']);
             const { protectedHeader, signature } = signatureHeader;
 
-            // note that we are relying on JSON.stringify to produce a byte for byte exact match for the signed body
-            // this is not a perfect solution. TODO: extract the request body as a raw buffer and pass that to
-            // the verification algorithm.
-            const token = `${protectedHeader}.${base64url(JSON.stringify(body))}.${signature}`; 
+            const token = `${protectedHeader}.${base64url(JSON.stringify(payload))}.${signature}`; 
 
             // validate signature
             const result = jwt.verify(token, pubKey, {
