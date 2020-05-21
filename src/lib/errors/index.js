@@ -35,6 +35,7 @@ const MojaloopApiErrorCodes = {
     SERVER_BUSY:                      { code: '2005', message: 'Server busy' },
 
     //Generic client errors
+    METHOD_NOT_ALLOWED:               { code: '3000', message: 'Generic client error - Method Not Allowed', httpStatusCode: 405 },
     CLIENT_ERROR:                     { code: '3000', message: 'Generic client error', httpStatusCode: 400 },
     UNACCEPTABLE_VERSION:             { code: '3001', message: 'Unacceptable version requested', httpStatusCode: 406 },
     UNKNOWN_URI:                      { code: '3002', message: 'Unknown URI', httpStatusCode: 404 },
