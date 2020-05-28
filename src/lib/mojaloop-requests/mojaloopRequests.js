@@ -182,6 +182,16 @@ class MojaloopRequests {
     }
 
     /**
+     * Executes a GET /bulkQuotes/{ID} request for the specified bulk quote ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getBulkQuotes(bulkQuoteId) {
+        const url = `bulkQuotes/${bulkQuoteId}`;
+        return this._get(url, 'bulkQuotes');
+    }
+
+    /**
      * Executes a GET /transfers request for the specified transfer ID
      *
      * @returns {object} - JSON response body if one was received
