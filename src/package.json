@@ -9,6 +9,9 @@
     "test": "jest --ci --reporters=default --reporters=jest-junit --env=node --runInBand test/unit"
   },
   "author": "James Bush, ModusBox Inc.",
+  "contributors": [
+    "Steven Oderayi <steven.oderayi@modusbox.com>"
+  ],
   "license": "Apache-2.0",
   "licenses": [
     {
