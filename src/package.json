@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "10.2.4",
+  "version": "10.3.0",
   "description": "An set of standard components for connecting to Mojaloop API enabled switches",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,9 @@
     "test": "jest --ci --reporters=default --reporters=jest-junit --env=node --runInBand test/unit"
   },
   "author": "James Bush, ModusBox Inc.",
+  "contributors": [
+    "Steven Oderayi <steven.oderayi@modusbox.com>"
+  ],
   "license": "Apache-2.0",
   "licenses": [
     {
