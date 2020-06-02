@@ -161,10 +161,10 @@ class MojaloopRequests {
     }
 
     /**
-     * Executes a POST /bulkQuotes/{ID} request for the specified bulk quote
+     * Executes a POST /bulkQuotes request
      */
-    async postBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
-        return this._post(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    async postBulkQuotes(bulkQuoteRequest, destFspId) {
+        return this._post('bulkQuotes', 'bulkQuotes', bulkQuoteRequest, destFspId);
     }
 
     /**
@@ -229,7 +229,7 @@ class MojaloopRequests {
     }
 
     /**
-     * Executes a GET /bulkTransfers request for the specified bulk transfer ID
+     * Executes a GET /bulkTransfers/{ID} request for the specified bulk transfer ID
      *
      * @returns {object} - JSON response body if one was received
      */
