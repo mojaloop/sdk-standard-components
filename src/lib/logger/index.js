@@ -131,7 +131,7 @@ class Logger {
         this.opts.levels.forEach(level => {
             this[level] = (...args) => {
                 this._log(level, ...args);
-            }
+            };
         });
     }
 
