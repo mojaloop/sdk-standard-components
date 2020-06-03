@@ -2,13 +2,13 @@
 A structured context logger.
 
 ### API
-Go read the code, at the time of writing the logger itself is 100 SLOC, and the transports are 36.
+Go read the code, at the time of writing the logger itself is 100 SLOC.
 It's fairly well-commented.
 
 ### Basic Usage
 ```javascript
-const { Logger, transports } = require('el-logger');
-const logger = new Logger({ transports: [transports.stdout()] });
+const { Logger } = require('el-logger');
+const logger = new Logger();
 logger.log('hello');
 // Prints:
 // {
@@ -57,12 +57,11 @@ to `.log` will be printed as an escaped string in the log `.message`. Instead, p
 We'll log a bit too much, for illustration sake.
 ```javascript
 const uuidv4 = require('uuid/v4');
-const { Logger, transports } = require('el-logger');
+const { Logger } = require('el-logger');
 
 // Some application vars
 const logger = new Logger({
-    context: { application: 'el-logger-example-app' },
-    transports: [transports.stdout()],
+    context: { application: 'el-logger-example-app' }
 });
 const app = new (require('koa'))();
 app.context.logger = logger;
