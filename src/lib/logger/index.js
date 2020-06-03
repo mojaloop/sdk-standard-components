@@ -17,24 +17,9 @@
 // 2) No 'replace' method (or method for overwriting logged context) has been implemented. This is
 //    for the same reason no 'pop' method has been implemented.
 
-// TODO:
-// - just call the logger to add a message property and log that- pass all arguments to util.format
-// - directly support env var config, perhaps using "namespaced" env vars, e.g. EL_LOGGER_$VAR? Or
-//   require that the user of this lib passes config through? (Allow the user to configure whether
-//   we do this? Or just provide them some support function to pass their process.env to if they
-//   want to support it? I.e. `new Logger(generateLoggerOpts(process.env))`
-// - we should stream to transports, which should themselves probably be streams
-
-// TODO:
-// Is it possible to pretty-print log messages or strings containing new-line characters? For
-// example, instead of printing the '\n' characters in a stack-trace, actually printing the
-// new-line characters. Is that possible and/or worthwhile?
-
 const util = require('util');
 
 const safeStringify = require('fast-safe-stringify');
-
-const transportsExport = require('./transports');
 
 // Utility functions
 
@@ -97,10 +82,6 @@ class Logger {
     //   Context data to preload in the logger. Example: { path: '/users', method: 'GET' }
     //   This logger and all loggers derived from it (with the push method) will print this context
     //   If any reserved keys exist in the new object, an error will be thrown.
-    // transports
-    //   Array of functions
-    //   Each function will be supplied with arguments (String msg, Date timestamp) for each log
-    //   event.
     // stringify
     //   Function
     //   Supply a function to perform stringifying.
@@ -119,7 +100,6 @@ class Logger {
     //   { msg, ctx, level: 'verbose' }
     constructor({
         context = {},
-        transports = [],
         stringify = buildStringify(),
         opts: {
             allowContextOverwrite = false,
@@ -130,7 +110,6 @@ class Logger {
         this[contextSym] = context;
         this.configure({
             stringify,
-            transports,
             opts: {
                 allowContextOverwrite,
                 copy,
@@ -141,21 +120,19 @@ class Logger {
 
     // Update logger configuration.
     // opts
-    //   Object. May contain any of .transports, .stringify, .opts.
+    //   Object. May contain any of .stringify, .opts.
     //   See constructor comment for details
     configure({
-        transports = this.transports,
         stringify = this.stringify,
         opts = this.opts,
     }) {
-        this.transports = transports;
         this.stringify = stringify;
         this.opts = { ...this.opts, ...opts };
         this.opts.levels.forEach(level => {
-            this[level] = async (...args) => {
+            this[level] = (...args) => {
                 this._log(level, ...args);
             }
-        })
+        });
     }
 
     // Create a new logger with the same context as the current logger, and additionally any
@@ -184,35 +161,32 @@ class Logger {
                 ...this.opts.copy(this[contextSym]),
                 ...context
             },
-            transports: this.transports,
             stringify: this.stringify,
             opts: this.opts,
         });
     }
 
-    // Log to transports.
+    // Log to stdout.
     // args
     //   Any type is acceptable. All arguments will be passed to util.format, then printed as the
     //   'msg' property of the logged item.
-    async log(...args) {
-        await this._log(undefined, ...args);
+    log(...args) {
+        this._log(undefined, ...args);
     }
 
-    async _log(level, ...args) {
-        // NOTE: if printing large strings, JSON.stringify will block the event loop. This, and
-        // solutions, are discussed here:
-        // https://nodejs.org/en/docs/guides/dont-block-the-event-loop/.
-        // At the time of writing, this was considered unlikely to be a problem, as this
-        // implementation did not have any performance requirements
-        // TODO: stream json to streams?
+    _log(level, ...args) {
         const msg = args.length > 0 ? util.format(...args) : undefined;
         const output = this.stringify({ ctx: this[contextSym], msg, level, });
-        await Promise.all(this.transports.map(t => t(output)));
+        this._write(output);
+    }
+
+    // Separate method to enable testing
+    _write(msg) {
+        process.stdout.write(msg + '\n');
     }
 }
 
 module.exports = {
     Logger,
-    transports: transportsExport,
     buildStringify,
 };
