@@ -11,19 +11,21 @@
 'use strict';
 
 
-const Jws = require('./lib/jws');
-const MojaloopRequests = require('./lib/mojaloop-requests');
-const Ilp = require('./lib/ilp');
 const Errors = require('./lib/errors');
-const WSO2Auth = require('./lib/WSO2Auth');
+const Ilp = require('./lib/ilp');
+const Jws = require('./lib/jws');
+const Logger = require('./lib/logger');
+const MojaloopRequests = require('./lib/mojaloop-requests');
 const request = require('./lib/request');
+const WSO2Auth = require('./lib/WSO2Auth');
 
 
 module.exports = {
-    Jws,
-    MojaloopRequests,
-    Ilp,
     Errors,
-    WSO2Auth,
+    Ilp,
+    Jws,
+    Logger,
+    MojaloopRequests,
     request,
+    WSO2Auth,
 };
