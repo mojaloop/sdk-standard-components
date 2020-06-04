@@ -182,7 +182,9 @@ class Logger {
 
     // Separate method to enable testing
     _write(msg) {
-        process.stdout.write(msg + '\n');
+        if (msg != '') {
+            process.stdout.write(msg + '\n');
+        }
     }
 }
 
