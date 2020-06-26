@@ -17,17 +17,30 @@ const JwsSigner = require('../jws').signer;
 /**
  *
  * @class BaseRequests
- * @description BaseRequests is a 'mojaloop aware' class for
- *   mojaloop or thirdparty requests. It factors out the bits
- *   that 'need to know' about config
+ * @description BaseRequests is a 'mojaloop aware' base class for making mojaloop requests
+ *   it contains all of the common bits that a Mojaloop client library needs to implement
+ *   such as `jws`, `tls`, `mojaloop endpoints`, etc, and exposes functions for `_get()`,
+ *   `_post()`, and `_put()` requests
  */
 class BaseRequests {
 
     // TODO: information on the config object
+    /**
+     * @function constructor
+     * @param {Object} config - The Config Object
+     * @param {Object} config.logger Logging function
+     * @param {Object} config.tls The tls config object
+     * @param {string} config.dfspId The `FSPID` of _this_ DFSP/Participant
+     * @param {boolean} config.jwsSign The `FSPID` of _this_ DFSP/Participant
+     * @param {boolean | undefined} config.jwsSignPutParties Optional. If undefined,
+     *    it will default to the value of `config.jwsSign`
+     * @param {string | undefined} config.jwsSigningKey Optional. The jwsSigningKey
+     *   to use. Required if `jwsSign === true`
+     * @param {Object | undefined} config.wso2Auth Optional. The wso2Auth object.
+     */
     constructor(config) {
         this.logger = config.logger;
 
-        // TODO: a better name (nowadays) would be participantId...
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
 
@@ -61,7 +74,6 @@ class BaseRequests {
         });
 
         // Switch or peer DFSP endpoint
-        // TODO: factor out and clean up
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
         this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
@@ -69,10 +81,24 @@ class BaseRequests {
         this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
         this.bulkTransfersEndpoint = config.bulkTransfersEndpoint ? `${this.transportScheme}://${config.bulkTransfersEndpoint}` : null;
         this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
+        this.thirdpartyEndpoint = config.thirdpartyEndpoint ? `${this.transportScheme}://${config.thirdpartyEndpoint}` : null;
 
         this.wso2Auth = config.wso2Auth;
     }
 
+    /**
+     * @function _get
+     * @description
+     *  Perform a HTTP GET request.
+     *
+     *  **Note**: `config.jwsSign` is ignored here, as we don't JWS sign requests with no body
+     * @param {string} url - The url of the resource
+     * @param {string} resourceType - The 'type' of resource. Used to resolve the correct endpoint
+     * @param {string} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
+     * @param {*} headers - Optional additional headers
+     * @param {*} query - Optional query parameters
+     * @param {*} responseType - Optional, defaults to `Mojaloop`
+     */
     async _get(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'GET',

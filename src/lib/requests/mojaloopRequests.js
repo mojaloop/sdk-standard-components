@@ -16,7 +16,8 @@ const BaseRequests = require('./baseRequests');
 const { ResponseType } = require('./common');
 
 /**
- * A class for making outbound requests with mutually authenticated TLS and JWS signing
+ * @class MojaloopRequests
+ * @description A class for making outbound requests with mutually authenticated TLS and JWS signing
  */
 class MojaloopRequests extends BaseRequests {
     constructor(config) {
