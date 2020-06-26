@@ -24,7 +24,6 @@ const JwsSigner = require('../jws').signer;
  */
 class BaseRequests {
 
-    // TODO: information on the config object
     /**
      * @function constructor
      * @param {Object} config - The Config Object
@@ -93,8 +92,8 @@ class BaseRequests {
      *
      *  **Note**: `config.jwsSign` is ignored here, as we don't JWS sign requests with no body
      * @param {string} url - The url of the resource
-     * @param {string} resourceType - The 'type' of resource. Used to resolve the correct endpoint
-     * @param {string} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
+     * @param {string} resourceType - The 'type' of resource. Used to resolve the endpoint for the request
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
      * @param {*} headers - Optional additional headers
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
@@ -125,7 +124,18 @@ class BaseRequests {
             });
     }
 
-
+    /**
+     * @function _put
+     * @description
+     *  Perform a HTTP PUT request.
+     *
+     * @param {string} url - The url of the resource
+     * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
+     * @param {Object} headers - Optional additional headers
+     * @param {*} query - Optional query parameters
+     * @param {*} responseType - Optional, defaults to `Mojaloop`
+     */
     async _put(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'PUT',
@@ -157,7 +167,19 @@ class BaseRequests {
             });
     }
 
-
+    /**
+     * @function _post
+     * @description
+     *  Perform a HTTP POST request.
+     *
+     * @param {string} url - The url of the resource
+     * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param {object} body - The 'body' of the POST request
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
+     * @param {*} headers - Optional additional headers
+     * @param {*} query - Optional query parameters
+     * @param {*} responseType - Optional, defaults to `Mojaloop`
+     */
     async _post(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'POST',
@@ -190,9 +212,14 @@ class BaseRequests {
     }
 
     /**
-     * Utility function for building outgoing request headers as required by the mojaloop api spec
+     * @function _buildHeaders
+     * @description
+     *   Utility function for building outgoing request headers as required by the mojaloop api spec
+     * @param {'GET' | 'POST' | 'PUT'} method The HTTP Method
+     * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
      *
-     * @returns {object} - headers object for use in requests to mojaloop api endpoints
+     * @returns {*} headers object for use in requests to mojaloop api endpoints
      */
     _buildHeaders(method, resourceType, dest) {
         let headers = {
@@ -225,7 +252,10 @@ class BaseRequests {
     }
 
     /**
-     * Utility function for picking up the right endpoint based on the resourceType
+     * @function _pickPeerEndpoint
+     * @description Utility function for picking up the right endpoint based on the resourceType
+     * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @returns {string} The endpoint fot the given `resourceType`
      */
     _pickPeerEndpoint(resourceType) {
         // TODO: refactor to remove the need for all the damn question marks?

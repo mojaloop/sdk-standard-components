@@ -28,6 +28,9 @@ function request(options, callback) {
 
     const writable = new Writable();
     writable._write = () => {};
+    // TODO: fix me
+    // writable.write = (...args) => console.log('.write got called with args', args);
+
     return writable;
 }
 

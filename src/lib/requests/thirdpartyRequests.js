@@ -21,9 +21,8 @@ class ThirdpartyRequests extends BaseRequests {
      * @param {string} destParticipantId The id of the destination participant, in this case, a PISP
      * @returns {Promise<object>} JSON response body if one was received
      */
-    // TODO: authorizationbody jsdoc...
-    async postAuthorizations(transactionRequestId, authorizationBody, destParticipantId) {
-        return this._post(`authorizations/${transactionRequestId}`, 'authorizations', authorizationBody, destParticipantId);
+    async postAuthorizations(authorizationBody, destParticipantId) {
+        return this._post('authorizations', 'authorizations', authorizationBody, destParticipantId);
     }
 }
 
