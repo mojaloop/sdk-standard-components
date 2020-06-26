@@ -12,7 +12,7 @@ const fs = require('fs');
 jest.mock('http');
 const http = require('http');
 
-const { MojaloopRequests: mr } = require('../../../../lib/requests/mojaloopRequests.js');
+const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
@@ -24,7 +24,8 @@ describe('PUT /parties', () => {
 
         // Everything is false by default
         const conf = {
-            logger: console,
+            // Disable logging in tests
+            logger: { log: () => { } },
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -98,7 +99,8 @@ describe('PUT /quotes', () => {
 
         // Everything is false by default
         const conf = {
-            logger: console,
+            // Disable logging in tests
+            logger: { log: () => { } },
             tls: {
                 outbound: {
                     mutualTLS: {
