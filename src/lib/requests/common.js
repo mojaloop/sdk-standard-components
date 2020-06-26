@@ -78,10 +78,17 @@ const throwOrJson = async (res) => {
     return;
 };
 
-
+const bodyStringifier = (obj) => {
+    if (typeof obj === 'string' || Buffer.isBuffer(obj))
+        return obj;
+    if (typeof obj === 'number')
+        return obj.toString();
+    return JSON.stringify(obj);
+}
 
 
 module.exports = {
+    bodyStringifier,
     HTTPResponseError,
     buildUrl,
     throwOrJson,
