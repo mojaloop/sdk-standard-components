@@ -11,30 +11,16 @@
 'use strict';
 
 
-const util = require('util');
-const http = require('http');
-const https = require('https');
-
 const BaseRequests = require('./baseRequests');
-const common = require('./common');
-const request = require('../request');
-const buildUrl = common.buildUrl;
-const throwOrJson = common.throwOrJson;
 
-const JwsSigner = require('../jws').signer;
-
-const ResponseType = Object.freeze({
-    Mojaloop:   Symbol('mojaloop'),
-    Simple:  Symbol('simple'),
-    Stream: Symbol('stream')
-});
+const { ResponseType } = require('./common');
 
 /**
  * A class for making outbound requests with mutually authenticated TLS and JWS signing
  */
 class MojaloopRequests extends BaseRequests {
     constructor(config) {
-        super(config)
+        super(config);
     }
 
     /**

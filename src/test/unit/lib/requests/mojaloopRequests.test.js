@@ -12,7 +12,7 @@ const fs = require('fs');
 jest.mock('http');
 const http = require('http');
 
-const mr = require('../../../../lib/mojaloop-requests/mojaloopRequests.js');
+const { MojaloopRequests: mr } = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');

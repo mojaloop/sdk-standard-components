@@ -1,26 +1,6 @@
 'use strict';
 
-
-// TODO: factor our common stuff where applicable
-const util = require('util');
-const http = require('http');
-const https = require('https');
-
-
 const BaseRequests = require('./baseRequests');
-const common = require('./common');
-const request = require('../request');
-const buildUrl = common.buildUrl;
-const throwOrJson = common.throwOrJson;
-
-const JwsSigner = require('../jws').signer;
-
-const ResponseType = Object.freeze({
-  Mojaloop: Symbol('mojaloop'),
-  Simple: Symbol('simple'),
-  Stream: Symbol('stream')
-});
-
 
 
 /**
@@ -47,7 +27,7 @@ class ThirdpartyRequests extends BaseRequests {
      */
     // TODO: authorizationbody jsdoc...
     async postAuthorizations(transactionRequestId, authorizationBody, destParticipantId) {
-        return this._post(`authorizations/${transactionRequestId}`, 'authorizations', authorizationResponse, destParticipantId);
+        return this._post(`authorizations/${transactionRequestId}`, 'authorizations', authorizationBody, destParticipantId);
     }
 
 }

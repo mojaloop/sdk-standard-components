@@ -4,18 +4,15 @@ const util = require('util');
 const http = require('http');
 const https = require('https');
 
-const common = require('./common');
+const {
+    bodyStringifier,
+    buildUrl,
+    throwOrJson,
+    ResponseType,
+} = require('./common');
+
 const request = require('../request');
-const buildUrl = common.buildUrl;
-const throwOrJson = common.throwOrJson;
-
 const JwsSigner = require('../jws').signer;
-
-const ResponseType = Object.freeze({
-    Mojaloop: Symbol('mojaloop'),
-    Simple: Symbol('simple'),
-    Stream: Symbol('stream')
-});
 
 /**
  *
@@ -123,7 +120,7 @@ class BaseRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
-        reqOpts.body = common.bodyStringifier(reqOpts.body);
+        reqOpts.body = bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
         return request({ ...reqOpts, agent: this.agent })
@@ -155,7 +152,7 @@ class BaseRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
-        reqOpts.body = common.bodyStringifier(reqOpts.body);
+        reqOpts.body = bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
         return request({ ...reqOpts, agent: this.agent })
@@ -204,18 +201,18 @@ class BaseRequests {
     /**
      * Utility function for picking up the right endpoint based on the resourceType
      */
-    pickPeerEndpoint(resourceType) {
+    _pickPeerEndpoint(resourceType) {
         // TODO: refactor to remove the need for all the damn question marks?
         switch (resourceType) {
             case 'parties': return this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
             case 'participants': return this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
             case 'quotes': return this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint;
             case 'bulkQuotes': return this.bulkQuotesEndpoint ? this.bulkQuotesEndpoint : this.peerEndpoint;
-            case 'transfers': rerurn this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
+            case 'transfers': return this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
             case 'bulkTransfers': return this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
             case 'transactionRequests': return this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
             case 'authorizations': return this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
-            case 'thirdparty': return this.thirdpartyRequestsEndpoint ?
+            case 'thirdparty': return this.thirdpartyRequestsEndpoint ? this.thirdpartyRequestsEndpoint : this.peerEndpoint;
             default:
                 return this.peerEndpoint;
         }

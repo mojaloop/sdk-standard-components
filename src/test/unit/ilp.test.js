@@ -21,7 +21,11 @@ describe('ILP', () => {
     let ilp;
 
     beforeEach(() => {
-        ilp = new Ilp({secret: 'test'});
+        ilp = new Ilp({
+            secret: 'test',
+            // Disable logging for test
+            logger: { log: () => { } }
+        });
     });
 
     test('Should generate ILP components for a quote response given a quote request and partial response', () => {
@@ -37,7 +41,8 @@ describe('ILP', () => {
     });
 
 
-    test('ILP packet should contain a valid transaction object', () => {
+    // TODO: this test has no assertions
+    test.skip('ILP packet should contain a valid transaction object', () => {
         const {ilpPacket} = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
         const binaryPacket = Buffer.from(ilpPacket, 'base64');
@@ -51,19 +56,19 @@ describe('ILP', () => {
 
 
     test('ILP fulfilment should match condition', () => {
-        const {fulfilment, ilpPacket, condition} = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+        const {fulfilment, condition} = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
-        const binaryPacket = Buffer.from(ilpPacket, 'base64');
-        const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
-        console.log(`Decoded ILP packet: ${util.inspect(jsonPacket)}`);
+        // const binaryPacket = Buffer.from(ilpPacket, 'base64');
+        // const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
+        // console.log(`Decoded ILP packet: ${util.inspect(jsonPacket)}`);
 
-        const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
+        // const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
 
-        console.log(`Decoded ILP packet data element: ${util.inspect(dataElement)}`);
+        // console.log(`Decoded ILP packet data element: ${util.inspect(dataElement)}`);
 
         const valid = ilp.validateFulfil(fulfilment, condition);
 
-        console.log(`Valudate fulfilment returned ${valid}`);
+        // console.log(`Valudate fulfilment returned ${valid}`);
 
         expect(valid).toBeTruthy();
     });
@@ -75,7 +80,11 @@ describe('Ilp Packet Decoding and Validation', () => {
     const transferRequest = require('./data/transferRequest');
 
     beforeEach(() => {
-        ilp = new Ilp({secret: 'test'});
+        ilp = new Ilp({
+            secret: 'test',
+            // Disable logging for test
+            logger: { log: () => {} }
+        });
         ilpCombo = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
         transferRequest.ilpPacket = ilpCombo.ilpPacket;
         transferRequest.condition = ilpCombo.condition;
@@ -83,7 +92,7 @@ describe('Ilp Packet Decoding and Validation', () => {
 
     test('Should decode the IlpPacket', () => {
         const decodedIlp = ilp.decodeIlpPacket(ilpCombo.ilpPacket);
-        
+
         expect(decodedIlp).toBeTruthy();
         expect(decodedIlp).toHaveProperty('amount');
         expect(decodedIlp).toHaveProperty('account');
@@ -92,7 +101,7 @@ describe('Ilp Packet Decoding and Validation', () => {
 
     test('Should generate transaction object from an Ilp packet', () => {
         const transactionObject = ilp.getTransactionObject(ilpCombo.ilpPacket);
-        
+
         expect(transactionObject).toBeTruthy();
         expect(transactionObject).toHaveProperty('transactionId');
         expect(transactionObject).toHaveProperty('quoteId');
@@ -104,14 +113,14 @@ describe('Ilp Packet Decoding and Validation', () => {
 
     test('Should validate the transfer request against the decoded Ilp packet', () => {
         const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
-        
+
         expect(validation).toBe(true);
     });
 
     test('Should fail the validation if the data in transfer request is changed', () => {
         transferRequest.amount.amount = '200';
         const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
-        
+
         expect(validation).toBe(false);
     });
 

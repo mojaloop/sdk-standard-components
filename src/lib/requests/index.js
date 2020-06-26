@@ -17,4 +17,4 @@ const ThirdpartyRequests = require('./thirdpartyRequests.js');
 module.exports = {
     MojaloopRequests,
     ThirdpartyRequests,
-}
+};

@@ -8,7 +8,7 @@
  *       Murthy Kakarlamudi - murthy@modusbox.com                             *
  **************************************************************************/
 
-const Common = require('../../../../lib/mojaloop-requests/common');
+const Common = require('../../../../lib/requests/common');
 
 describe('Common', () => {
 

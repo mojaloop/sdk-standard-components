@@ -84,7 +84,14 @@ const bodyStringifier = (obj) => {
     if (typeof obj === 'number')
         return obj.toString();
     return JSON.stringify(obj);
-}
+};
+
+const ResponseType = Object.freeze({
+    Mojaloop: Symbol('mojaloop'),
+    Simple: Symbol('simple'),
+    Stream: Symbol('stream')
+});
+
 
 
 module.exports = {
@@ -92,4 +99,5 @@ module.exports = {
     HTTPResponseError,
     buildUrl,
     throwOrJson,
+    ResponseType,
 };

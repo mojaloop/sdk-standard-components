@@ -26,7 +26,9 @@ describe('JWS', () => {
 
     beforeEach(() => {
         signer = new Signer({
-            signingKey: signingKey
+            signingKey: signingKey,
+            // Disable logs for tests
+            logger: { log: () => { } }
         });
         body = { test: 123 };
         // An request-promise-native style request uses the `.uri` and `.body` properties instead of the `.url` and `.data` properties.
@@ -63,7 +65,9 @@ describe('JWS', () => {
             const validator = new Validator({
                 validationKeys: {
                     'mojaloop-sdk': validationKey
-                }
+                },
+                // Disable logs for tests
+                logger: { log: () => { } }
             });
             validator.validate(request);
         };
@@ -85,7 +89,9 @@ describe('JWS', () => {
             const validator = new Validator({
                 validationKeys: {
                     'mojaloop-sdk': validationKey
-                }
+                },
+                // Disable logs for tests
+                logger: { log: () => { } }
             });
             validator.validate(request);
         };
