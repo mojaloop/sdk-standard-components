@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node --runInBand test/unit"
+    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node --runInBand test/unit",
+    "test:coverage": "jest --coverage --coverageThreshold='{}'",
+    "test:coverage-check": "jest --coverage"
   },
   "author": "James Bush, ModusBox Inc.",
   "contributors": [
