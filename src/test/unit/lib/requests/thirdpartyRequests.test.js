@@ -29,7 +29,7 @@ const fs = require('fs');
 jest.mock('http');
 const http = require('http');
 
-const ThirdpartyRequests = require('../../../../lib/requests/thirdPartyRequests.js');
+const ThirdpartyRequests = require('../../../../lib/requests/thirdpartyRequests');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
