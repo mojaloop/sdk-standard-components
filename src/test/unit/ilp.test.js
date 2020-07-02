@@ -16,6 +16,7 @@ const IlpPacket = require('ilp-packet');
 
 const quoteRequest = require('./data/quoteRequest');
 const partialResponse = require('./data/partialResponse');
+const mockLogger = require('../__mocks__/mockLogger');
 
 describe('ILP', () => {
     let ilp;
@@ -23,8 +24,7 @@ describe('ILP', () => {
     beforeEach(() => {
         ilp = new Ilp({
             secret: 'test',
-            // Disable logging for test
-            logger: { log: () => { } }
+            logger: mockLogger({ app: 'ilp-test' })
         });
     });
 
@@ -40,36 +40,39 @@ describe('ILP', () => {
         expect(condition).toBeTruthy();
     });
 
+    test('deserializes the ILP packet into a valid transaction object', () => {
+        // Arrange
+        const { ilpPacket } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+        const expectedDataElement = {
+            // Not all elements from quoteRequest end up in the ilp packet
+            amount: {
+                amount: '500',
+                currency: 'USD'
+            },
+            payee: quoteRequest.payee,
+            payer: quoteRequest.payer,
+            transactionType: quoteRequest.transactionType,
+            quoteId: quoteRequest.quoteId,
+            transactionId: quoteRequest.transactionId,
+        };
 
-    // TODO: this test has no assertions
-    test.skip('ILP packet should contain a valid transaction object', () => {
-        const {ilpPacket} = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
-
+        // Act
         const binaryPacket = Buffer.from(ilpPacket, 'base64');
         const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
-        console.log(`Decoded ILP packet: ${util.inspect(jsonPacket)}`);
-
         const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
 
-        console.log(`Decoded ILP packet data element: ${util.inspect(dataElement)}`);
+        // Assert
+        expect(dataElement).toStrictEqual(expectedDataElement);
     });
 
-
     test('ILP fulfilment should match condition', () => {
-        const {fulfilment, condition} = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+        // Arrange
+        const { condition, fulfilment } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
-        // const binaryPacket = Buffer.from(ilpPacket, 'base64');
-        // const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
-        // console.log(`Decoded ILP packet: ${util.inspect(jsonPacket)}`);
-
-        // const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
-
-        // console.log(`Decoded ILP packet data element: ${util.inspect(dataElement)}`);
-
+        // Act
         const valid = ilp.validateFulfil(fulfilment, condition);
 
-        // console.log(`Valudate fulfilment returned ${valid}`);
-
+        // Assert
         expect(valid).toBeTruthy();
     });
 });
@@ -82,8 +85,7 @@ describe('Ilp Packet Decoding and Validation', () => {
     beforeEach(() => {
         ilp = new Ilp({
             secret: 'test',
-            // Disable logging for test
-            logger: { log: () => {} }
+            logger: mockLogger({ app: 'ilp-packet-test' })
         });
         ilpCombo = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
         transferRequest.ilpPacket = ilpCombo.ilpPacket;

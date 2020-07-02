@@ -13,6 +13,7 @@ const fs = require('fs');
 // const { MojaloopRequests: mr } = require('../../../../lib/requests/mojaloopRequests.js');
 const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -26,8 +27,7 @@ describe('request serialization', () => {
 
         // Everything is false by default
         const conf = {
-            // Disable logging in tests
-            logger: { log: () => { } },
+            logger: mockLogger({ app: 'request-errors-test' }),
             tls: {
                 outbound: {
                     mutualTLS: {

@@ -11,12 +11,9 @@
 jest.mock('http');
 const http = require('http');
 const WSO2Auth = require('../../lib/WSO2Auth');
+const mockLogger = require('../__mocks__/mockLogger');
 
 describe('WSO2Auth', () => {
-
-    const loggerStub = {
-        log() {}
-    };
 
     async function testTokenRefresh(userRefreshSeconds, tokenExpiresSeconds) {
         const TOKEN = 'new-token';
@@ -24,7 +21,7 @@ describe('WSO2Auth', () => {
             ? tokenExpiresSeconds : Infinity;
         const actualRefreshMs = Math.min(userRefreshSeconds, tokenExpirySeconds) * 1000;
         const opts = {
-            logger: loggerStub,
+            logger: mockLogger({ app: 'wso2-auth' }),
             clientKey: 'client-key',
             clientSecret: 'client-secret',
             tokenEndpoint: 'http://token-endpoint.com/v2',
@@ -66,7 +63,7 @@ describe('WSO2Auth', () => {
     test('should return static token when static token was provided', async () => {
         const TOKEN = 'abc123';
         const auth = new WSO2Auth({
-            logger: loggerStub,
+            logger: mockLogger({ app: 'wso2-auth' }),
             staticToken: TOKEN,
             refreshSeconds: 2,
         });
@@ -79,7 +76,7 @@ describe('WSO2Auth', () => {
     test('should return new token when token API info was provided', async () => {
         const TOKEN = 'new-token';
         const opts = {
-            logger: loggerStub,
+            logger: mockLogger({ app: 'wso2-auth' }),
             clientKey: 'client-key',
             clientSecret: 'client-secret',
             tokenEndpoint: 'http://token-endpoint.com/v2',

@@ -92,12 +92,32 @@ const ResponseType = Object.freeze({
     Stream: Symbol('stream')
 });
 
+/**
+ * @function formatEndpointOrDefault
+ * @description Format the endpoint based on the config's endpoint + transport scheme. Defaults to the default value if either
+ *   endpoint or transportScheme is undefined or null
+ * @param {string?} endpoint
+ * @param {string?} transportScheme
+ * @param {string} defaultEndpoint
+ * @returns {string} The resolved formatted endpoint, or defaultEndpoint
+ */
+const formatEndpointOrDefault = (endpoint, transportScheme, defaultEndpoint) => {
+    if (!endpoint || !transportScheme) {
+        if (!defaultEndpoint) {
+            throw new Error('defaultEndpoint must be set when endpoint or transportScheme are null or undefined');
+        }
+        return defaultEndpoint;
+    }
+
+    return `${transportScheme}://${endpoint}`;
+}
 
 
 module.exports = {
     bodyStringifier,
-    HTTPResponseError,
     buildUrl,
-    throwOrJson,
+    formatEndpointOrDefault,
+    HTTPResponseError,
     ResponseType,
+    throwOrJson,
 };

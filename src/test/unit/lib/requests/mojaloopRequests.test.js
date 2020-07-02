@@ -14,6 +14,7 @@ const http = require('http');
 
 const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -24,8 +25,7 @@ describe('PUT /parties', () => {
 
         // Everything is false by default
         const conf = {
-            // Disable logging in tests
-            logger: { log: () => { } },
+            logger: mockLogger({ app: 'put-parties-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -100,7 +100,7 @@ describe('PUT /quotes', () => {
         // Everything is false by default
         const conf = {
             // Disable logging in tests
-            logger: { log: () => { } },
+            logger: mockLogger({ app: 'put-quotes-test' }),
             tls: {
                 outbound: {
                     mutualTLS: {

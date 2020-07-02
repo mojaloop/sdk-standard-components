@@ -15,6 +15,7 @@ const nock = require('nock');
 
 const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mockLogger = require('../../../__mocks__/mockLogger');
 
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
@@ -39,8 +40,7 @@ describe('request', () => {
 
         // Everything is false by default
         const conf = {
-            // Disable logging in tests
-            logger: { log: () => { } },
+            logger: mockLogger({ app: 'request-test' }),
             peerEndpoint: request.host,
             tls: {
                 outbound: {

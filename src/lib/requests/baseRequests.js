@@ -7,8 +7,9 @@ const https = require('https');
 const {
     bodyStringifier,
     buildUrl,
-    throwOrJson,
+    formatEndpointOrDefault,
     ResponseType,
+    throwOrJson,
 } = require('./common');
 
 const request = require('../request');
@@ -72,15 +73,18 @@ class BaseRequests {
             signingKey: config.jwsSigningKey
         });
 
-        // Switch or peer DFSP endpoint
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
-        this.alsEndpoint = config.alsEndpoint ? `${this.transportScheme}://${config.alsEndpoint}` : null;
-        this.quotesEndpoint = config.quotesEndpoint ? `${this.transportScheme}://${config.quotesEndpoint}` : null;
-        this.bulkQuotesEndpoint = config.bulkQuotesEndpoint ? `${this.transportScheme}://${config.bulkQuotesEndpoint}` : null;
-        this.transfersEndpoint = config.transfersEndpoint ? `${this.transportScheme}://${config.transfersEndpoint}` : null;
-        this.bulkTransfersEndpoint = config.bulkTransfersEndpoint ? `${this.transportScheme}://${config.bulkTransfersEndpoint}` : null;
-        this.transactionRequestsEndpoint = config.transactionRequestsEndpoint ? `${this.transportScheme}://${config.transactionRequestsEndpoint}` : null;
-        this.thirdpartyEndpoint = config.thirdpartyEndpoint ? `${this.transportScheme}://${config.thirdpartyEndpoint}` : null;
+        this.resourceEndpoints = {
+            parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+            participants: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+            quotes: formatEndpointOrDefault(config.quotesEndpoint, this.transportScheme, this.peerEndpoint),
+            bulkQuotes: formatEndpointOrDefault(config.bulkQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+            transfers: formatEndpointOrDefault(config.transfersEndpoint, this.transportScheme, this.peerEndpoint),
+            bulkTransfers: formatEndpointOrDefault(config.bulkTransfersEndpoint, this.transportScheme, this.peerEndpoint),
+            transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+        };
 
         this.wso2Auth = config.wso2Auth;
     }
@@ -255,25 +259,11 @@ class BaseRequests {
      * @function _pickPeerEndpoint
      * @description Utility function for picking up the right endpoint based on the resourceType
      * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
-     * @returns {string} The endpoint fot the given `resourceType`
+     * @returns {string} The endpoint fot the given `resourceType`. If an endpoint can't be found, defaults to the peerEndpoint
      */
     _pickPeerEndpoint(resourceType) {
-        // TODO: refactor to remove the need for all the damn question marks?
-        switch (resourceType) {
-            case 'parties': return this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
-            case 'participants': return this.alsEndpoint ? this.alsEndpoint : this.peerEndpoint;
-            case 'quotes': return this.quotesEndpoint ? this.quotesEndpoint : this.peerEndpoint;
-            case 'bulkQuotes': return this.bulkQuotesEndpoint ? this.bulkQuotesEndpoint : this.peerEndpoint;
-            case 'transfers': return this.transfersEndpoint ? this.transfersEndpoint : this.peerEndpoint;
-            case 'bulkTransfers': return this.bulkTransfersEndpoint ? this.bulkTransfersEndpoint : this.peerEndpoint;
-            case 'transactionRequests': return this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
-            case 'authorizations': return this.transactionRequestsEndpoint ? this.transactionRequestsEndpoint : this.peerEndpoint;
-            case 'thirdparty': return this.thirdpartyRequestsEndpoint ? this.thirdpartyRequestsEndpoint : this.peerEndpoint;
-            default:
-                return this.peerEndpoint;
-        }
+        return this.resourceEndpoints[resourceType] || this.peerEndpoint;
     }
-
 }
 
 

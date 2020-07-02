@@ -27,22 +27,20 @@
 
 const fs = require('fs');
 jest.mock('http');
-jest.mock('stream');
 const http = require('http');
 
 const ThirdpartyRequests = require('../../../../lib/requests/thirdPartyRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
 
-describe.skip('ThirdpartyRequests', () => {
+describe('ThirdpartyRequests', () => {
     describe('postAuthorizations', () => {
-        const wso2Auth = new WSO2Auth({ logger: { log: () => { } }});
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-authorizations-test'})});
         const config = {
-            // Disable logging in tests
-            // logger: { log: () => { } },
-            logger: console,
+            logger: mockLogger({ app: 'postAuthorizations-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -66,7 +64,6 @@ describe.skip('ThirdpartyRequests', () => {
                 },
             }));
             const tpr = new ThirdpartyRequests(config);
-
             const authBody = {
                 transactionRequestId: '123',
                 authenticationType: 'U2F',
@@ -82,11 +79,9 @@ describe.skip('ThirdpartyRequests', () => {
             await tpr.postAuthorizations(authBody, 'pispa');
 
             // Assert
-            // TODO: get the instance that we use somewhere.. and check the mocks
-            console.log('result', http.__request.mock.calls[0]);
-            // expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('pispa');
-            // expect(http.__request.mock.calls[0][0].path).toBe('/authorizations');
-            //         reqOpts.headers['content-length'] = Buffer.byteLength(opts.body);
+            expect(http.__write.mock.calls[0][0]).toStrictEqual(JSON.stringify(authBody));
+            expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('pispa');
+            expect(http.__request.mock.calls[0][0].path).toBe('/authorizations');
         });
     });
 });
