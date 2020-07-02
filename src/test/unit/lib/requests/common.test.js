@@ -59,55 +59,55 @@ describe('Common', () => {
         it('returns the default when endpoint is null', () => {
             // Arrange
             // Act
-            const result = Common.formatEndpointOrDefault(null, 'http', 'http://example.com')
+            const result = Common.formatEndpointOrDefault(null, 'http', 'http://example.com');
 
             // Assert
-            expect(result).toBe('http://example.com')
-        })
+            expect(result).toBe('http://example.com');
+        });
 
         it('returns the default when endpoint is undefined', () => {
             // Arrange
             // Act
-            const result = Common.formatEndpointOrDefault(undefined, 'http', 'http://example.com')
+            const result = Common.formatEndpointOrDefault(undefined, 'http', 'http://example.com');
 
             // Assert
-            expect(result).toBe('http://example.com')
-        })
+            expect(result).toBe('http://example.com');
+        });
 
         it('returns the default when transportScheme is null', () => {
             // Arrange
             // Act
-            const result = Common.formatEndpointOrDefault('als.com', null, 'http://example.com')
+            const result = Common.formatEndpointOrDefault('als.com', null, 'http://example.com');
 
             // Assert
-            expect(result).toBe('http://example.com')
-        })
+            expect(result).toBe('http://example.com');
+        });
 
         it('returns the default when transportScheme is undefined', () => {
             // Arrange
             // Act
-            const result = Common.formatEndpointOrDefault('als.com', undefined, 'http://example.com')
+            const result = Common.formatEndpointOrDefault('als.com', undefined, 'http://example.com');
 
             // Assert
-            expect(result).toBe('http://example.com')
-        })
+            expect(result).toBe('http://example.com');
+        });
 
         it('returns the formatted endpoint', () => {
             // Arrange
             // Act
-            const result = Common.formatEndpointOrDefault('als.com', 'https', 'http://example.com')
+            const result = Common.formatEndpointOrDefault('als.com', 'https', 'http://example.com');
 
             // Assert
-            expect(result).toBe('https://als.com')
-        })
+            expect(result).toBe('https://als.com');
+        });
 
         it('throws an error when no endpoint and no default endpoint are set', () => {
             // Arrange
             // Act
-            const action = () => Common.formatEndpointOrDefault('als.com')
+            const action = () => Common.formatEndpointOrDefault('als.com');
 
             // Assert
-            expect(action).toThrowError('defaultEndpoint must be set')
-        })
-    })
+            expect(action).toThrowError('defaultEndpoint must be set');
+        });
+    });
 });

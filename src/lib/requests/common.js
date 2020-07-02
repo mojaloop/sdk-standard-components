@@ -110,7 +110,7 @@ const formatEndpointOrDefault = (endpoint, transportScheme, defaultEndpoint) => 
     }
 
     return `${transportScheme}://${endpoint}`;
-}
+};
 
 
 module.exports = {

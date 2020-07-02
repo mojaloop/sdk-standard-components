@@ -10,7 +10,6 @@
 
 const fs = require('fs');
 
-// const { MojaloopRequests: mr } = require('../../../../lib/requests/mojaloopRequests.js');
 const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');

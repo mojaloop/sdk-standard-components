@@ -10,7 +10,6 @@
 
 'use strict';
 
-const util = require('util');
 const Ilp = require('../../lib/ilp');
 const IlpPacket = require('ilp-packet');
 
