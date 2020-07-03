@@ -13,8 +13,9 @@ const querystring = require('querystring');
 const crypto = require('crypto');
 const nock = require('nock');
 
-const mr = require('../../../../lib/mojaloop-requests/mojaloopRequests.js');
+const mr = require('../../../../lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mockLogger = require('../../../__mocks__/mockLogger');
 
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
@@ -39,7 +40,7 @@ describe('request', () => {
 
         // Everything is false by default
         const conf = {
-            logger: console,
+            logger: mockLogger({ app: 'request-test' }),
             peerEndpoint: request.host,
             tls: {
                 outbound: {

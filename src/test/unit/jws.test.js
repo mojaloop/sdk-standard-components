@@ -14,6 +14,7 @@ const fs = require('fs');
 const JwsTest = require('../../lib/jws');
 const Signer = JwsTest.signer;
 const Validator = JwsTest.validator;
+const mockLogger = require('../__mocks__/mockLogger');
 
 const signingKey = fs.readFileSync(__dirname + '/data/jwsSigningKey.pem');
 const validationKey = fs.readFileSync(__dirname + '/data/jwsValidationKey.pem');
@@ -26,7 +27,8 @@ describe('JWS', () => {
 
     beforeEach(() => {
         signer = new Signer({
-            signingKey: signingKey
+            signingKey: signingKey,
+            logger: mockLogger({ app: 'jws-test' })
         });
         body = { test: 123 };
         // An request-promise-native style request uses the `.uri` and `.body` properties instead of the `.url` and `.data` properties.
@@ -63,7 +65,8 @@ describe('JWS', () => {
             const validator = new Validator({
                 validationKeys: {
                     'mojaloop-sdk': validationKey
-                }
+                },
+                logger: mockLogger({ app: 'validate-test' })
             });
             validator.validate(request);
         };
@@ -85,7 +88,8 @@ describe('JWS', () => {
             const validator = new Validator({
                 validationKeys: {
                     'mojaloop-sdk': validationKey
-                }
+                },
+                logger: mockLogger({ app: 'validate-test' })
             });
             validator.validate(request);
         };

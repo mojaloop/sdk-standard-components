@@ -11,6 +11,10 @@
 'use strict';
 
 const MojaloopRequests = require('./mojaloopRequests.js');
+const ThirdpartyRequests = require('./thirdpartyRequests.js');
 
 
-module.exports = MojaloopRequests;
+module.exports = {
+    MojaloopRequests,
+    ThirdpartyRequests,
+};

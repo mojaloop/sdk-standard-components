@@ -8,7 +8,7 @@
  *       Murthy Kakarlamudi - murthy@modusbox.com                             *
  **************************************************************************/
 
-const Common = require('../../../../lib/mojaloop-requests/common');
+const Common = require('../../../../lib/requests/common');
 
 describe('Common', () => {
 
@@ -53,5 +53,61 @@ describe('Common', () => {
         } catch (err) {
             expect(err.message).toBe('Request returned non-success status code 100');
         }
+    });
+
+    describe('formatEndpointOrDefault', () => {
+        it('returns the default when endpoint is null', () => {
+            // Arrange
+            // Act
+            const result = Common.formatEndpointOrDefault(null, 'http', 'http://example.com');
+
+            // Assert
+            expect(result).toBe('http://example.com');
+        });
+
+        it('returns the default when endpoint is undefined', () => {
+            // Arrange
+            // Act
+            const result = Common.formatEndpointOrDefault(undefined, 'http', 'http://example.com');
+
+            // Assert
+            expect(result).toBe('http://example.com');
+        });
+
+        it('returns the default when transportScheme is null', () => {
+            // Arrange
+            // Act
+            const result = Common.formatEndpointOrDefault('als.com', null, 'http://example.com');
+
+            // Assert
+            expect(result).toBe('http://example.com');
+        });
+
+        it('returns the default when transportScheme is undefined', () => {
+            // Arrange
+            // Act
+            const result = Common.formatEndpointOrDefault('als.com', undefined, 'http://example.com');
+
+            // Assert
+            expect(result).toBe('http://example.com');
+        });
+
+        it('returns the formatted endpoint', () => {
+            // Arrange
+            // Act
+            const result = Common.formatEndpointOrDefault('als.com', 'https', 'http://example.com');
+
+            // Assert
+            expect(result).toBe('https://als.com');
+        });
+
+        it('throws an error when no endpoint and no default endpoint are set', () => {
+            // Arrange
+            // Act
+            const action = () => Common.formatEndpointOrDefault('als.com');
+
+            // Assert
+            expect(action).toThrowError('defaultEndpoint must be set');
+        });
     });
 });
