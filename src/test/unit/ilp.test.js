@@ -66,13 +66,19 @@ describe('ILP', () => {
 
     test('ILP fulfilment should match condition', () => {
         // Arrange
-        const { condition, fulfilment } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+        const { fulfilment, ilpPacket, condition } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
         // Act
+        // Check the ilpPacket here to verify that the 'original source of truth' is valid
+        const binaryPacket = Buffer.from(ilpPacket, 'base64');
+        const jsonPacket = IlpPacket.deserializeIlpPacket(binaryPacket);
+        const dataElement = JSON.parse(Buffer.from(jsonPacket.data.data.toString('utf8'), 'base64').toString('utf8'));
         const valid = ilp.validateFulfil(fulfilment, condition);
 
         // Assert
         expect(valid).toBeTruthy();
+        // We just test that the JSON parsed correctly here - we don't test the format here
+        expect(dataElement).toBeDefined()
     });
 });
 
