@@ -78,7 +78,7 @@ describe('ILP', () => {
         // Assert
         expect(valid).toBeTruthy();
         // We just test that the JSON parsed correctly here - we don't test the format here
-        expect(dataElement).toBeDefined()
+        expect(dataElement).toBeDefined();
     });
 });
 
