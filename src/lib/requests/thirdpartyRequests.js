@@ -26,29 +26,29 @@ class ThirdpartyRequests extends BaseRequests {
     }
 
     /**
-     * @function getThirdpartyRequestTransaction
+     * @function getThirdpartyRequestsTransactions
      * @description
-     *   Executes a `GET /thirdpartyRequest/transactions/{transactionRequestId}` request for the specified `transactionRequestId`
+     *   Executes a `GET /thirdpartyRequests/transactions/{transactionRequestId}` request for the specified `transactionRequestId`
      * @param {string} transactionRequestId The `id` of the transactionRequest thirdpartyRequest
      * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
      * @returns {Promise<object>} JSON response body if one was received
      */
-    async getThirdpartyRequestTransaction(transactionRequestId, destParticipantId) {
-        const url = `thirdpartyRequest/transactions/${transactionRequestId}`;
+    async getThirdpartyRequestsTransactions(transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}`;
         return this._get(url, 'thirdparty', destParticipantId);
     }
 
     /**
-     * @function postThirdpartyRequestTransaction
+     * @function postThirdpartyRequestsTransactions
      * @description
      *   Executes a `POST /thirdpartyRequest/transactions` request
-     * @param {Object} thirdpartyRequestTransactionBody The thirdpartyRequestTransactionBody
+     * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
      * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
      * @returns {Promise<object>} JSON response body if one was received
      */
-    async postThirdpartyRequestTransaction(thirdpartyRequestTransactionBody, destParticipantId) {
-        const url = 'thirdpartyRequest/transactions';
-        return this._post(url, 'thirdparty', thirdpartyRequestTransactionBody, destParticipantId);
+    async postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, destParticipantId) {
+        const url = 'thirdpartyRequests/transactions';
+        return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
 }
 

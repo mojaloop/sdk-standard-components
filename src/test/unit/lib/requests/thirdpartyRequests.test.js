@@ -85,10 +85,10 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
-    describe('getThirdpartyRequestTransaction', () => {
+    describe('getThirdpartyRequestsTransactions', () => {
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
         const config = {
-            logger: mockLogger({ app: 'getThirdpartyRequestTransaction-test' }),
+            logger: mockLogger({ app: 'getthirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -103,7 +103,7 @@ describe('ThirdpartyRequests', () => {
             wso2Auth,
         };
 
-        it('executes a `GET /thirdpartyRequest/transactions/{ID}` request', async () => {
+        it('executes a `GET /thirdpartyRequests/transactions/{ID}` request', async () => {
             // Arrange
             http.__request.mockClear();
             http.__request = jest.fn(() => ({
@@ -116,19 +116,25 @@ describe('ThirdpartyRequests', () => {
             const transactionRequestId = 1;
 
             // Act
-            await tpr.getThirdpartyRequestTransaction(transactionRequestId, 'dfspa');
+            await tpr.getThirdpartyRequestsTransactions(transactionRequestId, 'dfspa');
 
             // Assert
-            expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('dfspa');
-            expect(http.__request.mock.calls[0][0].path).toBe('/thirdpartyRequest/transactions/1');
+            expect(http.__request).toHaveBeenCalledWith(
+              expect.objectContaining({
+                "path": "/thirdpartyRequests/transactions/1",
+                "headers": expect.objectContaining({
+                    "fspiop-destination": "dfspa"
+                })
+              })
+            );
         });
     });
 
-    describe('postThirdpartyRequestTransaction', () => {
-        const transferRequest = require('../../data/thirdpartyRequestTransaction.json');
+    describe('postThirdpartyRequestsTransactions', () => {
+        const transferRequest = require('../../data/thirdpartyRequestsTransaction.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
         const config = {
-            logger: mockLogger({ app: 'getThirdpartyRequestTransaction-test' }),
+            logger: mockLogger({ app: 'getThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -142,8 +148,8 @@ describe('ThirdpartyRequests', () => {
             jwsSigningKey: jwsSigningKey,
             wso2Auth,
         };
-        
-        it('executes a `POST /thirdpartyRequest/transactions` request', async () => {
+
+        it('executes a `POST /thirdpartyRequests/transactions` request', async () => {
             // Arrange
             http.__request = jest.fn(() => ({
                 statusCode: 202,
@@ -155,12 +161,18 @@ describe('ThirdpartyRequests', () => {
             const requestBody = transferRequest;
 
             // Act
-            await tpr.postThirdpartyRequestTransaction(requestBody, 'dfspa');
+            await tpr.postThirdpartyRequestsTransactions(requestBody, 'dfspa');
 
             // Assert
-            expect(http.__write.mock.calls[0][0]).toStrictEqual(JSON.stringify(requestBody));
-            expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('dfspa');
-            expect(http.__request.mock.calls[0][0].path).toBe('/thirdpartyRequest/transactions');
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+              expect.objectContaining({
+                "path": "/thirdpartyRequests/transactions",
+                "headers": expect.objectContaining({
+                    "fspiop-destination": "dfspa"
+                })
+              })
+            );
         });
     });
 });
