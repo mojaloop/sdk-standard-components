@@ -84,4 +84,83 @@ describe('ThirdpartyRequests', () => {
             expect(http.__request.mock.calls[0][0].path).toBe('/authorizations');
         });
     });
+
+    describe('getThirdpartyRequestTransaction', () => {
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
+        const config = {
+            logger: mockLogger({ app: 'getThirdpartyRequestTransaction-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `GET /thirdpartyRequest/transactions/{ID}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.getThirdpartyRequestTransaction(transactionRequestId, 'dfspa');
+
+            // Assert
+            expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('dfspa');
+            expect(http.__request.mock.calls[0][0].path).toBe('/thirdpartyRequest/transactions/1');
+        });
+    });
+
+    describe('postThirdpartyRequestTransaction', () => {
+        const transferRequest = require('../../data/thirdpartyRequestTransaction.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
+        const config = {
+            logger: mockLogger({ app: 'getThirdpartyRequestTransaction-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+        
+        it('executes a `POST /thirdpartyRequest/transactions` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = transferRequest;
+
+            // Act
+            await tpr.postThirdpartyRequestTransaction(requestBody, 'dfspa');
+
+            // Assert
+            expect(http.__write.mock.calls[0][0]).toStrictEqual(JSON.stringify(requestBody));
+            expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('dfspa');
+            expect(http.__request.mock.calls[0][0].path).toBe('/thirdpartyRequest/transactions');
+        });
+    });
 });
