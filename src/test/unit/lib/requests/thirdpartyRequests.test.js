@@ -120,12 +120,12 @@ describe('ThirdpartyRequests', () => {
 
             // Assert
             expect(http.__request).toHaveBeenCalledWith(
-              expect.objectContaining({
-                "path": "/thirdpartyRequests/transactions/1",
-                "headers": expect.objectContaining({
-                    "fspiop-destination": "dfspa"
+                expect.objectContaining({
+                    'path': '/thirdpartyRequests/transactions/1',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
                 })
-              })
             );
         });
     });
@@ -166,12 +166,12 @@ describe('ThirdpartyRequests', () => {
             // Assert
             expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
             expect(http.__request).toHaveBeenCalledWith(
-              expect.objectContaining({
-                "path": "/thirdpartyRequests/transactions",
-                "headers": expect.objectContaining({
-                    "fspiop-destination": "dfspa"
+                expect.objectContaining({
+                    'path': '/thirdpartyRequests/transactions',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
                 })
-              })
             );
         });
     });
