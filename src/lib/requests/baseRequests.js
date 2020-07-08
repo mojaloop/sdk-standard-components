@@ -105,9 +105,9 @@ class BaseRequests {
     async _get(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'GET',
-            uri: buildUrl(this.pickPeerEndpoint(resourceType), url),
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
-                ...this.buildHeaders('GET', resourceType, dest),
+                ...this._buildHeaders('GET', resourceType, dest),
                 ...headers,
             },
             qs: query,

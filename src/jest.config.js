@@ -5,6 +5,7 @@ module.exports = {
     globals: {
         __ROOT__: path.resolve(__dirname)
     },
+    clearMocks: true,
     collectCoverage: true,
     collectCoverageFrom: ['./lib/**/*.js'],
     coverageReporters: ['json', 'lcov', 'text'],
