@@ -142,7 +142,7 @@ describe('Logger', () => {
         }));
     });
 
-    test.only('child loggers inherit parent opts', () => {
+    test('child loggers inherit parent opts', () => {
         const l = new Logger();
         const k = l.push({});
         expect(l.opts).toEqual(k.opts);
