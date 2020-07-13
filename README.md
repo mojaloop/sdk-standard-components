@@ -23,3 +23,21 @@ For an example usage of these components please see the Mojaloop SDK Scheme Adap
 
 For information on the background and context of this project please see the presentation [here](docs/Mojaloop%20-%20Modusbox%20Onboarding%20functionality.pdf)
 
+
+## Typescript Types
+
+To aid consumers of this library, we are starting to work on adding typescript declarations for the `sdk-standard-components`. This is an incremental process, so pleas be patient as we gradually add typings to each module.
+
+Types currently live in `./src/index.d.ts`
+
+**Completed Modules**
+- `ThirdpartyRequests`
+
+**TODO**
+- `Errors`
+- `Ilp`
+- `Jws`
+- `Logger`
+- `MojaloopRequests`
+- `request`
+- `WSO2Auth`

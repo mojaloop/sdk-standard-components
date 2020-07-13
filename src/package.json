@@ -3,12 +3,14 @@
   "version": "10.6.1",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --ci --collectCoverage=false --reporters=default --reporters=jest-junit --env=node --runInBand test/unit",
     "test:coverage": "jest --coverage --coverageThreshold='{}'",
-    "test:coverage-check": "jest --coverage"
+    "test:coverage-check": "jest --coverage",
+    "build:defs": "tsc"
   },
   "author": "James Bush, ModusBox Inc.",
   "contributors": [
@@ -35,6 +37,7 @@
     "eslint-plugin-import": "2.20.2",
     "jest": "^26.0.1",
     "jest-junit": "^10.0.0",
-    "nock": "^12.0.3"
+    "nock": "^12.0.3",
+    "typescript": "^3.9.6"
   }
 }
