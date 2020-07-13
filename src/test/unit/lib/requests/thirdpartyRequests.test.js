@@ -76,7 +76,7 @@ describe('ThirdpartyRequests', () => {
                 headers: expect.objectContaining({
                     'fspiop-destination': 'dfspa'
                 })
-            })
+            });
 
             // Act
             await tpr.putConsents(consentId, consentBody, 'dfspa');

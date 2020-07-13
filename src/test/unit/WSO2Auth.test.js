@@ -13,7 +13,7 @@ const http = require('http');
 const WSO2Auth = require('../../lib/WSO2Auth');
 const mockLogger = require('../__mocks__/mockLogger');
 
-describe.skip('WSO2Auth', () => {
+describe('WSO2Auth', () => {
 
     async function testTokenRefresh(userRefreshSeconds, tokenExpiresSeconds) {
         const TOKEN = 'new-token';

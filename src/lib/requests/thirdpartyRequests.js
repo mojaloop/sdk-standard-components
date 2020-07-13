@@ -4,8 +4,8 @@ const BaseRequests = require('./baseRequests');
 
 class ThirdpartyRequests extends BaseRequests {
     async putConsents(consentId, consentBody, destParticipantId) {
-        const url = `consents/${consentId}`
-        return this._put(url, 'thirdparty', consentBody, destParticipantId)
+        const url = `consents/${consentId}`;
+        return this._put(url, 'thirdparty', consentBody, destParticipantId);
     }
 
     async postAuthorizations(authorizationBody, destParticipantId) {

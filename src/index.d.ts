@@ -1,24 +1,81 @@
 declare namespace SDKStandardComponents {
-    /* Base Request Types */
-    type GenericRequestResponse = {
-        statusCode: number,
-        // headers: IncomingMessage.headers,
-        headers: any,
-        data: Buffer
+    /* Base Mojaloop Types */
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Currency.yaml
+    type TCurrency = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GGP' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HRK' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'IMP' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JEP' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SLL' | 'SOS' | 'SPL' | 'SRD' | 'STD' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TVD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'UYU' | 'UZS' | 'VEF' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XCD' | 'XDR' | 'XOF' | 'XPF' | 'YER' | 'ZAR' | 'ZMW' | 'ZWD';
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Party.yaml
+    type TParty = {
+        partyIdInfo: {
+            fspId: string;
+            partyIdType: string;
+            partyIdentifier: string;
+            partySubIdentifier?: string;
+        }
+        merchantClassificationCode?: string;
+        name?: string;
+        personalInfo?: {
+            complexName?: {
+                firstName?: string;
+                middleName?: string;
+                lastName?: string;
+            }
+            dateOfBirth?: string
+        };
+    };
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Money.yaml
+    type TMoney = {
+        amount: string;
+        currency: TCurrency;
+    };
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/GeoCode.yaml
+    type TGeoCode = {
+        latitude: string;
+        longitude: string;
     }
 
-    type MojaloopRequestResponse = undefined
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ExtensionList.yaml
+    type TExtensionList = {
+        extension: Array<{
+            key: string;
+            value: string;
+        }>
+    }
 
-    /**
-     * @type BaseRequestConfigType
-     */
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/QuotesIDPutResponse.yaml
+    type TQuotesIDPutResponse = {
+        transferAmount: TMoney;
+        expiration: Date;
+        ilpPacket: string;
+        condition: string;
+        payeeReceiveAmount?: TMoney;
+        payeeFspFee?: TMoney;
+        payeeFspCommission?: TMoney;
+        geoCode?: TGeoCode;
+        extensionList?: TExtensionList
+    }
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/AmountType.yaml
+    enum TAmountType {
+        SEND = 'SEND',
+        RECEIVE = 'RECEIVE',
+    }
+
+    /* Base Request Types */
+    type GenericRequestResponse = {
+        statusCode: number;
+        headers: any;
+        data: Buffer;
+    };
+
+    type MojaloopRequestResponse = undefined;
+
     type BaseRequestConfigType = {
         logger: any;
         tls: any;
-        // The`FSPID` of _this_ DFSP / Participant
         dfspId: string;
-        // If `true`, then requests will be JWS signed
-
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
         jwsSigningKey?: string
@@ -26,9 +83,50 @@ declare namespace SDKStandardComponents {
     }
 
     /* Individual Request Types */
-    type PutConsentsRequest = {}
-    type PostAuthorizationsRequest = {}
-    type PostThirdPartyRequestTransactionsRequest = {}
+    type PutConsentsRequest = {
+        requestId: string;
+        initiatorId: string;
+        participantId: string;
+        scopes: Array<{
+            accountId: string;
+            actions: Array<string>;
+        }>;
+        credential: {
+            id: string | null;
+            credentialType: 'FIDO';
+            status: 'PENDING' | 'VERIFIED';
+            challenge: {
+                payload: ArrayBuffer;
+                signature: ArrayBuffer | null;
+            },
+            payload: ArrayBuffer | null;
+        }
+    }
+
+    type PostAuthorizationsRequest = {
+        transactionRequestId: string;
+        authenticationType: 'U2F';
+        retriesLeft: string;
+        amount: TAmount;
+        transactionId: string;
+        quote: TQuotesIDPutResponse;
+    }
+
+    type PostThirdPartyRequestTransactionsRequest = {
+        transactionRequestId: string;
+        sourceAccountId: string;
+        consentId: string;
+        payee: TParty;
+        payer: TParty;
+        amountType: TAmountType;
+        amount: TMoney;
+        transactionType: {
+            scenario: string;
+            initiator: string;
+            initiatorType: string;
+        };
+        expiration: string;
+    }
 
     class BaseRequests {
         constructor(config: BaseRequestConfigType)
@@ -79,12 +177,6 @@ declare namespace SDKStandardComponents {
          */
         postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PostThirdPartyRequestTransactionsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
-    class MojaloopRequests extends BaseRequests {
-
-        getParties(idType: string, idValue: string, idSubValue?: string): Promise<GenericRequestResponse | MojaloopRequestResponse>
-    }
-
 }
-
 
 export = SDKStandardComponents
