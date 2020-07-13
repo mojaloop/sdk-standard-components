@@ -8,22 +8,22 @@
  *       pawel.marzec - pawel.marzec@modusbox.com                         *
  **************************************************************************/
 
- describe('index layout', () => {
+describe('index layout', () => {
     const index = require('../../index');
     const shouldBeExported = [
-      'Errors',
-      'Ilp',
-      'Jws',
-      'Logger',
-      'MojaloopRequests',
-      'ThirdpartyRequests',
-      'request',
-      'WSO2Auth',
+        'Errors',
+        'Ilp',
+        'Jws',
+        'Logger',
+        'MojaloopRequests',
+        'ThirdpartyRequests',
+        'request',
+        'WSO2Auth',
     ];
 
     shouldBeExported.forEach((item) => {
-      it(`should export '${item}'`, () => {
-        expect(index[item]).toBeDefined();
-      });
-    })
- })
+        it(`should export '${item}'`, () => {
+            expect(index[item]).toBeDefined();
+        });
+    });
+});
