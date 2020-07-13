@@ -13,7 +13,8 @@
   },
   "author": "James Bush, ModusBox Inc.",
   "contributors": [
-    "Steven Oderayi <steven.oderayi@modusbox.com>"
+    "Steven Oderayi <steven.oderayi@modusbox.com>",
+    "Paweł Marzec <pawel.marzec@modusbox.com>"
   ],
   "license": "Apache-2.0",
   "licenses": [
