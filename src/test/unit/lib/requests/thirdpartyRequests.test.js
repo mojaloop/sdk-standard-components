@@ -39,7 +39,6 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 describe('ThirdpartyRequests', () => {
     describe('putConsents', () => {
         const putConsentsRequest = require('../../data/putConsentsRequest.json');
-        // const transferRequest = require('../../data/thirdpartyRequestsTransaction.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'get-thirdparty-request-transaction-test' }) });
         const config = {
             logger: mockLogger({ app: 'getThirdpartyRequestsTransaction-test' }),
@@ -58,7 +57,7 @@ describe('ThirdpartyRequests', () => {
             wso2Auth,
         };
 
-        it('executes a `POST /thirdpartyRequests/transactions` request', async () => {
+        it('executes a `PUT /consents/{id}` request', async () => {
             // Arrange
             http.__request = jest.fn(() => ({
                 statusCode: 202,
