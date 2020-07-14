@@ -31,7 +31,7 @@ class BaseRequests {
      * @param {Object} config.logger Logging function
      * @param {Object} config.tls The tls config object
      * @param {string} config.dfspId The `FSPID` of _this_ DFSP/Participant
-     * @param {boolean} config.jwsSign The `FSPID` of _this_ DFSP/Participant
+     * @param {boolean} config.jwsSign If `true`, then requests will be JWS signed
      * @param {boolean | undefined} config.jwsSignPutParties Optional. If undefined,
      *    it will default to the value of `config.jwsSign`
      * @param {string | undefined} config.jwsSigningKey Optional. The jwsSigningKey

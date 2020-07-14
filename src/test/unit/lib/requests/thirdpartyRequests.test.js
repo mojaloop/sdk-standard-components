@@ -37,6 +37,55 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 
 
 describe('ThirdpartyRequests', () => {
+    describe('putConsents', () => {
+        const putConsentsRequest = require('../../data/putConsentsRequest.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'get-thirdparty-request-transaction-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'getThirdpartyRequestsTransaction-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `PUT /consents/{id}` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const consentId = '123';
+            const consentBody = putConsentsRequest;
+            const expected = expect.objectContaining({
+                host: 'thirdparty-api-adapter.local',
+                method: 'PUT',
+                path: '/consents/123',
+                headers: expect.objectContaining({
+                    'fspiop-destination': 'dfspa'
+                })
+            });
+
+            // Act
+            await tpr.putConsents(consentId, consentBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentBody)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+    });
+
     describe('postAuthorizations', () => {
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-authorizations-test'})});
         const config = {
