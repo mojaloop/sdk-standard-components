@@ -170,6 +170,7 @@ describe('ThirdpartyRequests', () => {
             // Assert
             expect(http.__request).toHaveBeenCalledWith(
                 expect.objectContaining({
+                    'method': 'GET',
                     'path': '/thirdpartyRequests/transactions/1',
                     'headers': expect.objectContaining({
                         'fspiop-destination': 'dfspa'
@@ -180,10 +181,11 @@ describe('ThirdpartyRequests', () => {
     });
 
     describe('postThirdpartyRequestsTransactions', () => {
-        const transferRequest = require('../../data/thirdpartyRequestsTransaction.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
+        const postTransactionRequest = require('../../data/postThirdpartyRequestsTransaction.json');
+        const postTransactionRequestAuthorization = require('../../data/postThirdpartyRequestsTransactionAuthorization.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-thirdparty-request-transaction-test'})});
         const config = {
-            logger: mockLogger({ app: 'getThirdpartyRequestsTransaction-test' }),
+            logger: mockLogger({ app: 'postThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
                 outbound: {
@@ -207,7 +209,7 @@ describe('ThirdpartyRequests', () => {
                 },
             }));
             const tpr = new ThirdpartyRequests(config);
-            const requestBody = transferRequest;
+            const requestBody = postTransactionRequest;
 
             // Act
             await tpr.postThirdpartyRequestsTransactions(requestBody, 'dfspa');
@@ -216,9 +218,115 @@ describe('ThirdpartyRequests', () => {
             expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
             expect(http.__request).toHaveBeenCalledWith(
                 expect.objectContaining({
+                    'method': 'POST',
                     'path': '/thirdpartyRequests/transactions',
                     'headers': expect.objectContaining({
                         'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `POST /thirdpartyRequests/transactions/{ID}/authorizations` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = postTransactionRequestAuthorization;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.postThirdpartyRequestsTransactionsAuthorizations(requestBody, transactionRequestId, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'POST',
+                    'path': '/thirdpartyRequests/transactions/1/authorizations',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        });
+    });
+
+    describe('putThirdpartyRequestsTransactions', () => {
+        const putSuccessRequest = require('../../data/putThirdpartyRequestTransaction.json');
+        const putErrorRequest = require('../../data/putThirdpartyRequestTransactionError.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'put-thirdparty-request-transaction-test'})});
+        const config = {
+            logger: mockLogger({ app: 'putThirdpartyRequestsTransaction-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `PUT /thirdpartyRequests/transactions/{ID}` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putSuccessRequest;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsTransactions(requestBody, transactionRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/transactions/1',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /thirdpartyRequests/transactions/{ID}/error` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putErrorRequest;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsTransactionsError(requestBody, transactionRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/transactions/1/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
                     })
                 })
             );

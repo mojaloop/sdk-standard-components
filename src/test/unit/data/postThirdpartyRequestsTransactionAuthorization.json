@@ -1,0 +1,6 @@
+{
+    "challenge": "<QuoteResponse object>",
+    "value": "<base64 encoded binary - the signed quote response object>",
+    "consentId": "111",
+    "sourceAccountId": "dfspa.1111-2222"
+}
