@@ -17,7 +17,7 @@ const jws = require('jws');
 const SIGNATURE_ALGORITHM = 'RS256';
 
 // a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
-const uriRegex = /(?:^.*)(\/(participants|parties|quotes|transfers|bulkTransfers|transactionRequests|authorizations)(\/.*)*)$/;
+const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|authorizations)(\/.*)*)$/;
 
 
 /**
