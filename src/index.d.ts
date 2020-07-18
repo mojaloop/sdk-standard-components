@@ -57,6 +57,19 @@ declare namespace SDKStandardComponents {
         extensionList?: TExtensionList
     }
 
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ErrorInformationObject.yaml
+    type TErrorInformationObject = {
+        errorInformation: TErrorInformation;
+    }
+
+    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ErrorInformation.yaml
+    type TErrorInformation = {
+        errorCode: string;
+        errorDescription: string;
+        extensionList?: TExtensionList;
+    }
+
+
     // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/AmountType.yaml
     enum TAmountType {
         SEND = 'SEND',
@@ -132,6 +145,22 @@ declare namespace SDKStandardComponents {
         constructor(config: BaseRequestConfigType)
     }
 
+    type putThirdpartyRequestsTransactionsRequest = {
+        transactionRequestId: string;
+        transactionRequestState: 'RECEIVED' | 'PENDING' | 'ACCEPTED' | 'REJECTED';
+    }
+
+    type postThirdpartyRequestsTransactionsAuthorizationsRequest = {
+        challenge: {
+            payload: ArrayBuffer;
+            signature: ArrayBuffer | null;
+        }
+        consentId: string;
+        sourceAccountId: string;
+        status: 'PENDING' | 'VERIFIED';
+        value: string;
+    }
+
     /**
      * @class ThirdpartyRequests
      * @description Client library for making outbound Mojaloop requests
@@ -176,6 +205,39 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PostThirdPartyRequestTransactionsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putThirdpartyRequestsTransactions
+         * @description
+         *   Executes a `PUT /thirdpartyRequests/transactions/${transactionRequestId}` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putThirdpartyRequestsTransactionsError
+         * @description
+         *   Executes a `PUT thirdpartyRequests/transactions/${transactionRequestId}/error` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsTransactionsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function postThirdpartyRequestsTransactionsAuthorizations
+         * @description
+         *   Executes a `POST /thirdpartyRequests/transactions/${transactionRequestId}/authorizations` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: postThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 
