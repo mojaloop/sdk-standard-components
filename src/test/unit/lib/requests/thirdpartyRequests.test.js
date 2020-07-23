@@ -310,16 +310,12 @@ describe('ThirdpartyRequests', () => {
             const transactionRequestId = 1;
 
             // Act
-            await tpr.getThirdpartyRequestsTransactions(transactionRequestId, 'dfspa');
+            await tpr.getThirdpartyRequestsTransactions(transactionRequestId);
 
             // Assert
             expect(http.__request).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    'method': 'GET',
-                    'path': '/thirdpartyRequests/transactions/1',
-                    'headers': expect.objectContaining({
-                        'fspiop-destination': 'dfspa'
-                    })
+                    'path': '/thirdpartyRequests/transactions/1'
                 })
             );
         });

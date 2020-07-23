@@ -253,10 +253,9 @@ declare namespace SDKStandardComponents {
          * @description
          *   Executes a `GET /thirdpartyRequests/transactions/{transactionRequestId}` request for the specified `transactionRequestId`
          * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
-         * @param {string} destParticipantId The `id` of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        getThirdpartyRequestsTransactions(transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        getThirdpartyRequestsTransactions(transactionRequestId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function postThirdpartyRequestsTransactions
