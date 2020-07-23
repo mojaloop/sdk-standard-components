@@ -109,10 +109,10 @@ declare namespace SDKStandardComponents {
             credentialType: 'FIDO';
             status: 'PENDING' | 'VERIFIED';
             challenge: {
-                payload: ArrayBuffer;
-                signature: ArrayBuffer | null;
+                payload: string;
+                signature: string | null;
             },
-            payload: ArrayBuffer | null;
+            payload: string | null;
         }
     }
 
@@ -152,8 +152,8 @@ declare namespace SDKStandardComponents {
 
     type postThirdpartyRequestsTransactionsAuthorizationsRequest = {
         challenge: {
-            payload: ArrayBuffer;
-            signature: ArrayBuffer | null;
+            payload: string;
+            signature: string | null;
         }
         consentId: string;
         sourceAccountId: string;
