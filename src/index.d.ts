@@ -177,6 +177,17 @@ declare namespace SDKStandardComponents {
         expiration: string;
     }
 
+    type putThirdpartyRequestsTransactionsAuthorizationsRequest = {
+        challenge: {
+            payload: string;
+            signature: string | null;
+        }
+        consentId: string;
+        sourceAccountId: string;
+        status: 'PENDING' | 'VERIFIED';
+        value: string;
+    }
+
     class BaseRequests {
         constructor(config: BaseRequestConfigType)
     }
@@ -300,6 +311,17 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: postThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putThirdpartyRequestsTransactionsAuthorizations
+         * @description
+         *   Executes a `PUT /thirdpartyRequests/transactions/${transactionRequestId}/authorizations` request
+         * @param {putThirdpartyRequestsTransactionsAuthorizationsRequest} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 
