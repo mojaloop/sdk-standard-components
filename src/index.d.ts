@@ -4,6 +4,8 @@ declare namespace SDKStandardComponents {
     // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Currency.yaml
     type TCurrency = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GGP' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HRK' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'IMP' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JEP' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SLL' | 'SOS' | 'SPL' | 'SRD' | 'STD' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TVD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'UYU' | 'UZS' | 'VEF' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XCD' | 'XDR' | 'XOF' | 'XPF' | 'YER' | 'ZAR' | 'ZMW' | 'ZWD';
 
+    type TAuthChannel = 'WEB' | 'OTP';
+
     // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Party.yaml
     type TParty = {
         partyIdInfo: {
@@ -69,6 +71,21 @@ declare namespace SDKStandardComponents {
         extensionList?: TExtensionList;
     }
 
+    type TCredential = {
+        id: string;
+        credentialType: 'FIDO';
+        status: 'PENDING' | 'ACTIVE';
+        challenge: {
+            payload: string;
+            signature: string | null;
+        },
+        payload: string | null;
+    }
+
+    type TCrendentialScope = {
+        scope: string;
+        accountId: string;
+    }
 
     // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/AmountType.yaml
     enum TAmountType {
@@ -104,16 +121,35 @@ declare namespace SDKStandardComponents {
             accountId: string;
             actions: Array<string>;
         }>;
-        credential: {
-            id: string | null;
-            credentialType: 'FIDO';
-            status: 'PENDING' | 'VERIFIED';
-            challenge: {
-                payload: string;
-                signature: string | null;
-            },
-            payload: string | null;
-        }
+        credential: TCredential;
+    }
+
+    type PostConsentsRequest = {
+        id: string;
+        requestId: string;
+        initiatorId: string;
+        participantId: string;
+        scopes: TCrendentialScope[];
+        credential: TCredential;
+    }
+
+    type PutConsentRequestsRequest = {
+        initiatorId: string;
+        accountIds: string[];
+        authChannels: TAuthChannel[];
+        scopes: string[];
+        callbackUri: string;
+        authorizationUri: string;
+        authToken: string;
+    }
+
+    type PostConsentRequestsRequest = {
+        id: string;
+        initiatorId: string;
+        accountIds: string[];
+        authChannels: TAuthChannel[];
+        scopes: string[];
+        callbackUri: string;
     }
 
     type PostAuthorizationsRequest = {
@@ -175,6 +211,32 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant
          */
         putConsents(consentId: string, consentBody: PutConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function postConsents
+         * @description Executes a `POST /consents` request.
+         * @param {PostConsentsRequest} consentBody The body of the consent object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        postConsents(consentBody: PostConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putConsentRequests
+         * @description Executes a `PUT /consentRequests/{id}` request.
+         * @param {string} consentRequestId The `id` of the consent requests object to be updated
+         * @param {PutConsentRequestsRequest} consentRequestBody The body of the consent requests object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putConsentRequests(consentRequestId: string, consentRequestBody: PutConsentRequestsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function postConsentRequests
+         * @description Executes a `POST /consentRequests` request.
+         * @param {PostConsentRequestsRequest} consentRequestBody The body of the consent requests object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        postConsentRequests(consentRequestBody: PostConsentRequestsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
 
         /**
          * @function postAuthorizations

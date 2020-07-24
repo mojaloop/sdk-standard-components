@@ -39,9 +39,9 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 describe('ThirdpartyRequests', () => {
     describe('putConsents', () => {
         const putConsentsRequest = require('../../data/putConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'get-thirdparty-request-transaction-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consents-test' }) });
         const config = {
-            logger: mockLogger({ app: 'getThirdpartyRequestsTransaction-test' }),
+            logger: mockLogger({ app: 'put-consents-test' }),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -82,6 +82,151 @@ describe('ThirdpartyRequests', () => {
 
             // Assert
             expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentBody)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe('postConsents', () => {
+        const postConsentsRequest = require('../../data/postConsentsRequest.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consents-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'post-consents-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `POST /consents` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const consentBody = postConsentsRequest;
+            const expected = expect.objectContaining({
+                host: 'thirdparty-api-adapter.local',
+                method: 'POST',
+                path: '/consents',
+                headers: expect.objectContaining({
+                    'fspiop-destination': 'dfspa'
+                })
+            });
+
+            // Act
+            await tpr.postConsents(consentBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentBody)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe('putConsentRequests', () => {
+        const putConsentRequestsRequests = require('../../data/putConsentRequestsRequest.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'put-consent-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `POST /consentRequests/{ID}` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const consentRequestsBody = putConsentRequestsRequests;
+            const consentRequestsId = '123';
+            const expected = expect.objectContaining({
+                host: 'thirdparty-api-adapter.local',
+                method: 'PUT',
+                path: '/consentRequests/123',
+                headers: expect.objectContaining({
+                    'fspiop-destination': 'dfspa'
+                })
+            });
+
+            // Act
+            await tpr.putConsentRequests(consentRequestsId, consentRequestsBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentRequestsBody)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe('postConsentRequests', () => {
+        const postConsentRequestsRequest = require('../../data/postConsentRequestsRequest.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consent-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'post-consent-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `POST /consentRequests` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const consentRequestBody = postConsentRequestsRequest;
+            const expected = expect.objectContaining({
+                host: 'thirdparty-api-adapter.local',
+                method: 'POST',
+                path: '/consentRequests',
+                headers: expect.objectContaining({
+                    'fspiop-destination': 'dfspa'
+                })
+            });
+
+            // Act
+            await tpr.postConsentRequests(consentRequestBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentRequestBody)));
             expect(http.__request).toHaveBeenCalledWith(expected);
         });
     });

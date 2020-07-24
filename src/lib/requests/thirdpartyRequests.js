@@ -8,6 +8,19 @@ class ThirdpartyRequests extends BaseRequests {
         return this._put(url, 'thirdparty', consentBody, destParticipantId);
     }
 
+    async postConsents(consentBody, destParticipantId) {
+        return this._post('consents', 'thirdparty', consentBody, destParticipantId);
+    }
+
+    async putConsentRequests(consentRequestId, consentRequestBody, destParticipantId) {
+        const url = `consentRequests/${consentRequestId}`;
+        return this._put(url, 'thirdparty', consentRequestBody, destParticipantId);
+    }
+
+    async postConsentRequests(consentRequestBody, destParticipantId) {
+        return this._post('consentRequests', 'thirdparty', consentRequestBody, destParticipantId);
+    }
+
     async postAuthorizations(authorizationBody, destParticipantId) {
         return this._post('authorizations', 'authorizations', authorizationBody, destParticipantId);
     }
