@@ -477,4 +477,52 @@ describe('ThirdpartyRequests', () => {
             );
         });
     });
+
+
+    describe('putThirdpartyRequestsTransactionsAuthorizations', () => {
+        const putTransactionsAuthorizationsRequest = require('../../data/putThirdpartyRequestsTransactionAuthorization.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-authorization-test'})});
+        const config = {
+            logger: mockLogger({ app: 'putThirdpartyRequestsTransactionAuthorization-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+        it('executes a `PUT /thirdpartyRequests/transactions/{ID}/authorizations` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putTransactionsAuthorizationsRequest;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsTransactionsAuthorizations(requestBody, transactionRequestId, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/transactions/1/authorizations',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        });
+    });
 });
