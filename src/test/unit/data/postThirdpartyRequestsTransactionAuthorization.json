@@ -1,0 +1,10 @@
+{
+    "challenge": {
+        "payload": "1os7Vh8iQ2ycMdwtA8v1SA==",
+        "signature": "MgNVUQgfELLVYI4IFt2BEw=="
+    },
+    "value": "X4eAlhPYXpytan9QC7u5Cw==",
+    "consentId": "111",
+    "sourceAccountId": "dfspa.1111-2222",
+    "status": "PENDING"
+}

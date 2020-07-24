@@ -17,8 +17,23 @@ class ThirdpartyRequests extends BaseRequests {
         return this._get(url, 'thirdparty', destParticipantId);
     }
 
+    async putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}`;
+        return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
+    }
+
+    async putThirdpartyRequestsTransactionsError(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}/error`;
+        return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
+    }
+
     async postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, destParticipantId) {
         const url = 'thirdpartyRequests/transactions';
+        return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
+    }
+
+    async postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
         return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
 }
