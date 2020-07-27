@@ -178,10 +178,7 @@ declare namespace SDKStandardComponents {
     }
 
     type putThirdpartyRequestsTransactionsAuthorizationsRequest = {
-        challenge: {
-            payload: string;
-            signature: string | null;
-        }
+        challenge: string;
         consentId: string;
         sourceAccountId: string;
         status: 'PENDING' | 'VERIFIED';
@@ -198,10 +195,7 @@ declare namespace SDKStandardComponents {
     }
 
     type postThirdpartyRequestsTransactionsAuthorizationsRequest = {
-        challenge: {
-            payload: string;
-            signature: string | null;
-        }
+        challenge: string;
         consentId: string;
         sourceAccountId: string;
         status: 'PENDING' | 'VERIFIED';
