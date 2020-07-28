@@ -129,7 +129,7 @@ declare namespace SDKStandardComponents {
         requestId: string;
         initiatorId: string;
         participantId: string;
-        scopes: TCrendentialScope[];
+        scopes: TCredentialScope[];
         credential: TCredential;
     }
 
