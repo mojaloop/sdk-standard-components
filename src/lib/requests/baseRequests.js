@@ -67,11 +67,13 @@ class BaseRequests {
         else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
-
-        this.jwsSigner = new JwsSigner({
-            logger: config.logger,
-            signingKey: config.jwsSigningKey
-        });
+        
+        if (this.jwsSign) {
+            this.jwsSigner = new JwsSigner({
+                logger: config.logger,
+                signingKey: config.jwsSigningKey
+            });
+        }
 
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.resourceEndpoints = {
