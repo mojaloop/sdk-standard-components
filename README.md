@@ -6,7 +6,7 @@
 
 # Mojaloop DFSP SDK Standard Components
 
-This package contains a set of  components that encode standard practices for enabling the following features of a DFSP to Mojaloop switch interface:
+This package contains a set of components that encode standard practices for enabling the following features of a DFSP to Mojaloop switch interface:
 
 ## Usage
 
