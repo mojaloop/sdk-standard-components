@@ -72,7 +72,7 @@ declare namespace SDKStandardComponents {
     }
 
     type TCredential = {
-        id: string;
+        id: string | null;
         credentialType: 'FIDO';
         status: 'PENDING' | 'ACTIVE';
         challenge: {
@@ -82,7 +82,7 @@ declare namespace SDKStandardComponents {
         payload: string | null;
     }
 
-    type TCrendentialScope = {
+    type TCredentialScope = {
         scope: string;
         accountId: string;
     }
