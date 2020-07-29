@@ -54,6 +54,11 @@ class ThirdpartyRequests extends BaseRequests {
         const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
         return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
+
+    async putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error`;
+        return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
+    }
 }
 
 
