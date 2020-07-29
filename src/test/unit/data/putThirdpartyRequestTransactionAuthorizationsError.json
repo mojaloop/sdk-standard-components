@@ -1,0 +1,14 @@
+{
+    "errorInformation": {
+        "errorCode":"6000",
+        "errorDescription":"Generic third party error.",
+        "extensionList":{
+            "extension":[
+                {
+                    "key":"errorDescription",
+                    "value":"This is a more detailed error description"
+                }
+            ]
+        }
+    }
+}
