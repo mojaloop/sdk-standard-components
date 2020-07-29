@@ -26,7 +26,7 @@ For information on the background and context of this project please see the pre
 
 ## Typescript Types
 
-To aid consumers of this library, we are starting to work on adding typescript declarations for the `sdk-standard-components`. This is an incremental process, so pleas be patient as we gradually add typings to each module.
+To aid consumers of this library, we are starting to work on adding typescript declarations for the `sdk-standard-components`. This is an incremental process, so please be patient as we gradually add typings to each module.
 
 Types currently live in `./src/index.d.ts`
 
