@@ -316,6 +316,17 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putThirdpartyRequestsTransactionsAuthorizationsError
+         * @description
+         *   Executes a `PUT thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error` request
+         * @param {putThirdpartyRequestsTransactionsAuthorizationsRequest} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 

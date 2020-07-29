@@ -481,6 +481,7 @@ describe('ThirdpartyRequests', () => {
 
     describe('putThirdpartyRequestsTransactionsAuthorizations', () => {
         const putTransactionsAuthorizationsRequest = require('../../data/putThirdpartyRequestsTransactionAuthorization.json');
+        const putErrorRequest = require('../../data/putThirdpartyRequestTransactionAuthorizationsError.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-authorization-test'})});
         const config = {
             logger: mockLogger({ app: 'putThirdpartyRequestsTransactionAuthorization-test' }),
@@ -520,6 +521,34 @@ describe('ThirdpartyRequests', () => {
                     'path': '/thirdpartyRequests/transactions/1/authorizations',
                     'headers': expect.objectContaining({
                         'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /thirdpartyRequests/transactions/{ID}/authorizations/error` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putErrorRequest;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsTransactionsAuthorizationsError(requestBody, transactionRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/transactions/1/authorizations/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
                     })
                 })
             );
