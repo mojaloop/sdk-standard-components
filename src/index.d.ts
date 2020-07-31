@@ -187,6 +187,7 @@ declare namespace SDKStandardComponents {
 
     type PatchConsentsRequest = {
         consent: {
+            id: string,
             status: 'REVOKED';
             revokedAt: Date;
         }
