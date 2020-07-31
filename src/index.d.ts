@@ -185,6 +185,13 @@ declare namespace SDKStandardComponents {
         value: string;
     }
 
+    type PatchConsentsRequest = {
+        consent: {
+            status: 'REVOKED';
+            revokedAt: Date;
+        }
+    }
+
     class BaseRequests {
         constructor(config: BaseRequestConfigType)
     }
@@ -208,6 +215,15 @@ declare namespace SDKStandardComponents {
      *   for 3rd party functions (e.g. PISP use cases)
      */
     class ThirdpartyRequests extends BaseRequests {
+        /**
+         * @function patchConsents
+         * @description Executes a `PATCH /consents/{id}` request.
+         * @param {string} consentId The `id` of the consent object to be updated
+         * @param {PatchConsentsRequest} consentBody The body of the consent object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        patchConsents(consentId: string, consentBody: PatchConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
         /**
          * @function putConsents
          * @description Executes a `PUT /consents/{id}` request.
