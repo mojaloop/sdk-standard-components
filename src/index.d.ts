@@ -79,7 +79,7 @@ declare namespace SDKStandardComponents {
             payload: string;
             signature: string | null;
         },
-        payload: string | null;
+        payload: string | undefined;
     }
 
     type TCredentialScope = {
