@@ -187,7 +187,7 @@ declare namespace SDKStandardComponents {
 
     type PatchConsentsRequest = {
         status: 'REVOKED';
-        revokedAt: Date;
+        revokedAt: string;
     }
 
     class BaseRequests {
