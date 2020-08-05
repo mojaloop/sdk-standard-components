@@ -156,7 +156,7 @@ declare namespace SDKStandardComponents {
         transactionRequestId: string;
         authenticationType: 'U2F';
         retriesLeft: string;
-        amount: TAmount;
+        amount: TMoney;
         transactionId: string;
         quote: TQuotesIDPutResponse;
     }
