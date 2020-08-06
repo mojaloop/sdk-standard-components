@@ -173,7 +173,7 @@ class BaseRequests {
             });
     }
     
-        /**
+    /**
      * @function _patch
      * @description
      *  Perform a HTTP PATCH request.
