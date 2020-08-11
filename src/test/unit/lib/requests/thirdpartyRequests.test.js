@@ -105,32 +105,60 @@ describe('ThirdpartyRequests', () => {
             jwsSigningKey: jwsSigningKey,
             wso2Auth,
         };
+        const config2 = {
+            logger: mockLogger({ app: 'patch-consents-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                outbound: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                }
+            },
+            jwsSign: true,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+        http.__request = jest.fn(() => ({
+            statusCode: 202,
+            headers: {
+                'content-length': 0
+            },
+        }));
+        const consentId = '123';
+        const expected = expect.objectContaining({
+            host: 'thirdparty-api-adapter.local',
+            method: 'PATCH',
+            path: '/consents/123',
+            headers: expect.objectContaining({
+                'fspiop-destination': 'dfspa'
+            })
+        });
 
         it('executes a `PATCH /consents/{id}` request', async () => {
-            // Arrange
-            http.__request = jest.fn(() => ({
-                statusCode: 202,
-                headers: {
-                    'content-length': 0
-                },
-            }));
+            // Init
             const tpr = new ThirdpartyRequests(config);
-            const consentId = '123';
-            const consentBody = patchConsentsRequest;
-            const expected = expect.objectContaining({
-                host: 'thirdparty-api-adapter.local',
-                method: 'PATCH',
-                path: '/consents/123',
-                headers: expect.objectContaining({
-                    'fspiop-destination': 'dfspa'
-                })
-            });
+            
 
             // Act
-            await tpr.patchConsents(consentId, consentBody, 'dfspa');
+            await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
 
             // Assert
-            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentBody)));
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(patchConsentsRequest)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+
+        it('executes a `PATCH /consents/{id}` request with signing enabled', async () => {
+            // Init
+            const tpr = new ThirdpartyRequests(config2);
+            
+            // Act
+            await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(patchConsentsRequest)));
             expect(http.__request).toHaveBeenCalledWith(expected);
         });
     });
