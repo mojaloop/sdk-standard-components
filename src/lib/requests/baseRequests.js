@@ -67,7 +67,7 @@ class BaseRequests {
         else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
-        
+
         if (this.jwsSign) {
             this.jwsSigner = new JwsSigner({
                 logger: config.logger,
@@ -172,7 +172,7 @@ class BaseRequests {
                 throw e;
             });
     }
-    
+
     /**
      * @function _patch
      * @description
@@ -201,7 +201,7 @@ class BaseRequests {
             reqOpts.responseType = request.responseType.Stream;
         }
 
-        if ((responseType === ResponseType.Mojaloop) && this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
+        if ((responseType === ResponseType.Mojaloop) && this.jwsSign) {
             this.jwsSigner.sign(reqOpts);
         }
 
@@ -293,7 +293,8 @@ class BaseRequests {
         }
 
         // dont add accept header to PUT requests
-        if(method.toUpperCase() !== 'PUT') {
+        // TODO: should we also not set the accept header for PATCH?
+        if (method.toUpperCase() !== 'PUT') {
             headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
         }
 

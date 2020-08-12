@@ -28,6 +28,7 @@
 const fs = require('fs');
 jest.mock('http');
 const http = require('http');
+const request = require('../../../../lib/request')
 
 const ThirdpartyRequests = require('../../../../lib/requests/thirdpartyRequests');
 const WSO2Auth = require('../../../../lib/WSO2Auth');
@@ -87,6 +88,13 @@ describe('ThirdpartyRequests', () => {
     });
 
     describe('patchConsents', () => {
+        const mockRequest = jest.spyOn(request)
+
+        beforeEach(() => {
+            mockRequest.unmock()
+            // jest.unmockAll()
+        })
+
         const patchConsentsRequest = require('../../data/patchConsentsRequest.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consents-test' }) });
         const config = {
@@ -140,7 +148,7 @@ describe('ThirdpartyRequests', () => {
         it('executes a `PATCH /consents/{id}` request', async () => {
             // Init
             const tpr = new ThirdpartyRequests(config);
-            
+
 
             // Act
             await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
@@ -153,7 +161,7 @@ describe('ThirdpartyRequests', () => {
         it('executes a `PATCH /consents/{id}` request with signing enabled', async () => {
             // Init
             const tpr = new ThirdpartyRequests(config2);
-            
+
             // Act
             await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
 
@@ -161,6 +169,16 @@ describe('ThirdpartyRequests', () => {
             expect(http.__write).toHaveBeenCalledWith((JSON.stringify(patchConsentsRequest)));
             expect(http.__request).toHaveBeenCalledWith(expected);
         });
+
+        it.only('executes a PATCH, with a streaming request', async () => {
+            // Arrange
+            mockRequest.mockRejectValueOnce(new Error('Test Error'))
+
+            // Act
+
+
+            // Assert
+        })
     });
 
     describe('postConsents', () => {
