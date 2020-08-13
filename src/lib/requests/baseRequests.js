@@ -197,11 +197,8 @@ class BaseRequests {
             qs: query,
         };
 
-        if (responseType === ResponseType.Stream) {
-            reqOpts.responseType = request.responseType.Stream;
-        }
 
-        if ((responseType === ResponseType.Mojaloop) && this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
+        if ((responseType === ResponseType.Mojaloop) && this.jwsSign) {
             this.jwsSigner.sign(reqOpts);
         }
 
