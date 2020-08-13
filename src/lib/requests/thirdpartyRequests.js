@@ -3,6 +3,11 @@
 const BaseRequests = require('./baseRequests');
 
 class ThirdpartyRequests extends BaseRequests {
+    async patchConsents(consentId, consentBody, destParticipantId) {
+        const url = `consents/${consentId}`;
+        return this._patch(url, 'thirdparty', consentBody, destParticipantId);
+    }
+
     async putConsents(consentId, consentBody, destParticipantId) {
         const url = `consents/${consentId}`;
         return this._put(url, 'thirdparty', consentBody, destParticipantId);

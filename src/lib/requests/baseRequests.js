@@ -172,6 +172,46 @@ class BaseRequests {
                 throw e;
             });
     }
+    
+    /**
+     * @function _patch
+     * @description
+     *  Perform a HTTP PATCH request.
+     *
+     * @param {string} url - The url of the resource
+     * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
+     * @param {Object} headers - Optional additional headers
+     * @param {*} query - Optional query parameters
+     * @param {*} responseType - Optional, defaults to `Mojaloop`
+     */
+    async _patch(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+        const reqOpts = {
+            method: 'PATCH',
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
+            headers: {
+                ...this._buildHeaders('PATCH', resourceType, dest),
+                ...headers,
+            },
+            body: body,
+            qs: query,
+        };
+
+
+        if ((responseType === ResponseType.Mojaloop) && this.jwsSign) {
+            this.jwsSigner.sign(reqOpts);
+        }
+
+        reqOpts.body = bodyStringifier(reqOpts.body);
+
+        this.logger.log(`Executing HTTP PATCH: ${util.inspect(reqOpts)}`);
+        return request({ ...reqOpts, agent: this.agent })
+            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
+            .catch(e => {
+                this.logger.log('Error attempting PATCH. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
+                throw e;
+            });
+    }
 
     /**
      * @function _post
