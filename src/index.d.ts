@@ -74,7 +74,7 @@ declare namespace SDKStandardComponents {
     type TCredential = {
         id: string | null;
         credentialType: 'FIDO';
-        status: 'PENDING' | 'ACTIVE';
+        status: 'PENDING' | 'VERIFIED';
         challenge: {
             payload: string;
             signature: string | null;
