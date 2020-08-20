@@ -108,7 +108,7 @@ declare namespace SDKStandardComponents {
         dfspId: string;
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
-        jwsSigningKey?: string
+        jwsSigningKey?: Buffer
         wso2Auth?: object
     }
 
@@ -205,6 +205,18 @@ declare namespace SDKStandardComponents {
         sourceAccountId: string;
         status: 'PENDING' | 'VERIFIED';
         value: string;
+    }
+
+    type postQuoteRequest = {
+        quoteId: string;
+        transactionId: string;
+        transactionRequestId: string;
+        payee: Party;
+        payer: Party;
+        amountType: AmountType;
+        amount: Money;
+        transactionType: TransactionType;
+        note: string;
     }
 
     /**
@@ -341,6 +353,18 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+    }
+
+    class MojaloopRequests extends BaseRequests {
+        /**
+         * @function postQuotes
+         * @description
+         *   Executes a `POST /postQuotes` request
+         * @param {Object} postQuoteRequest The postQuoteRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        postQuotes(quoteRequest: postQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 
