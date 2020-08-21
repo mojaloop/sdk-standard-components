@@ -177,7 +177,7 @@ declare namespace SDKStandardComponents {
         expiration: string;
     }
 
-    type putThirdpartyRequestsTransactionsAuthorizationsRequest = {
+    type PutThirdpartyRequestsTransactionsAuthorizationsRequest = {
         challenge: string;
         consentId: string;
         sourceAccountId: string;
@@ -194,12 +194,12 @@ declare namespace SDKStandardComponents {
         constructor(config: BaseRequestConfigType)
     }
 
-    type putThirdpartyRequestsTransactionsRequest = {
+    type PutThirdpartyRequestsTransactionsRequest = {
         transactionRequestId: string;
         transactionRequestState: 'RECEIVED' | 'PENDING' | 'ACCEPTED' | 'REJECTED';
     }
 
-    type postThirdpartyRequestsTransactionsAuthorizationsRequest = {
+    type PostThirdpartyRequestsTransactionsAuthorizationsRequest = {
         challenge: string;
         consentId: string;
         sourceAccountId: string;
@@ -207,7 +207,7 @@ declare namespace SDKStandardComponents {
         value: string;
     }
 
-    type postQuoteRequest = {
+    type PostQuoteRequest = {
         quoteId: string;
         transactionId: string;
         transactionRequestId: string;
@@ -308,7 +308,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsError
@@ -330,7 +330,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: postThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PostThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizations
@@ -341,7 +341,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizationsError
@@ -364,7 +364,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postQuotes(quoteRequest: postQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postQuotes(quoteRequest: PostQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 
