@@ -13,6 +13,7 @@ const {
 } = require('./common');
 
 const request = require('../request');
+const WSO2Auth = require('../WSO2Auth');
 const JwsSigner = require('../jws').signer;
 
 /**
@@ -67,7 +68,7 @@ class BaseRequests {
         else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
-        
+
         if (this.jwsSign) {
             this.jwsSigner = new JwsSigner({
                 logger: config.logger,
@@ -88,7 +89,10 @@ class BaseRequests {
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
         };
 
-        this.wso2Auth = config.wso2Auth;
+        this.wso2Auth = new WSO2Auth({
+            ...config.wso2Auth,
+            logger: config.logger
+        });
     }
 
     /**
@@ -172,7 +176,7 @@ class BaseRequests {
                 throw e;
             });
     }
-    
+
     /**
      * @function _patch
      * @description
