@@ -108,8 +108,16 @@ declare namespace SDKStandardComponents {
         dfspId: string;
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
-        jwsSigningKey?: Buffer
-        wso2Auth?: object
+        jwsSigningKey?: Buffer;
+        wso2Auth?: object;
+        alsEndpoint?: string;
+        peerEndpoint?: string;
+        quotesEndpoint?: string;
+        bulkQuotesEndpoint?: string;
+        transfersEndpoint?: string;
+        bulkTransfersEndpoint?: string;
+        transactionRequestsEndpoint?: string;
+        thirdpartyRequestsEndpoint?: string;
     }
 
     /* Individual Request Types */
