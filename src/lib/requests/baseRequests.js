@@ -75,6 +75,8 @@ class BaseRequests {
             });
         }
 
+        this.resourceVersions = config.resourceVersions;
+
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.resourceEndpoints = {
             parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
@@ -269,7 +271,7 @@ class BaseRequests {
      */
     _buildHeaders(method, resourceType, dest) {
         let headers = {
-            'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
+            'content-type': `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion || '1.0'}`,
             'date': new Date().toUTCString(),
         };
 
@@ -291,7 +293,7 @@ class BaseRequests {
 
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
-            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
+            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion || '1'}`;
         }
 
         return headers;
