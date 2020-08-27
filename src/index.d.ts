@@ -93,6 +93,14 @@ declare namespace SDKStandardComponents {
         RECEIVE = 'RECEIVE',
     }
 
+    /* hashmap of versions of various resources */
+    type TResourceVersions = {
+        [resource: string]: {
+            contentVersion: string,
+            acceptVersion: string
+        }
+    }
+
     /* Base Request Types */
     type GenericRequestResponse = {
         statusCode: number;
@@ -118,6 +126,7 @@ declare namespace SDKStandardComponents {
         bulkTransfersEndpoint?: string;
         transactionRequestsEndpoint?: string;
         thirdpartyRequestsEndpoint?: string;
+        resourceVersions?: TResourceVersions;
     }
 
     /* Individual Request Types */
