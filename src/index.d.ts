@@ -74,7 +74,7 @@ declare namespace SDKStandardComponents {
     type TCredential = {
         id: string | null;
         credentialType: 'FIDO';
-        status: 'PENDING' | 'ACTIVE';
+        status: 'PENDING' | 'VERIFIED';
         challenge: {
             payload: string;
             signature: string | null;
@@ -108,8 +108,16 @@ declare namespace SDKStandardComponents {
         dfspId: string;
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
-        jwsSigningKey?: string
-        wso2Auth?: object
+        jwsSigningKey?: Buffer;
+        wso2Auth?: object;
+        alsEndpoint?: string;
+        peerEndpoint?: string;
+        quotesEndpoint?: string;
+        bulkQuotesEndpoint?: string;
+        transfersEndpoint?: string;
+        bulkTransfersEndpoint?: string;
+        transactionRequestsEndpoint?: string;
+        thirdpartyRequestsEndpoint?: string;
     }
 
     /* Individual Request Types */
@@ -177,7 +185,7 @@ declare namespace SDKStandardComponents {
         expiration: string;
     }
 
-    type putThirdpartyRequestsTransactionsAuthorizationsRequest = {
+    type PutThirdpartyRequestsTransactionsAuthorizationsRequest = {
         challenge: string;
         consentId: string;
         sourceAccountId: string;
@@ -194,17 +202,29 @@ declare namespace SDKStandardComponents {
         constructor(config: BaseRequestConfigType)
     }
 
-    type putThirdpartyRequestsTransactionsRequest = {
+    type PutThirdpartyRequestsTransactionsRequest = {
         transactionRequestId: string;
         transactionRequestState: 'RECEIVED' | 'PENDING' | 'ACCEPTED' | 'REJECTED';
     }
 
-    type postThirdpartyRequestsTransactionsAuthorizationsRequest = {
+    type PostThirdpartyRequestsTransactionsAuthorizationsRequest = {
         challenge: string;
         consentId: string;
         sourceAccountId: string;
         status: 'PENDING' | 'VERIFIED';
         value: string;
+    }
+
+    type PostQuoteRequest = {
+        quoteId: string;
+        transactionId: string;
+        transactionRequestId: string;
+        payee: Party;
+        payer: Party;
+        amountType: AmountType;
+        amount: Money;
+        transactionType: TransactionType;
+        note: string;
     }
 
     /**
@@ -296,7 +316,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsError
@@ -318,7 +338,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: postThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PostThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizations
@@ -329,7 +349,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: putThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizationsError
@@ -341,6 +361,18 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+    }
+
+    class MojaloopRequests extends BaseRequests {
+        /**
+         * @function postQuotes
+         * @description
+         *   Executes a `POST /postQuotes` request
+         * @param {Object} postQuoteRequest The postQuoteRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        postQuotes(quoteRequest: PostQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 }
 
