@@ -83,7 +83,7 @@ declare namespace SDKStandardComponents {
     }
 
     type TCredentialScope = {
-        scope: string;
+        actions: string[];
         accountId: string;
     }
 
@@ -145,7 +145,7 @@ declare namespace SDKStandardComponents {
         initiatorId: string;
         accountIds: string[];
         authChannels: TAuthChannel[];
-        scopes: string[];
+        scopes: TCredentialScope[];
         callbackUri: string;
         authorizationUri: string;
         authToken: string;
@@ -154,9 +154,8 @@ declare namespace SDKStandardComponents {
     type PostConsentRequestsRequest = {
         id: string;
         initiatorId: string;
-        accountIds: string[];
         authChannels: TAuthChannel[];
-        scopes: string[];
+        scopes: TCredentialScope[];
         callbackUri: string;
     }
 
