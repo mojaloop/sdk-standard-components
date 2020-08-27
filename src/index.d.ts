@@ -147,7 +147,7 @@ declare namespace SDKStandardComponents {
         authChannels: TAuthChannel[];
         scopes: TCredentialScope[];
         callbackUri: string;
-        authorizationUri: string;
+        authUri: string;
         authToken: string;
     }
 
