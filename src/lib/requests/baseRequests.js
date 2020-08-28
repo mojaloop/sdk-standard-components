@@ -305,7 +305,7 @@ class BaseRequests {
                 this.resourceVersions[resourceType]
                     ? this.resourceVersions[resourceType].acceptVersion
                     : '1'
-            }`
+            }`;
         }
 
         return headers;
