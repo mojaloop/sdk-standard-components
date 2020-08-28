@@ -271,7 +271,13 @@ class BaseRequests {
      */
     _buildHeaders(method, resourceType, dest) {
         let headers = {
-            'content-type': `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion || '1.0'}`,
+            'content-type': `application/vnd.interoperability.${resourceType}+json;version=${
+                this.resourceVersions &&
+                this.resourceVersions[resourceType] &&
+                this.resourceVersions[resourceType].contentVersion
+                    ? this.resourceVersions[resourceType].contentVersion
+                    : '1.0'
+            }`,
             'date': new Date().toUTCString(),
         };
 
@@ -293,7 +299,13 @@ class BaseRequests {
 
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
-            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion || '1'}`;
+            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=${
+                this.resourceVersions &&
+                this.resourceVersions[resourceType].acceptVersion &&
+                this.resourceVersions[resourceType]
+                    ? this.resourceVersions[resourceType].acceptVersion
+                    : '1'
+            }`
         }
 
         return headers;
