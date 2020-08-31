@@ -135,7 +135,6 @@ declare namespace SDKStandardComponents {
 
     type PutConsentRequestsRequest = {
         initiatorId: string;
-        accountIds: string[];
         authChannels: TAuthChannel[];
         scopes: string[];
         callbackUri: string;
@@ -146,7 +145,6 @@ declare namespace SDKStandardComponents {
     type PostConsentRequestsRequest = {
         id: string;
         initiatorId: string;
-        accountIds: string[];
         authChannels: TAuthChannel[];
         scopes: string[];
         callbackUri: string;
