@@ -217,10 +217,10 @@ declare namespace SDKStandardComponents {
         quoteId: string;
         transactionId: string;
         transactionRequestId: string;
-        payee: Party;
-        payer: Party;
-        amountType: AmountType;
-        amount: Money;
+        payee: TParty;
+        payer: TParty;
+        amountType: TAmountType;
+        amount: TMoney;
         transactionType: TransactionType;
         note: string;
     }
