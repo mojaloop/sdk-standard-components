@@ -138,7 +138,7 @@ declare namespace SDKStandardComponents {
         initiatorId: string;
         participantId: string;
         scopes: TCredentialScope[];
-        credential: TCredential;
+        credential?: TCredential;
     }
 
     type PutConsentRequestsRequest = {
