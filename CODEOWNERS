@@ -1,1 +1,6 @@
-*    james.bush@modusbox.com yevhen.kyriukha@modusbox.com
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @kirgene @KamuelaFranco @elnyry-sam-k @lewisdaly @bushjames
+# will be requested for review when someone opens a pull request.
+
+*   @kirgene @KamuelaFranco @elnyry-sam-k @lewisdaly @bushjames
