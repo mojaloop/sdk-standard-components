@@ -138,16 +138,15 @@ declare namespace SDKStandardComponents {
         initiatorId: string;
         participantId: string;
         scopes: TCredentialScope[];
-        credential: TCredential;
+        credential?: TCredential;
     }
 
     type PutConsentRequestsRequest = {
         initiatorId: string;
-        accountIds: string[];
         authChannels: TAuthChannel[];
         scopes: TCredentialScope[];
         callbackUri: string;
-        authUri: string;
+        authUri: string | null;
         authToken: string;
     }
 
@@ -218,10 +217,10 @@ declare namespace SDKStandardComponents {
         quoteId: string;
         transactionId: string;
         transactionRequestId: string;
-        payee: Party;
-        payer: Party;
-        amountType: AmountType;
-        amount: Money;
+        payee: TParty;
+        payer: TParty;
+        amountType: TAmountType;
+        amount: TMoney;
         transactionType: TransactionType;
         note: string;
     }
