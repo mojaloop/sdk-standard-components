@@ -75,6 +75,52 @@ class BaseRequests {
             });
         }
 
+        this.resourceVersions = {
+            ...{
+                parties: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                participants: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                quotes: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                bulkQuotes: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                bulkTransfers: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                transactionRequests: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                authorizations: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                transfers: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                custom: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                },
+                thirdparty: {
+                    contentVersion: '1.0',
+                    acceptVersion: '1',
+                }
+            },
+            ...config.resourceVersions
+        };
+        
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.resourceEndpoints = {
             parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
@@ -269,7 +315,7 @@ class BaseRequests {
      */
     _buildHeaders(method, resourceType, dest) {
         let headers = {
-            'content-type': `application/vnd.interoperability.${resourceType}+json;version=1.0`,
+            'content-type': `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
             'date': new Date().toUTCString(),
         };
 
@@ -291,7 +337,7 @@ class BaseRequests {
 
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
-            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=1.0`;
+            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
         }
 
         return headers;
