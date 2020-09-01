@@ -373,6 +373,51 @@ declare namespace SDKStandardComponents {
          */
         postQuotes(quoteRequest: PostQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
+
+    interface WSO2AuthConfig {
+        logger: {
+            log: (message: string) => void
+        },
+        tlsCreds?: {
+            ca: string
+            cert: string
+            key: string
+        },
+        clientKey?: string
+        clientSecret?: string
+        tokenEndpoint?: string
+        refreshSeconds?: number
+        refreshRetrySeconds?: number
+        staticToken?: string
+    }
+    /**
+     * @class WSO2Auth
+     * @description Obtain WSO2 bearer token and periodically refresh it
+     */
+    class WSO2Auth {
+        constructor(WSO2AuthConfig)
+
+        /**
+         * @function getToken
+         * @description returns the latest retrieved token
+         * @returns {string} the latest token
+         */
+        getToken(): string
+
+        /**
+         * @function start
+         * @description starts the retrieve fresh token periodic task
+         * @returns {Promise<void>}
+         */
+        async start(): void
+
+        /**
+         * @function stop
+         * @description stops the retrieve fresh token periodic task
+         * @returns {void}
+         */
+        stop(): void
+    }
 }
 
 export = SDKStandardComponents
