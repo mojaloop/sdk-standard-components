@@ -147,16 +147,15 @@ declare namespace SDKStandardComponents {
         initiatorId: string;
         participantId: string;
         scopes: TCredentialScope[];
-        credential: TCredential;
+        credential?: TCredential;
     }
 
     type PutConsentRequestsRequest = {
         initiatorId: string;
-        accountIds: string[];
         authChannels: TAuthChannel[];
         scopes: TCredentialScope[];
         callbackUri: string;
-        authUri: string;
+        authUri: string | null;
         authToken: string;
     }
 
@@ -227,10 +226,10 @@ declare namespace SDKStandardComponents {
         quoteId: string;
         transactionId: string;
         transactionRequestId: string;
-        payee: Party;
-        payer: Party;
-        amountType: AmountType;
-        amount: Money;
+        payee: TParty;
+        payer: TParty;
+        amountType: TAmountType;
+        amount: TMoney;
         transactionType: TransactionType;
         note: string;
     }
@@ -381,6 +380,51 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postQuotes(quoteRequest: PostQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+    }
+
+    interface WSO2AuthConfig {
+        logger: {
+            log: (message: string) => void
+        },
+        tlsCreds?: {
+            ca: string
+            cert: string
+            key: string
+        },
+        clientKey?: string
+        clientSecret?: string
+        tokenEndpoint?: string
+        refreshSeconds?: number
+        refreshRetrySeconds?: number
+        staticToken?: string
+    }
+    /**
+     * @class WSO2Auth
+     * @description Obtain WSO2 bearer token and periodically refresh it
+     */
+    class WSO2Auth {
+        constructor(WSO2AuthConfig)
+
+        /**
+         * @function getToken
+         * @description returns the latest retrieved token
+         * @returns {string} the latest token
+         */
+        getToken(): string
+
+        /**
+         * @function start
+         * @description starts the retrieve fresh token periodic task
+         * @returns {Promise<void>}
+         */
+        async start(): void
+
+        /**
+         * @function stop
+         * @description stops the retrieve fresh token periodic task
+         * @returns {void}
+         */
+        stop(): void
     }
 }
 
