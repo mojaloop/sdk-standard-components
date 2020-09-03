@@ -549,9 +549,17 @@ declare namespace SDKStandardComponents {
                 stringify: BuildStringify = this.stringify
             }): void
 
-            push(unknown): Logger
+            push(arg: unknown): Logger
             log(...args: unknown[]): void
-            
+
+            // default set of logging methods taken from default levels
+            verbose(arg: unknown): void
+            debug(arg: unknown): void
+            warn(arg: unknown): void
+            error(arg: unknown): void
+            trace(arg: unknown): void
+            info(arg: unknown): void
+            fatal(arg: unknown): void
         }
     }
 }
