@@ -403,7 +403,7 @@ declare namespace SDKStandardComponents {
      * @description Obtain WSO2 bearer token and periodically refresh it
      */
     class WSO2Auth {
-        constructor(WSO2AuthConfig)
+        constructor(config: WSO2AuthConfig)
 
         /**
          * @function getToken
@@ -417,7 +417,7 @@ declare namespace SDKStandardComponents {
          * @description starts the retrieve fresh token periodic task
          * @returns {Promise<void>}
          */
-        async start(): void
+        start(): void
 
         /**
          * @function stop
