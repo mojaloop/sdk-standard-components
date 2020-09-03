@@ -501,6 +501,59 @@ declare namespace SDKStandardComponents {
          */
         stop(): void
     }
+    namespace Logger {
+        import safeStringify from 'fast-safe-stringify'
+        type Level = 'verbose' | 'debug' | 'warn' | 'error' | 'trace' | 'info' | 'fatal'
+        type TimestampFormatter = (ts: Date) => string;
+        type Stringify = (toBeStringified: unknown) => string;
+        type LoggerStringify = ({ ctx: unknown, msg: unknown, level: Level }) => string
+        type BuildStringify = ({ 
+            space: number,
+            printTimestamp: boolean,
+            timestampFmt: TimestampFormatter,
+            stringify: Stringify 
+        }) => LoggerStringify;
+
+        function buildStringify({
+            space: number = 2,
+            printTimestamp: boolean = true,
+            timestampFmt: TimestampFormatter = (ts:Date) => ts.toISOString(),
+            stringify: Stringify = safeStringify
+        })
+
+        interface LoggerOptions {
+            allowContextOverwrite: boolean
+            copy: (unknown) => unknown
+            levels: Level[]
+        }
+
+        /** 
+         * @class Logger
+         * @description fast and lightweight logger which do pretty dumping of anything into the log in a pretty way 
+         */
+        class Logger {
+            protected stringify: BuildStringify
+            protected opts: LoggerOptions
+    
+            constructor({
+                ctx: unknown = {},
+                stringify: BuildStringify = buildStringify(),
+                opts: LoggerOptions = {
+                    allowContextOverwrite: false,
+                    copy: (o) => o,
+                    levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal']
+                }
+            })
+            
+            configure({
+                stringify: BuildStringify = this.stringify
+            }): void
+
+            push(unknown): Logger
+            log(...args: unknown[]): void
+            
+        }
+    }
 }
 
 export = SDKStandardComponents

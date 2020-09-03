@@ -33,11 +33,11 @@ Types currently live in `./src/index.d.ts`
 **Completed Modules**
 - `ThirdpartyRequests`
 - `WSO2Auth`
+- `Logger`
 
 **TODO**
 - `Errors`
 - `Ilp`
 - `Jws`
-- `Logger`
 - `MojaloopRequests`
 - `request`
