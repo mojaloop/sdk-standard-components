@@ -2,7 +2,32 @@ declare namespace SDKStandardComponents {
     /* Base Mojaloop Types */
 
     // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Currency.yaml
-    type TCurrency = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GGP' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HRK' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'IMP' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JEP' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SLL' | 'SOS' | 'SPL' | 'SRD' | 'STD' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TVD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'UYU' | 'UZS' | 'VEF' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XCD' | 'XDR' | 'XOF' | 'XPF' | 'YER' | 'ZAR' | 'ZMW' | 'ZWD';
+    type TCurrency = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' |
+        'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' |
+        'CAD' | 'CDF' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' |
+        'DJF' | 'DKK' | 'DOP' | 'DZD' |
+        'EGP' | 'ERN' | 'ETB' | 'EUR' |
+        'FJD' | 'FKP' |
+        'GBP' | 'GEL' | 'GGP' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' |
+        'HKD' | 'HNL' | 'HRK' | 'HTG' | 'HUF' |
+        'IDR' | 'ILS' | 'IMP' | 'INR' | 'IQD' | 'IRR' | 'ISK' |
+        'JEP' | 'JMD' | 'JOD' | 'JPY' |
+        'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' |
+        'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' |
+        'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MYR' | 'MZN' |
+        'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' |
+        'OMR' |
+        'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' |
+        'QAR' |
+        'RON' | 'RSD' | 'RUB' | 'RWF' |
+        'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SLL' | 'SOS' | 'SPL' | 'SRD' | 'STD' | 'SVC' | 'SYP' | 'SZL' |
+        'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TVD' | 'TWD' | 'TZS' |
+        'UAH' | 'UGX' | 'USD' | 'UYU' | 'UZS' |
+        'VEF' | 'VND' | 'VUV' |
+        'WST' |
+        'XAF' | 'XCD' | 'XDR' | 'XOF' | 'XPF' |
+        'YER' |
+        'ZAR' | 'ZMW' | 'ZWD';
 
     type TAuthChannel = 'WEB' | 'OTP';
 
@@ -247,7 +272,11 @@ declare namespace SDKStandardComponents {
          * @param {PatchConsentsRequest} consentBody The body of the consent object
          * @param {string} destParticipantId The id of the destination participant
          */
-        patchConsents(consentId: string, consentBody: PatchConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        patchConsents(
+            consentId: string,
+            consentBody: PatchConsentsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putConsents
@@ -256,7 +285,11 @@ declare namespace SDKStandardComponents {
          * @param {PutConsentsRequest} consentBody The body of the consent object
          * @param {string} destParticipantId The id of the destination participant
          */
-        putConsents(consentId: string, consentBody: PutConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putConsents(
+            consentId: string,
+            consentBody: PutConsentsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function postConsents
@@ -264,7 +297,10 @@ declare namespace SDKStandardComponents {
          * @param {PostConsentsRequest} consentBody The body of the consent object
          * @param {string} destParticipantId The id of the destination participant
          */
-        postConsents(consentBody: PostConsentsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postConsents(
+            consentBody: PostConsentsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putConsentRequests
@@ -273,7 +309,11 @@ declare namespace SDKStandardComponents {
          * @param {PutConsentRequestsRequest} consentRequestBody The body of the consent requests object
          * @param {string} destParticipantId The id of the destination participant
          */
-        putConsentRequests(consentRequestId: string, consentRequestBody: PutConsentRequestsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putConsentRequests(
+            consentRequestId: string,
+            consentRequestBody: PutConsentRequestsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function postConsentRequests
@@ -281,7 +321,10 @@ declare namespace SDKStandardComponents {
          * @param {PostConsentRequestsRequest} consentRequestBody The body of the consent requests object
          * @param {string} destParticipantId The id of the destination participant
          */
-        postConsentRequests(consentRequestBody: PostConsentRequestsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postConsentRequests(
+            consentRequestBody: PostConsentRequestsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
 
         /**
@@ -292,7 +335,10 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a PISP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postAuthorizations(authorizationBody: PostAuthorizationsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postAuthorizations(
+            authorizationBody: PostAuthorizationsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function getThirdpartyRequestsTransactions
@@ -302,7 +348,10 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The `id` of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        getThirdpartyRequestsTransactions(transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        getThirdpartyRequestsTransactions(
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function postThirdpartyRequestsTransactions
@@ -312,7 +361,10 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PostThirdPartyRequestTransactionsRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postThirdpartyRequestsTransactions(
+            thirdpartyRequestsTransactionsBody: PostThirdPartyRequestTransactionsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactions
@@ -323,7 +375,11 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactions(
+            thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsRequest,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsError
@@ -334,7 +390,11 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactionsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactionsError(
+            thirdpartyRequestsTransactionsBody: TErrorInformationObject,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function postThirdpartyRequestsTransactionsAuthorizations
@@ -345,7 +405,11 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PostThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postThirdpartyRequestsTransactionsAuthorizations(
+            thirdpartyRequestsTransactionsBody: PostThirdpartyRequestsTransactionsAuthorizationsRequest,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizations
@@ -356,7 +420,11 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsAuthorizationsRequest, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactionsAuthorizations(
+            thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsAuthorizationsRequest,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizationsError
@@ -367,7 +435,11 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody: TErrorInformationObject, transactionRequestId: string, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        putThirdpartyRequestsTransactionsAuthorizationsError(
+            thirdpartyRequestsTransactionsBody: TErrorInformationObject,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 
     class MojaloopRequests extends BaseRequests {
@@ -379,7 +451,10 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
          * @returns {Promise<object>} JSON response body if one was received
          */
-        postQuotes(quoteRequest: PostQuoteRequest, destParticipantId: string): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        postQuotes(
+            quoteRequest: PostQuoteRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
     }
 
     interface WSO2AuthConfig {
@@ -403,7 +478,7 @@ declare namespace SDKStandardComponents {
      * @description Obtain WSO2 bearer token and periodically refresh it
      */
     class WSO2Auth {
-        constructor(WSO2AuthConfig)
+        constructor(config: WSO2AuthConfig)
 
         /**
          * @function getToken
@@ -417,7 +492,7 @@ declare namespace SDKStandardComponents {
          * @description starts the retrieve fresh token periodic task
          * @returns {Promise<void>}
          */
-        async start(): void
+        start(): void
 
         /**
          * @function stop
@@ -425,6 +500,70 @@ declare namespace SDKStandardComponents {
          * @returns {void}
          */
         stop(): void
+    }
+    namespace Logger {
+        import safeStringify from 'fast-safe-stringify'
+        type Level = 'verbose' | 'debug' | 'warn' | 'error' | 'trace' | 'info' | 'fatal'
+        type TimestampFormatter = (ts: Date) => string;
+        type Stringify = (toBeStringified: unknown) => string;
+        type LoggerStringify = ({ ctx: unknown, msg: unknown, level: Level }) => string
+        type BuildStringify = ({ 
+            space: number,
+            printTimestamp: boolean,
+            timestampFmt: TimestampFormatter,
+            stringify: Stringify 
+        }) => LoggerStringify;
+
+        function buildStringify({
+            space: number = 2,
+            printTimestamp: boolean = true,
+            timestampFmt: TimestampFormatter = (ts:Date) => ts.toISOString(),
+            stringify: Stringify = safeStringify
+        }: LoggerStringify)
+
+        interface LoggerOptions {
+            allowContextOverwrite: boolean
+            copy: (unknown) => unknown
+            levels: Level[]
+        }
+
+        /** 
+         * @class Logger
+         * @description fast and lightweight logger which do pretty dumping of anything into the log in a pretty way 
+         */
+        class Logger {
+            protected stringify: BuildStringify
+            protected opts: LoggerOptions
+    
+            constructor({
+                ctx: unknown = {},
+                stringify: BuildStringify = buildStringify(),
+                opts: LoggerOptions = {
+                    allowContextOverwrite: false,
+                    copy: (o) => o,
+                    levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal']
+                }
+            })
+            
+            configure({
+                stringify: BuildStringify = this.stringify,
+                opts: LogggerOptions = this.opts
+            }): void
+
+            push(arg: unknown): Logger
+            log(...args: unknown[]): void
+
+            // default set of logging methods taken from default levels
+            // if you want to use different log levels 
+            // this part of code will not work for you
+            verbose(arg: unknown): void
+            debug(arg: unknown): void
+            warn(arg: unknown): void
+            error(arg: unknown): void
+            trace(arg: unknown): void
+            info(arg: unknown): void
+            fatal(arg: unknown): void
+        }
     }
 }
 
