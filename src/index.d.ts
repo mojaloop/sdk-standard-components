@@ -549,9 +549,9 @@ declare namespace SDKStandardComponents {
             protected stringify: BuildStringify
             protected opts: LoggerOptions
     
-            constructor(params: LoggerConstructorParams)
+            constructor(params?: LoggerConstructorParams)
             
-            configure(params: LoggerConfigureParams): void
+            configure(params?: LoggerConfigureParams): void
 
             push(arg: unknown): Logger
             log(...args: unknown[]): void
