@@ -502,29 +502,43 @@ declare namespace SDKStandardComponents {
         stop(): void
     }
     namespace Logger {
-        import safeStringify from 'fast-safe-stringify'
         type Level = 'verbose' | 'debug' | 'warn' | 'error' | 'trace' | 'info' | 'fatal'
         type TimestampFormatter = (ts: Date) => string;
         type Stringify = (toBeStringified: unknown) => string;
-        type LoggerStringify = ({ ctx: unknown, msg: unknown, level: Level }) => string
-        type BuildStringify = ({ 
-            space: number,
-            printTimestamp: boolean,
-            timestampFmt: TimestampFormatter,
-            stringify: Stringify 
-        }) => LoggerStringify;
+        interface LoggerStringifyParams { 
+            ctx: unknown
+            msg: unknown
+            level: Level 
+        }
 
-        function buildStringify({
-            space: number = 2,
-            printTimestamp: boolean = true,
-            timestampFmt: TimestampFormatter = (ts:Date) => ts.toISOString(),
-            stringify: Stringify = safeStringify
-        }: LoggerStringify)
+        type LoggerStringify = (params: LoggerStringifyParams) => string
+
+        
+        interface BuildStringifyParams {
+            space?: number
+            printTimestamp?: boolean
+            timestampFmt?: TimestampFormatter 
+            stringify?: Stringify
+        }
+        type BuildStringify = (params: BuildStringifyParams) => LoggerStringify;
+        
+        function buildStringify(params: BuildStringifyParams): LoggerStringify
 
         interface LoggerOptions {
             allowContextOverwrite: boolean
             copy: (unknown) => unknown
             levels: Level[]
+        }
+
+        interface LoggerConstructorParams {
+            ctx?: unknown 
+            stringify?: BuildStringify
+            opts?: LoggerOptions
+        }
+
+        interface LoggerConfigureParams {
+            stringify?: BuildStringify
+            opts?: LoggerOptions
         }
 
         /** 
@@ -535,20 +549,9 @@ declare namespace SDKStandardComponents {
             protected stringify: BuildStringify
             protected opts: LoggerOptions
     
-            constructor({
-                ctx: unknown = {},
-                stringify: BuildStringify = buildStringify(),
-                opts: LoggerOptions = {
-                    allowContextOverwrite: false,
-                    copy: (o) => o,
-                    levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal']
-                }
-            })
+            constructor(params: LoggerConstructorParams)
             
-            configure({
-                stringify: BuildStringify = this.stringify,
-                opts: LogggerOptions = this.opts
-            }): void
+            configure(params: LoggerConfigureParams): void
 
             push(arg: unknown): Logger
             log(...args: unknown[]): void
