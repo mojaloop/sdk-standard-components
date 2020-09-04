@@ -519,7 +519,7 @@ declare namespace SDKStandardComponents {
             printTimestamp: boolean = true,
             timestampFmt: TimestampFormatter = (ts:Date) => ts.toISOString(),
             stringify: Stringify = safeStringify
-        })
+        }: LoggerStringify)
 
         interface LoggerOptions {
             allowContextOverwrite: boolean
@@ -546,13 +546,16 @@ declare namespace SDKStandardComponents {
             })
             
             configure({
-                stringify: BuildStringify = this.stringify
+                stringify: BuildStringify = this.stringify,
+                opts: LogggerOptions = this.opts
             }): void
 
             push(arg: unknown): Logger
             log(...args: unknown[]): void
 
             // default set of logging methods taken from default levels
+            // if you want to use different log levels 
+            // this part of code will not work for you
             verbose(arg: unknown): void
             debug(arg: unknown): void
             warn(arg: unknown): void
