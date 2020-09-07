@@ -30,6 +30,7 @@ To aid consumers of this library, we are starting to work on adding typescript d
 
 Types currently live in `./src/index.d.ts`
 
+
 **Completed Modules**
 - `ThirdpartyRequests`
 - `WSO2Auth`
