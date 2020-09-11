@@ -62,6 +62,11 @@ const request = async (opts) => {
                 if (responseType === ResponseType.Text || !result.length) {
                     result = result.toString();
                 } else if (responseType === ResponseType.JSON) {
+                    const contentType = res.headers['content-type'];
+                    if (!/^application\/json/.test(contentType)) {
+                        return reject(new Error('Invalid content-type. ' +
+                            `Expected application/json but received ${contentType}`));
+                    }
                     result = JSON.parse(result);
                 }
                 resolve({
