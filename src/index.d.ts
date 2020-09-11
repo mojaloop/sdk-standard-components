@@ -578,12 +578,7 @@ declare namespace SDKStandardComponents {
         Text = Symbol('text'),
         Stream = Symbol('stream')
     }
-    enum RequestMethod {
-        GET = 'GET',
-        PATCH = 'PATCH',
-        POST = 'POST',
-        PUT = 'PUT'
-    }
+    type RequestMethod = 'GET' | 'PATCH' | 'POST' | 'PUT'
     interface RequestOptions {
         method: RequestMethod
         uri: string
