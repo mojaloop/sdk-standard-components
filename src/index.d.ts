@@ -203,6 +203,11 @@ declare namespace SDKStandardComponents {
         quote: TQuotesIDPutResponse;
     }
 
+    type TransactionType = {
+        scenario: string;
+        initiator: string;
+        initiatorType: string;
+    }
     type PostThirdPartyRequestTransactionsRequest = {
         transactionRequestId: string;
         sourceAccountId: string;
@@ -211,11 +216,7 @@ declare namespace SDKStandardComponents {
         payer: TParty;
         amountType: TAmountType;
         amount: TMoney;
-        transactionType: {
-            scenario: string;
-            initiator: string;
-            initiatorType: string;
-        };
+        transactionType: TransactionType;
         expiration: string;
     }
 
