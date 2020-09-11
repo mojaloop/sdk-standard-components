@@ -576,9 +576,11 @@ declare namespace SDKStandardComponents {
     interface RequestOptions {
         method: RequestMethod
         uri: string
-        agent: http.Agent,
+        agent: http.Agent
+        qs?: string
         headers?: Record<string, string>
         body? : Record<string, unknown>
+        responseType?: RequestResponseType
     }
     interface RequestResponse<Data = string | Buffer | Record<string, unknown>>{
         statusCode: number
@@ -589,7 +591,7 @@ declare namespace SDKStandardComponents {
     function request<Data>(opts: RequestOptions): Promise<RequestResponse<Data>>
 
     namespace request {
-        var ResponseType: RequestResponseType
+        let ResponseType: RequestResponseType
     }
 }
 
