@@ -24,7 +24,7 @@ function request(options, callback) {
     readable._read = jest.fn();
     readable.push(buffer);
     readable.push(null);
-    readable.headers = response.headers;
+    readable.headers = response.headers || {'content-type': 'application/json'};
     readable.statusCode = response.statusCode;
     callback(readable);
 
