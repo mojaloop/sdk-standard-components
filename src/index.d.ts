@@ -1,3 +1,4 @@
+
 declare namespace SDKStandardComponents {
     /* Base Mojaloop Types */
 
@@ -567,6 +568,39 @@ declare namespace SDKStandardComponents {
             info(arg: unknown): void
             fatal(arg: unknown): void
         }
+    }
+
+    import http from 'http'
+
+    enum RequestResponseType {
+        ArrayBuffer = Symbol('arraybuffer'),
+        JSON = Symbol('json'),
+        Text = Symbol('text'),
+        Stream = Symbol('stream')
+    }
+    enum RequestMethod {
+        GET = 'GET',
+        PATCH = 'PATCH',
+        POST = 'POST',
+        PUT = 'PUT'
+    }
+    interface RequestOptions {
+        method: RequestMethod
+        uri: string
+        agent: http.Agent,
+        headers?: Record<string, string>
+        body? : Record<string, unknown>
+    }
+    interface RequestResponse {
+        statusCode: number
+        headers?: Record<string, string>
+        data: string | Buffer | Record<string, unknown>
+    }
+
+    function request(opts: RequestOptions): Promise<RequestResponse>
+
+    namespace request {
+        var ResponseType: RequestResponseType
     }
 }
 

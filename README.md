@@ -35,10 +35,10 @@ Types currently live in `./src/index.d.ts`
 - `ThirdpartyRequests`
 - `WSO2Auth`
 - `Logger`
+- `request`
 
 **TODO**
 - `Errors`
 - `Ilp`
 - `Jws`
 - `MojaloopRequests`
-- `request`
