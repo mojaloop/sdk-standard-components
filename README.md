@@ -36,9 +36,9 @@ Types currently live in `./src/index.d.ts`
 - `WSO2Auth`
 - `Logger`
 - `request`
+- `Errors`
 
 **TODO**
-- `Errors`
 - `Ilp`
 - `Jws`
 - `MojaloopRequests`
