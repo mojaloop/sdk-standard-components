@@ -1,3 +1,5 @@
+import http from 'http'
+
 declare namespace SDKStandardComponents {
     /* Base Mojaloop Types */
 
@@ -201,6 +203,11 @@ declare namespace SDKStandardComponents {
         quote: TQuotesIDPutResponse;
     }
 
+    type TransactionType = {
+        scenario: string;
+        initiator: string;
+        initiatorType: string;
+    }
     type PostThirdPartyRequestTransactionsRequest = {
         transactionRequestId: string;
         sourceAccountId: string;
@@ -209,11 +216,7 @@ declare namespace SDKStandardComponents {
         payer: TParty;
         amountType: TAmountType;
         amount: TMoney;
-        transactionType: {
-            scenario: string;
-            initiator: string;
-            initiatorType: string;
-        };
+        transactionType: TransactionType;
         expiration: string;
     }
 
@@ -567,6 +570,29 @@ declare namespace SDKStandardComponents {
             info(arg: unknown): void
             fatal(arg: unknown): void
         }
+    }
+
+    enum RequestResponseType { ArrayBuffer, JSON, Text, Stream }
+    type RequestMethod = 'GET' | 'PATCH' | 'POST' | 'PUT'
+    interface RequestOptions {
+        method: RequestMethod
+        uri: string
+        agent: http.Agent
+        qs?: string
+        headers?: Record<string, string>
+        body? : Record<string, unknown>
+        responseType?: RequestResponseType
+    }
+    interface RequestResponse<Data = string | Buffer | Record<string, unknown>>{
+        statusCode: number
+        headers?: Record<string, string>
+        data: Data
+    }
+
+    function request<Data>(opts: RequestOptions): Promise<RequestResponse<Data>>
+
+    namespace request {
+        let ResponseType: RequestResponseType
     }
 }
 
