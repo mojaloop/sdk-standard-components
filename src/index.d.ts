@@ -715,6 +715,7 @@ declare namespace SDKStandardComponents {
 
             toApiErrorObject(): MojaloopApiErrorObject
             toFullErrorObject(): FullErrorObject
+            toString(): string
         }
     }
 }
