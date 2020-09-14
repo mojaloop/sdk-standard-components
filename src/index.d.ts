@@ -594,6 +594,129 @@ declare namespace SDKStandardComponents {
     namespace request {
         let ResponseType: RequestResponseType
     }
+
+    namespace Errors {
+        interface MojaloopApiErrorCode {
+            code: string
+            message: string
+            httpStatusCode?: number
+        }
+
+        interface MojaloopApiErrorObject {
+            errorInformation: {
+                errorCode: string
+                errorDescription: string
+                extensionList: unknown[]
+            }
+        }
+        interface MojaloopApiErrorCodesEnum {
+            //Generic communication errors
+            COMMUNICATION_ERROR:              MojaloopApiErrorCode
+            DESTINATION_COMMUNICATION_ERROR:  MojaloopApiErrorCode
+
+            //Generic server errors
+            SERVER_ERROR:                     MojaloopApiErrorCode
+            INTERNAL_SERVER_ERROR:            MojaloopApiErrorCode
+            NOT_IMPLEMENTED:                  MojaloopApiErrorCode
+            SERVICE_CURRENTLY_UNAVAILABLE:    MojaloopApiErrorCode
+            SERVER_TIMED_OUT:                 MojaloopApiErrorCode
+            SERVER_BUSY:                      MojaloopApiErrorCode
+
+            //Generic client errors
+            METHOD_NOT_ALLOWED:               MojaloopApiErrorCode
+            CLIENT_ERROR:                     MojaloopApiErrorCode
+            UNACCEPTABLE_VERSION:             MojaloopApiErrorCode
+            UNKNOWN_URI:                      MojaloopApiErrorCode
+            ADD_PARTY_INFO_ERROR:             MojaloopApiErrorCode
+            DELETE_PARTY_INFO_ERROR:          MojaloopApiErrorCode, // Error code thrown in ALS when deleting participant info fails
+
+            //Client validation errors
+            VALIDATION_ERROR:                 MojaloopApiErrorCode
+            MALFORMED_SYNTAX:                 MojaloopApiErrorCode
+            MISSING_ELEMENT:                  MojaloopApiErrorCode
+            TOO_MANY_ELEMENTS:                MojaloopApiErrorCode
+            TOO_LARGE_PAYLOAD:                MojaloopApiErrorCode
+            INVALID_SIGNATURE:                MojaloopApiErrorCode
+            MODIFIED_REQUEST:                 MojaloopApiErrorCode
+            MISSING_MANDATORY_EXTENSION:      MojaloopApiErrorCode
+
+            //identifier errors
+            ID_NOT_FOUND:                     MojaloopApiErrorCode
+            DESTINATION_FSP_ERROR:            MojaloopApiErrorCode
+            PAYER_FSP_ID_NOT_FOUND:           MojaloopApiErrorCode
+            PAYEE_FSP_ID_NOT_FOUND:           MojaloopApiErrorCode
+            PARTY_NOT_FOUND:                  MojaloopApiErrorCode
+            QUOTE_ID_NOT_FOUND:               MojaloopApiErrorCode
+            TXN_REQUEST_ID_NOT_FOUND:         MojaloopApiErrorCode
+            TXN_ID_NOT_FOUND:                 MojaloopApiErrorCode
+            TRANSFER_ID_NOT_FOUND:            MojaloopApiErrorCode
+            BULK_QUOTE_ID_NOT_FOUND:          MojaloopApiErrorCode
+            BULK_TRANSFER_ID_NOT_FOUND:       MojaloopApiErrorCode
+
+            //expired errors
+            EXPIRED_ERROR:                    MojaloopApiErrorCode
+            TXN_REQUEST_EXPIRED:              MojaloopApiErrorCode
+            QUOTE_EXPIRED:                    MojaloopApiErrorCode
+            TRANSFER_EXPIRED:                 MojaloopApiErrorCode
+
+            //payer errors
+            PAYER_ERROR:                      MojaloopApiErrorCode
+            PAYER_FSP_INSUFFICIENT_LIQUIDITY: MojaloopApiErrorCode
+            PAYER_REJECTION:                  MojaloopApiErrorCode
+            PAYER_REJECTED_TXN_REQUEST:       MojaloopApiErrorCode
+            PAYER_FSP_UNSUPPORTED_TXN_TYPE:   MojaloopApiErrorCode
+            PAYER_UNSUPPORTED_CURRENCY:       MojaloopApiErrorCode
+            PAYER_LIMIT_ERROR:                MojaloopApiErrorCode
+            PAYER_PERMISSION_ERROR:           MojaloopApiErrorCode
+            PAYER_BLOCKED_ERROR:              MojaloopApiErrorCode
+
+            //payee errors
+            PAYEE_ERROR:                      MojaloopApiErrorCode
+            PAYEE_FSP_INSUFFICIENT_LIQUIDITY: MojaloopApiErrorCode
+            PAYEE_REJECTION:                  MojaloopApiErrorCode
+            PAYEE_REJECTED_QUOTE:             MojaloopApiErrorCode
+            PAYEE_FSP_UNSUPPORTED_TXN_TYPE:   MojaloopApiErrorCode
+            PAYEE_FSP_REJECTED_QUOTE:         MojaloopApiErrorCode
+            PAYEE_REJECTED_TXN:               MojaloopApiErrorCode
+            PAYEE_FSP_REJECTED_TXN:           MojaloopApiErrorCode
+            PAYEE_UNSUPPORTED_CURRENCY:       MojaloopApiErrorCode
+            PAYEE_LIMIT_ERROR:                MojaloopApiErrorCode
+            PAYEE_PERMISSION_ERROR:           MojaloopApiErrorCode
+            GENERIC_PAYEE_BLOCKED_ERROR:      MojaloopApiErrorCode
+        }
+
+        const MojaloopApiErrorCodes: MojaloopApiErrorCodesEnum
+
+        function MojaloopApiErrorCodeFromCode(code: string): MojaloopApiErrorCode
+
+        function MojaloopApiErrorObjectFromCode(code: MojaloopApiErrorCode): MojaloopApiErrorObject
+
+        interface FullErrorObject {
+            message: string
+            replyTo: string
+            apiErrorCode: MojaloopApiErrorCode
+            extensions?: unknown[]
+            cause?: string
+        }
+        class MojaloopFSPIOPError extends Error {
+            public cause: Error | unknown
+            public message: string
+            public replyTo: string
+            public apiErrorCode: MojaloopApiErrorCode
+            public extensions: unknown[]
+
+            constructor(
+                cause: Error | unknown,
+                message: string,
+                replyTo: string,
+                apiErrorCode: MojaloopApiErrorCode,
+                extensions?: unknown[]
+            )
+
+            toApiErrorObject(): MojaloopApiErrorObject
+            toFullErrorObject(): FullErrorObject
+        }
+    }
 }
 
 export = SDKStandardComponents
