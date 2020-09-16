@@ -203,6 +203,25 @@ declare namespace SDKStandardComponents {
         quote: TQuotesIDPutResponse;
     }
 
+    type AuthenticationType = 'OTP' | 'QRCODE' | 'U2F'
+      
+    type AuthenticationValue = {
+        pinValue: string;
+        counter: string;
+    }
+    
+    type AuthenticationInfo = {
+        authentication: AuthenticationType;
+        authenticationValue: AuthenticationValue | string;
+    }
+      
+    type AuthorizationResponse = 'ENTERED' | 'REJECTED' | 'RESEND';
+    
+    type PutAuthorizationRequest = {
+        authenticationInfo: AuthenticationInfo;
+        responseType: AuthorizationResponse;
+    }
+
     type TransactionType = {
         scenario: string;
         initiator: string;
@@ -458,6 +477,35 @@ declare namespace SDKStandardComponents {
             quoteRequest: PostQuoteRequest,
             destParticipantId: string
         ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putAuthorizations
+         * @description 
+         *   Executes a 'PUT /authorizations' request
+         * @param {string} transactionRequestId 
+         * @param {object} authorizationResponse 
+         * @param {string} destFspId 
+         */
+        putAuthorizations(
+            transactionRequestId: string,
+            authorizationResponse: PutAuthorizationRequest,
+            destFspId: string 
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>
+
+        /**
+         * @function putAuthorizationsError
+         * @description
+         *   Executes a `PUT /authorizations/{ID}/error
+         * @param {string} transactionRequestId 
+         * @param {object} error 
+         * @param {string} destFspId 
+         */
+        putAuthorizationsError(
+            transactionRequestId: string,
+            error: TErrorInformationObject,
+            destFspId: string 
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>
+
     }
 
     interface WSO2AuthConfig {
