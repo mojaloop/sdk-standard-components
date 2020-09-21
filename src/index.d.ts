@@ -466,6 +466,39 @@ declare namespace SDKStandardComponents {
 
     class MojaloopRequests extends BaseRequests {
         /**
+         * Executes a GET /parties request for the specified identifier type and identifier
+         *
+         * @returns {object} - JSON response body if one was received
+         */
+        getParties(
+            idType: string,
+            idValue: string,
+            idSubValue?: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * Executes a PUT /parties request for the specified identifier type and indentifier
+         */
+        putParties(
+            idType: string,
+            idValue: string,
+            idSubValue: string | undefined,
+            body: TParty,
+            destFspId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
+         */
+        putPartiesError(
+            idType: string,
+            idValue: string,
+            idSubValue: string | undefined,
+            error: TErrorInformationObject,
+            destFspId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        
+        /**
          * @function postQuotes
          * @description
          *   Executes a `POST /postQuotes` request
