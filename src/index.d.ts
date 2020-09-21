@@ -466,6 +466,57 @@ declare namespace SDKStandardComponents {
 
     class MojaloopRequests extends BaseRequests {
         /**
+         * @function getParties
+         * @description
+         *   Executes a GET /parties request for the specified identifier type and identifier
+         * @param {string} idType The party id type
+         * @param {string} id The party id
+         * @param {string} [idSubValue] The optional party id sub value
+         * @returns Promise<{object}> - JSON response body if one was received
+         */
+        getParties(
+            idType: string,
+            idValue: string,
+            idSubValue?: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putParties
+         * @description
+         *   Executes a PUT /parties request for the specified identifier type and identifier
+         * @param {string} idType The party id type
+         * @param {string} id The party id
+         * @param {string} [idSubValue] The party id sub value - pass `undefined` if not specified
+         * @param {object} body The party's properties
+         * @param {string} destFspId The id of the destination participant, in this case, a DFSP
+         */ 
+        putParties(
+            idType: string,
+            idValue: string,
+            idSubValue: string | undefined,
+            body: TParty,
+            destFspId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
+         * @function putPartiesError
+         * @description
+         *   Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and identifier
+         * @param {string} idType The party id type
+         * @param {string} id The party id
+         * @param {string} [idSubValue] The party id sub value - pass `undefined` if not specified
+         * @param {Error} [error] The error specification
+         * @param {string} destFspId The id of the destination participant, in this case, a DFSP
+         */
+        putPartiesError(
+            idType: string,
+            idValue: string,
+            idSubValue: string | undefined,
+            error: TErrorInformationObject,
+            destFspId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        
+        /**
          * @function postQuotes
          * @description
          *   Executes a `POST /postQuotes` request
