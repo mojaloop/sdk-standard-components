@@ -314,6 +314,19 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
+         * @function putConsents
+         * @description Executes a `PUT /consents/{id}/error` request.
+         * @param {string} consentId The `id` of the consent object to be updated
+         * @param {PutConsentsRequest} consentBody The body of the consent object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putConsentsError(
+            consentId: string,
+            consentBody: PutConsentsRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
          * @function postConsents
          * @description Executes a `POST /consents` request.
          * @param {PostConsentsRequest} consentBody The body of the consent object
