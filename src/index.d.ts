@@ -322,7 +322,7 @@ declare namespace SDKStandardComponents {
          */
         putConsentsError(
             consentId: string,
-            consentBody: PutConsentsRequest,
+            consentBody: TErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
