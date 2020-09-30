@@ -12,9 +12,10 @@
 
 const MojaloopRequests = require('./mojaloopRequests.js');
 const ThirdpartyRequests = require('./thirdpartyRequests.js');
-
+const common = require('./common');
 
 module.exports = {
+    common,
     MojaloopRequests,
     ThirdpartyRequests,
 };
