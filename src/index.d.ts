@@ -685,7 +685,7 @@ declare namespace SDKStandardComponents {
     }
 
     enum RequestResponseType { ArrayBuffer, JSON, Text, Stream }
-    type RequestMethod = 'GET' | 'PATCH' | 'POST' | 'PUT' | 'PATCH'
+    type RequestMethod = 'GET' | 'PATCH' | 'POST' | 'PUT'
     export type RequestBody = string | Buffer | Uint8Array
     interface RequestOptions {
         method: RequestMethod
