@@ -686,13 +686,17 @@ declare namespace SDKStandardComponents {
 
     enum RequestResponseType { ArrayBuffer, JSON, Text, Stream }
     type RequestMethod = 'GET' | 'PATCH' | 'POST' | 'PUT'
+    export type RequestBody = string | Buffer | Uint8Array
     interface RequestOptions {
         method: RequestMethod
         uri: string
         agent: http.Agent
         qs?: string
         headers?: Record<string, string>
-        body? : Record<string, unknown>
+        // body is passed to http.ClientRequest.write
+        // https://nodejs.org/api/http.html#http_class_http_clientrequest
+        // https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
+        body? : RequestBody
         responseType?: RequestResponseType
     }
     interface RequestResponse<Data = string | Buffer | Record<string, unknown>>{
@@ -705,6 +709,12 @@ declare namespace SDKStandardComponents {
 
     namespace request {
         let ResponseType: RequestResponseType
+    }
+
+    namespace requests {
+        namespace common {
+            function bodyStringifier(unknown): string | Buffer 
+        }
     }
 
     namespace Errors {

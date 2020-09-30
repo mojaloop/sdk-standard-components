@@ -15,10 +15,10 @@ const Errors = require('./lib/errors');
 const Ilp = require('./lib/ilp');
 const Jws = require('./lib/jws');
 const Logger = require('./lib/logger');
-const { MojaloopRequests, ThirdpartyRequests } = require('./lib/requests');
+const requests = require('./lib/requests');
 const request = require('./lib/request');
 const WSO2Auth = require('./lib/WSO2Auth');
-
+const { MojaloopRequests, ThirdpartyRequests } = requests;
 
 module.exports = {
     Errors,
@@ -28,5 +28,6 @@ module.exports = {
     MojaloopRequests,
     ThirdpartyRequests,
     request,
+    requests,
     WSO2Auth,
 };
