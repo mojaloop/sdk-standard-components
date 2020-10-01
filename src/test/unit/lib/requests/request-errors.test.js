@@ -28,11 +28,9 @@ describe('request serialization', () => {
         const conf = {
             logger: mockLogger({ app: 'request-errors-test' }),
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
-                },
+                mutualTLS: {
+                    enabled: false
+                }
             },
             jwsSign: jwsSign,
             jwsSignPutParties: jwsSignPutParties,

@@ -45,10 +45,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -94,10 +92,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -110,10 +106,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: true,
@@ -140,7 +134,7 @@ describe('ThirdpartyRequests', () => {
         it('executes a `PATCH /consents/{id}` request', async () => {
             // Init
             const tpr = new ThirdpartyRequests(config);
-            
+
 
             // Act
             await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
@@ -153,7 +147,7 @@ describe('ThirdpartyRequests', () => {
         it('executes a `PATCH /consents/{id}` request with signing enabled', async () => {
             // Init
             const tpr = new ThirdpartyRequests(config2);
-            
+
             // Act
             await tpr.patchConsents(consentId, patchConsentsRequest, 'dfspa');
 
@@ -171,10 +165,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -219,10 +211,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -268,10 +258,8 @@ describe('ThirdpartyRequests', () => {
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -314,10 +302,8 @@ describe('ThirdpartyRequests', () => {
             logger: mockLogger({ app: 'postAuthorizations-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -362,10 +348,8 @@ describe('ThirdpartyRequests', () => {
             logger: mockLogger({ app: 'getthirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -410,10 +394,8 @@ describe('ThirdpartyRequests', () => {
             logger: mockLogger({ app: 'postThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -486,10 +468,8 @@ describe('ThirdpartyRequests', () => {
             logger: mockLogger({ app: 'putThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
@@ -564,10 +544,8 @@ describe('ThirdpartyRequests', () => {
             logger: mockLogger({ app: 'putThirdpartyRequestsTransactionAuthorization-test' }),
             peerEndpoint: '127.0.0.1',
             tls: {
-                outbound: {
-                    mutualTLS: {
-                        enabled: false
-                    }
+                mutualTLS: {
+                    enabled: false
                 }
             },
             jwsSign: false,
