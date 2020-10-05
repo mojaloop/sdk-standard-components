@@ -1,5 +1,5 @@
 import http from 'http'
-
+import { KeyObject } from 'tls'
 declare namespace SDKStandardComponents {
     /* Base Mojaloop Types */
 
@@ -136,10 +136,20 @@ declare namespace SDKStandardComponents {
     };
 
     type MojaloopRequestResponse = undefined;
+    interface BaseRequestTLSConfig {
+        mutualTLS: {
+            enabled: boolean;
+        };
+        creds: {
+            ca: string | Buffer | Array<string | Buffer>;
+            cert: string | Buffer | Array<string | Buffer>;
+            key?: string | Buffer | Array<Buffer | KeyObject>;
+        }
+    }
 
     type BaseRequestConfigType = {
-        logger: any;
-        tls: any;
+        logger: Logger.Logger;
+        tls: BaseRequestTLSConfig;
         dfspId: string;
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
@@ -573,9 +583,7 @@ declare namespace SDKStandardComponents {
     }
 
     interface WSO2AuthConfig {
-        logger: {
-            log: (message: string) => void
-        },
+        logger: Logger.Logger,
         tlsCreds?: {
             ca: string
             cert: string
