@@ -121,6 +121,20 @@ jobs:
       - store_artifacts:
           path: /lintresults
 
+  build-typescript:
+    <<: *defaults_working_directory
+    <<: *defaults_docker_node
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - checkout
+      - restore_cache:
+          keys:
+          - dependency-cache-1-{{ checksum "src/package.json" }}
+      - run:
+          name: Run the ts compiler
+          command: cd src && npm run build
 
 
 #  test-coverage:
@@ -267,6 +281,17 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
+      - build-typescript:
+          context: org-global
+          requires:
+            - setup
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore:
+                - /feature*/
+                - /bugfix*/
 
 #      - test-coverage:
 #          context: org-global
@@ -306,6 +331,7 @@ workflows:
           requires:
             - setup
             - test-unit
+            - build-typescript
 #            - test-coverage
 #            - vulnerability-check
 #            - audit-licenses
@@ -320,6 +346,7 @@ workflows:
           requires:
             - setup
             - test-unit
+            - build-typescript
 #            - test-coverage
 #            - vulnerability-check
 #            - audit-licenses
