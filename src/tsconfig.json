@@ -10,16 +10,13 @@
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
-    "rootDirs": [
-      "src",
-      "test"
-    ],
     "lib": [
       "esnext"
     ],
     "importHelpers": true,
     "declaration": true,
     "sourceMap": true,
+    "noEmit": true,
     "rootDir": "./",
     "outDir": "dist",
     "strict": true,
