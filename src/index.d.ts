@@ -649,7 +649,7 @@ declare namespace SDKStandardComponents {
 
         interface LoggerOptions {
             allowContextOverwrite: boolean
-            copy: (unknown) => unknown
+            copy: (arg0: unknown) => unknown
             levels: Level[]
         }
 
@@ -721,7 +721,7 @@ declare namespace SDKStandardComponents {
 
     namespace requests {
         namespace common {
-            function bodyStringifier(unknown): string | Buffer 
+            function bodyStringifier(arg0: unknown): string | Buffer 
         }
     }
 
