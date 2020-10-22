@@ -42,10 +42,12 @@ describe('request', () => {
         const conf = {
             logger: mockLogger({ app: 'request-test' }),
             peerEndpoint: request.host,
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
+            outbound: {
+                tls: {
+                    mutualTLS: {
+                        enabled: false
+                    }
+                },
             },
             jwsSign: true,
             jwsSignPutParties: true,

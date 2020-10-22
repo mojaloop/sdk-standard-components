@@ -44,7 +44,7 @@ class BaseRequests {
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
 
-        if (config.tls.mutualTLS.enabled) {
+        if (config.outbound.tls.mutualTLS.enabled) {
             this.agent = new https.Agent({
                 ...config.tls.creds,
                 keepAlive: true

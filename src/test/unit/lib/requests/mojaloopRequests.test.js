@@ -27,9 +27,11 @@ describe('PUT /parties', () => {
         const conf = {
             logger: mockLogger({ app: 'put-parties-test' }),
             peerEndpoint: '127.0.0.1',
-            tls: {
-                mutualTLS: {
-                    enabled: false
+            outbound: {
+                tls: {
+                    mutualTLS: {
+                        enabled: false
+                    }
                 }
             },
             jwsSign: jwsSign,
@@ -99,9 +101,11 @@ describe('PUT /quotes', () => {
         const conf = {
             // Disable logging in tests
             logger: mockLogger({ app: 'put-quotes-test' }),
-            tls: {
-                mutualTLS: {
-                    enabled: false
+            outbound: {
+                tls: {
+                    mutualTLS: {
+                        enabled: false
+                    }
                 }
             },
             jwsSign: jwsSign,
