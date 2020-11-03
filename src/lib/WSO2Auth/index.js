@@ -14,6 +14,7 @@ const http = require('http');
 const https = require('https');
 const qs = require('querystring');
 const request = require('../request');
+const EventEmitter = require('events');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -21,7 +22,7 @@ const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
 /**
  * Obtain WSO2 bearer token and periodically refresh it
  */
-class WSO2Auth {
+class WSO2Auth extends EventEmitter {
     /**
      *
      * @param {Object} opts
@@ -38,6 +39,7 @@ class WSO2Auth {
      * @param {String} [opts.staticToken] WSO2 static bearer token
      */
     constructor(opts) {
+        super({ captureExceptions: true });
         this._logger = opts.logger;
         this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
@@ -95,13 +97,19 @@ class WSO2Auth {
         };
         let refreshSeconds;
         try {
-            const response = (await request(reqOpts)).data;
-            this._token = response.access_token;
-            const tokenIsValidNumber = (typeof response.expires_in === 'number') && (response.expires_in > 0);
-            const tokenExpiry = tokenIsValidNumber ? response.expires_in : Infinity;
+            const response = (await request(reqOpts));
+            this._logger.push({ reqOpts, response }).log('Response received from WSO2');
+            if (response.statusCode > 299) {
+                this.emit('error');
+                throw new Error(`Unexpected response code ${response.statusCode} received from WSO2 token request`);
+            }
+            const { access_token, expires_in } = response.data;
+            this._token = access_token;
+            const tokenIsValidNumber = (typeof expires_in === 'number') && (expires_in > 0);
+            const tokenExpiry = tokenIsValidNumber ? expires_in : Infinity;
             refreshSeconds = Math.min(this._refreshSeconds, tokenExpiry);
             this._logger.log('WSO2 token refreshed successfully. ' +
-                `Token expiry is ${response.expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
+                `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
             this._logger.log(`Error performing WSO2 token refresh: ${error.message}. `
