@@ -67,7 +67,7 @@ class BaseRequests {
         else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
-        
+
         if (this.jwsSign) {
             this.jwsSigner = new JwsSigner({
                 logger: config.logger,
@@ -76,51 +76,49 @@ class BaseRequests {
         }
 
         this.resourceVersions = {
-            ...{
-                parties: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                participants: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                quotes: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                bulkQuotes: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                bulkTransfers: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                transactionRequests: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                authorizations: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                transfers: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                custom: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                },
-                thirdparty: {
-                    contentVersion: '1.0',
-                    acceptVersion: '1',
-                }
+            parties: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            participants: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            quotes: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            bulkQuotes: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            bulkTransfers: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            transactionRequests: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            authorizations: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            transfers: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            custom: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            thirdparty: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
             },
             ...config.resourceVersions
         };
-        
+
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.resourceEndpoints = {
             parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
@@ -218,7 +216,7 @@ class BaseRequests {
                 throw e;
             });
     }
-    
+
     /**
      * @function _patch
      * @description
