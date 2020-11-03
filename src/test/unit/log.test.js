@@ -138,7 +138,7 @@ describe('Logger', () => {
         expect(l._write).toHaveBeenCalledTimes(1);
         expect(JSON.parse(l._write.mock.calls[0])).toStrictEqual(expect.objectContaining({
             ...logObj,
-            msg: '{ ctx: [Circular] }',
+            msg: '<ref *1> { ctx: [Circular *1] }',
         }));
     });
 
