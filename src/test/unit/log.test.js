@@ -138,7 +138,11 @@ describe('Logger', () => {
         expect(l._write).toHaveBeenCalledTimes(1);
         expect(JSON.parse(l._write.mock.calls[0])).toStrictEqual(expect.objectContaining({
             ...logObj,
-            msg: '{ ctx: [Circular] }',
+            // Couldn't determine which version this came in, so it's possible you'll get a test
+            // failure here related to your version of Node. Try adjusting the version.
+            msg: process.versions.node.split('.')[0] >= 14
+                ? '<ref *1> { ctx: [Circular *1] }'
+                : '{ ctx: [Circular] }'
         }));
     });
 

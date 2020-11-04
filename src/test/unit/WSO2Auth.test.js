@@ -14,6 +14,20 @@ const WSO2Auth = require('../../lib/WSO2Auth');
 const mockLogger = require('../__mocks__/mockLogger');
 
 describe('WSO2Auth', () => {
+    let mockOpts, basicToken;
+
+    beforeEach(() => {
+        const clientKey = 'client-key';
+        const clientSecret = 'client-secret';
+        mockOpts = {
+            logger: mockLogger({ app: 'wso2-auth' }),
+            clientKey,
+            clientSecret,
+            tokenEndpoint: 'http://token-endpoint.com/v2',
+            refreshSeconds: 2,
+        };
+        basicToken = Buffer.from(`${clientKey}:${clientSecret}`).toString('base64');
+    });
 
     async function testTokenRefresh(userRefreshSeconds, tokenExpiresSeconds) {
         const TOKEN = 'new-token';
@@ -21,14 +35,9 @@ describe('WSO2Auth', () => {
             ? tokenExpiresSeconds : Infinity;
         const actualRefreshMs = Math.min(userRefreshSeconds, tokenExpirySeconds) * 1000;
         const opts = {
-            logger: mockLogger({ app: 'wso2-auth' }),
-            clientKey: 'client-key',
-            clientSecret: 'client-secret',
-            tokenEndpoint: 'http://token-endpoint.com/v2',
+            ...mockOpts,
             refreshSeconds: userRefreshSeconds,
         };
-        const basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
-            .toString('base64');
         const now = Date.now();
         let tokenRefreshTime = now;
 
@@ -75,15 +84,7 @@ describe('WSO2Auth', () => {
 
     test('should return new token when token API info was provided', async () => {
         const TOKEN = 'new-token';
-        const opts = {
-            logger: mockLogger({ app: 'wso2-auth' }),
-            clientKey: 'client-key',
-            clientSecret: 'client-secret',
-            tokenEndpoint: 'http://token-endpoint.com/v2',
-            refreshSeconds: 2,
-        };
-        const basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
-            .toString('base64');
+        const opts = mockOpts;
         http.__request = jest.fn(() => ({
             statusCode: 200,
             data: {
@@ -120,4 +121,18 @@ describe('WSO2Auth', () => {
         () => testTokenRefresh(4, 3)
     );
 
+    test('should emit error when receiving a 401 from WSO2', async () => {
+        const opts = mockOpts;
+        http.__request = jest.fn(() => ({ statusCode: 401, }));
+        const auth = new WSO2Auth(opts);
+        const errCallback = jest.fn();
+        auth.on('error', errCallback);
+        await auth.start();
+        expect(http.__request).toHaveBeenCalledTimes(1);
+        expect(http.__request.mock.calls[0][0].headers['Authorization'])
+            .toBe(`Basic ${basicToken}`);
+        expect(errCallback).toHaveBeenCalledTimes(1);
+        auth.stop();
+        http.__request.mockClear();
+    });
 });

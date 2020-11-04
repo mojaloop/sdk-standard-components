@@ -6,7 +6,7 @@ defaults_working_directory: &defaults_working_directory
 
 defaults_docker_node: &defaults_docker_node
   docker:
-    - image: mhart/alpine-node:12.16.0
+    - image: node:12.19.0-alpine
 
 defaults_Dependencies: &defaults_Dependencies |
     apk --no-cache add git
@@ -74,7 +74,7 @@ jobs:
       - checkout
       - run:
           name: Update NPM install
-          command: cd src && npm install
+          command: cd src && npm ci
       - save_cache:
           key: dependency-cache-1-{{ checksum "src/package.json" }}
           paths:

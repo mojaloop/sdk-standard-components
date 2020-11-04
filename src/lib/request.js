@@ -14,34 +14,35 @@ const querystring = require('querystring');
 const { URL } = require('url');
 
 const ResponseType = Object.freeze({
-    ArrayBuffer:   Symbol('arraybuffer'),
+    ArrayBuffer: Symbol('arraybuffer'),
     JSON:  Symbol('json'),
     Text: Symbol('text'),
     Stream: Symbol('stream'),
 });
 
-const request = async (opts) => {
-    const qs = querystring.encode(opts.qs);
-    const completeUrl = new URL(opts.uri + (qs.length ? `?${qs}` : ''));
+const request = async ({
+    uri,
+    qs = null,
+    responseType = ResponseType.JSON,
+    body = null,
+    method,
+    headers,
+    agent,
+}) => {
+    const qsEnc = querystring.encode(qs);
+    const completeUrl = new URL(uri + (qsEnc.length ? `?${qsEnc}` : ''));
 
     const reqOpts = {
-        method: opts.method,
+        method,
         host: completeUrl.hostname,
         port: completeUrl.port,
         path: completeUrl.pathname + completeUrl.search + completeUrl.hash,
-        headers: opts.headers,
-        agent: opts.agent,
+        headers,
+        agent,
     };
 
-    let responseType;
-    if (opts.responseType) {
-        responseType = opts.responseType;
-    } else {
-        responseType = ResponseType.JSON;
-    }
-
-    if (opts.body) {
-        reqOpts.headers['content-length'] = Buffer.byteLength(opts.body);
+    if (body) {
+        reqOpts.headers['content-length'] = Buffer.byteLength(body);
     }
 
     const adapter = (completeUrl.protocol === 'https:') ? https : http;
@@ -79,8 +80,8 @@ const request = async (opts) => {
 
         req.on('error', reject);
 
-        if (opts.body) {
-            req.write(opts.body);
+        if (body) {
+            req.write(body);
         }
         req.end();
     });
