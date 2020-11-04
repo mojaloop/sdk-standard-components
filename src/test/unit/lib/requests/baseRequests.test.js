@@ -36,7 +36,7 @@ describe('BaseRequests', () => {
 
     afterEach(() => {
         http.__request.mockClear();
-    })
+    });
 
     it('does not retry requests when not configured to do so', async () => {
         const conf = {
@@ -45,8 +45,9 @@ describe('BaseRequests', () => {
                 auth: wso2Auth,
                 // retryWso2AuthFailureTimes: undefined, // the default
             }
-        }
-        const br = new BaseRequests(defaultConf);
+        };
+
+        const br = new BaseRequests(conf);
         await br._request({ uri: 'http://what.ever' });
 
         expect(http.__request).toBeCalledTimes(1);
@@ -83,7 +84,7 @@ describe('BaseRequests', () => {
         http.__request = jest.fn(() => ({ statusCode: 401 }));
 
         const br = new BaseRequests(conf);
-        const resp = await br._request({ uri: 'http://what.ever', headers: {} });
+        await br._request({ uri: 'http://what.ever', headers: {} });
 
         expect(http.__request).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes + 1);
         expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
