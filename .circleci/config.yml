@@ -6,7 +6,7 @@ defaults_working_directory: &defaults_working_directory
 
 defaults_docker_node: &defaults_docker_node
   docker:
-    - image: node:alpine-12.19.0
+    - image: node:12.19.0-alpine
 
 defaults_Dependencies: &defaults_Dependencies |
     apk --no-cache add git
