@@ -74,7 +74,7 @@ jobs:
       - checkout
       - run:
           name: Update NPM install
-          command: cd src && npm install
+          command: cd src && npm ci
       - save_cache:
           key: dependency-cache-1-{{ checksum "src/package.json" }}
           paths:
