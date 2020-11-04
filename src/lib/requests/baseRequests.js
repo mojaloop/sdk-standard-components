@@ -36,7 +36,9 @@ class BaseRequests {
      *    it will default to the value of `config.jwsSign`
      * @param {string | undefined} config.jwsSigningKey Optional. The jwsSigningKey
      *   to use. Required if `jwsSign === true`
-     * @param {Object | undefined} config.wso2Auth Optional. The wso2Auth object.
+     * @param {Object | undefined} config.wso2 Optional. The wso2Auth object and
+     *   number indicating how many times to retry a request that fails authorization.
+     *   Example: { auth, retryWso2AuthFailureTimes: 1 }
      */
     constructor(config) {
         this.logger = config.logger;
@@ -132,7 +134,44 @@ class BaseRequests {
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
         };
 
-        this.wso2Auth = config.wso2Auth;
+        this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
+    }
+
+    _request(opts, responseType) {
+        const __request = async (opts, responseType, attempts) => request(opts)
+            .then((res) => {
+                const retry =
+                    res.statusCode === 401 &&
+                    this.wso2.auth &&
+                    attempts < this.wso2.retryWso2AuthFailureTimes;
+                if (retry) {
+                    const token = this.wso2.auth.refreshToken();
+                    if (token) {
+                        opts.headers['Authorization'] = `Bearer ${token}`;
+                    } else {
+                        const msg = 'Unable to retrieve WSO2 auth token';
+                        this.logger.push({ attempts, opts, res }).log(msg);
+                        throw new Error(msg);
+                    }
+                    return __request(opts, responseType, attempts + 1);
+                }
+                return res;
+            });
+        return __request(opts, responseType, 0)
+            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
+            .catch((err) => {
+                const tryParse = (body) => {
+                    try {
+                        return JSON.parse(body);
+                    } catch {
+                        return undefined;
+                    }
+                };
+                this.logger
+                    .push({ opts, err, body: tryParse(opts.body) })
+                    .log('Error attempting request');
+                throw err;
+            });
     }
 
     /**
@@ -157,6 +196,7 @@ class BaseRequests {
                 ...headers,
             },
             qs: query,
+            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
@@ -166,12 +206,7 @@ class BaseRequests {
         // Note we do not JWS sign requests with no body i.e. GET requests
 
         this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
-        return request({ ...reqOpts, agent: this.agent })
-            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
-            .catch(e => {
-                this.logger.log('Error attempting GET. URL:', url, 'Opts:', reqOpts, 'Error:', e);
-                throw e;
-            });
+        return this._request(reqOpts, responseType);
     }
 
     /**
@@ -196,6 +231,7 @@ class BaseRequests {
             },
             body: body,
             qs: query,
+            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
@@ -209,12 +245,7 @@ class BaseRequests {
         reqOpts.body = bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
-        return request({ ...reqOpts, agent: this.agent })
-            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
-            .catch(e => {
-                this.logger.log('Error attempting PUT. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
-                throw e;
-            });
+        return this._request(reqOpts, responseType);
     }
 
     /**
@@ -239,6 +270,7 @@ class BaseRequests {
             },
             body: body,
             qs: query,
+            agent: this.agent,
         };
 
 
@@ -249,12 +281,7 @@ class BaseRequests {
         reqOpts.body = bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP PATCH: ${util.inspect(reqOpts)}`);
-        return request({ ...reqOpts, agent: this.agent })
-            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
-            .catch(e => {
-                this.logger.log('Error attempting PATCH. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
-                throw e;
-            });
+        return this._request(reqOpts, responseType);
     }
 
     /**
@@ -293,12 +320,7 @@ class BaseRequests {
         reqOpts.body = bodyStringifier(reqOpts.body);
 
         this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
-        return request({ ...reqOpts, agent: this.agent })
-            .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
-            .catch(e => {
-                this.logger.log('Error attempting POST. URL:', url, 'Opts:', reqOpts, 'Body:', body, 'Error:', e);
-                throw e;
-            });
+        return this._request(reqOpts, responseType);
     }
 
     /**
@@ -326,8 +348,8 @@ class BaseRequests {
         }
 
         //Need to populate Bearer Token if we are in OAuth2.0 environment
-        if (this.wso2Auth) {
-            const token = this.wso2Auth.getToken();
+        if (this.wso2.auth) {
+            const token = this.wso2.auth.getToken();
             if(token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }

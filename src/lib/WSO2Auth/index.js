@@ -43,7 +43,6 @@ class WSO2Auth extends EventEmitter {
         this._logger = opts.logger;
         this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
-        this._stopped = false;
 
         if ((typeof this._refreshSeconds !== 'number') || (this._refreshSeconds <= 0)) {
             throw new Error('WSO2 auth config: refreshSeconds must be a positive integer value');
@@ -82,11 +81,26 @@ class WSO2Auth extends EventEmitter {
         }
     }
 
-    async _refreshToken() {
-        if (this._stopped) {
-            this._logger.log('WSO2 token refresh stopped');
-            return;
+    getToken() {
+        return this._token;
+    }
+
+    async start() {
+        if (this._token === undefined) {
+            await this.refreshToken();
         }
+    }
+
+    stop() {
+        clearTimeout(this._refreshTimer);
+        this._refreshTimer = null;
+        this._token = null;
+    }
+
+    async refreshToken() {
+        // Prevent the timeout from expiring and triggering an extraneous refresh
+        this.stop();
+
         this._logger.log('WSO2 token refresh initiated');
         const reqOpts = {
             ...this._reqOpts,
@@ -97,7 +111,7 @@ class WSO2Auth extends EventEmitter {
         };
         let refreshSeconds;
         try {
-            const response = (await request(reqOpts));
+            const response = await request(reqOpts);
             this._logger.push({ reqOpts, response }).log('Response received from WSO2');
             if (response.statusCode > 299) {
                 this.emit('error');
@@ -116,26 +130,8 @@ class WSO2Auth extends EventEmitter {
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
-        if (!this._stopped) {
-            this._refreshTimer = setTimeout(this._refreshToken.bind(this), refreshSeconds * 1000);
-        } else {
-            this._logger.log('WSO2 token refresh stopped');
-        }
-    }
-
-    getToken() {
-        return this._token;
-    }
-
-    async start() {
-        if (this._token === undefined) {
-            await this._refreshToken();
-        }
-    }
-
-    stop() {
-        this._stopped = true;
-        clearTimeout(this._refreshTimer);
+        this._refreshTimer = setTimeout(this.refreshToken.bind(this), refreshSeconds * 1000);
+        return this.getToken();
     }
 }
 
