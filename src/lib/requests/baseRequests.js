@@ -145,6 +145,7 @@ class BaseRequests {
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
                 if (retry) {
+                    this.logger.log('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
@@ -153,6 +154,7 @@ class BaseRequests {
                         this.logger.push({ attempts, opts, res }).log(msg);
                         throw new Error(msg);
                     }
+                    this.logger.push({ attempts, opts }).log('Retrying request with new WSO2 token.');
                     return __request(opts, responseType, attempts + 1);
                 }
                 return res;
