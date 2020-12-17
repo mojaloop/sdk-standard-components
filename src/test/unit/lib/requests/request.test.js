@@ -62,6 +62,16 @@ describe('request', () => {
                 data = JSON.parse(data);
             }
         }
+
+        expect(resp.originalRequest.body).toEqual(request.body);
+        expect(resp.originalRequest.headers).not.toBeUndefined();
+        expect(resp.originalRequest.path).not.toBeUndefined();
+
+        if(!expectedResponse.originalRequest) {
+            // ignore the originalRequest prop on resp.
+            delete resp.originalRequest;
+        }
+
         expect({ ...resp, data }).toEqual(expectedResponse);
     }
 

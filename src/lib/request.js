@@ -48,12 +48,18 @@ const request = async ({
     const adapter = (completeUrl.protocol === 'https:') ? https : http;
 
     return new Promise((resolve, reject) => {
+        const originalRequest = {
+            ...reqOpts,
+            body,
+        };
+
         const req = adapter.request(reqOpts, (res) => {
             if (responseType === ResponseType.Stream) {
                 return resolve({
                     statusCode: res.statusCode,
                     headers: res.headers,
                     data: res,
+                    originalRequest,
                 });
             }
             const data = [];
@@ -74,6 +80,7 @@ const request = async ({
                     statusCode: res.statusCode,
                     headers: res.headers,
                     data: result,
+                    originalRequest,
                 });
             });
         });
