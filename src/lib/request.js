@@ -71,8 +71,10 @@ const request = async ({
                 } else if (responseType === ResponseType.JSON) {
                     const contentType = res.headers['content-type'];
                     if (!/^application\/json/.test(contentType)) {
-                        return reject(new Error('Invalid content-type. ' +
-                            `Expected application/json but received ${contentType}`));
+                        let err = new Error('Invalid content-type. ' +
+                            `Expected application/json but received ${contentType}`);
+                        err.originalRequest = originalRequest;
+                        return reject(err);
                     }
                     result = JSON.parse(result);
                 }
@@ -85,7 +87,10 @@ const request = async ({
             });
         });
 
-        req.on('error', reject);
+        req.on('error', (err) => {
+            err.originalRequest = originalRequest;
+            reject(err);
+        });
 
         if (body) {
             req.write(body);
