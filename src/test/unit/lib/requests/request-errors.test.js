@@ -16,7 +16,7 @@ const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
-describe('request serialization', () => {
+describe('request error handling', () => {
 
     async function primRequestSerializationTest(mojaloopRequestMethodName) {
         let jwsSign = false;
@@ -75,4 +75,23 @@ describe('request serialization', () => {
             }
         }
     );
+
+    test('Errors include original request object', async () => {
+        expect.hasAssertions();
+        try {
+            await primRequestSerializationTest('_post');
+        } catch (err) {
+            expect(err.code).toBe('ECONNREFUSED');
+            expect(err.address).toBe('127.0.0.1');
+            expect(err.port).toBe(9999);
+
+            expect(err.originalRequest).not.toBeUndefined();
+            expect(err.originalRequest.port).not.toBeUndefined();
+            expect(err.originalRequest.body).not.toBeUndefined();
+            expect(err.originalRequest.headers).not.toBeUndefined();
+            expect(err.originalRequest.host).not.toBeUndefined();
+            expect(err.originalRequest.method).not.toBeUndefined();
+            expect(err.originalRequest.path).not.toBeUndefined();
+        }
+    });
 });
