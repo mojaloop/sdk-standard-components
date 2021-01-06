@@ -15,7 +15,7 @@ const BaseRequests = require('../../../../lib/requests/baseRequests');
 // const WSO2Auth = require('../../../../lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
-describe('BaseRequests', () => {
+describe('BaseRequests wso2 authorisation', () => {
     let wso2Auth, defaultConf;
 
     beforeEach(() => {
@@ -88,5 +88,85 @@ describe('BaseRequests', () => {
 
         expect(http.__request).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes + 1);
         expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+    });
+});
+
+describe('BaseRequests', () => {
+    let defaultConf;
+
+    beforeEach(() => {
+        defaultConf = {
+            logger: mockLogger({ app: 'BaseRequests test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+        };
+        http.__request = jest.fn(() => ({ statusCode: 200 }));
+    });
+
+    afterEach(() => {
+        http.__request.mockClear();
+    });
+
+    it('returns original request details for GET calls when response type is mojaloop', async () => {
+        const conf = {
+            ...defaultConf,
+        };
+
+        const br = new BaseRequests(conf);
+        const res = await br._get('parties/MSISDN/1234567',
+            'parties',
+            'somefsp');
+
+        expect(res).not.toBeUndefined();
+        expect(res.originalRequest).not.toBeUndefined();
+    });
+
+    it('returns original request details for POST calls when response type is mojaloop', async () => {
+        const conf = {
+            ...defaultConf,
+        };
+
+        const br = new BaseRequests(conf);
+        const res = await br._post('quotes',
+            'quotes',
+            {},
+            'somefsp');
+
+        expect(res).not.toBeUndefined();
+        expect(res.originalRequest).not.toBeUndefined();
+    });
+
+    it('returns original request details for PUT calls when response type is mojaloop', async () => {
+        const conf = {
+            ...defaultConf,
+        };
+
+        const br = new BaseRequests(conf);
+        const res = await br._put('quotes/1234567',
+            'quotes',
+            {},
+            'somefsp');
+
+        expect(res).not.toBeUndefined();
+        expect(res.originalRequest).not.toBeUndefined();
+    });
+
+    it('returns original request details for PATCH calls when response type is mojaloop', async () => {
+        const conf = {
+            ...defaultConf,
+        };
+
+        const br = new BaseRequests(conf);
+        const res = await br._patch('transfers/1234567',
+            'transfers',
+            {},
+            'somefsp');
+
+        expect(res).not.toBeUndefined();
+        expect(res.originalRequest).not.toBeUndefined();
     });
 });
