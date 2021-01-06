@@ -74,6 +74,13 @@ const throwOrJson = async (res) => {
         });
     }
 
+    //if res has an "originalRequest" property then return a simple object containing that
+    if(typeof(res.originalRequest) !== 'undefined') {
+        return {
+            originalRequest: res.originalRequest,
+        };
+    }
+
     //return undefined as we do not expect body responses to mojaloop api requests
     return;
 };
