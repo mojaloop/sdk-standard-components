@@ -309,6 +309,7 @@ class BaseRequests {
             },
             body: body,
             qs: query,
+            agent: this.agent,
         };
 
         if (responseType === ResponseType.Stream) {
