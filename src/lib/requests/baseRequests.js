@@ -170,7 +170,7 @@ class BaseRequests {
                     }
                 };
                 this.logger
-                    .push({ opts, err, body: tryParse(opts.body) })
+                    .push({ opts: { ...opts, agent: '[REDACTED]' }, err, body: tryParse(opts.body) })
                     .log('Error attempting request');
                 throw err;
             });
@@ -207,7 +207,7 @@ class BaseRequests {
 
         // Note we do not JWS sign requests with no body i.e. GET requests
 
-        this.logger.log(`Executing HTTP GET: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP GET: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -246,7 +246,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP PUT: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP PUT: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -282,7 +282,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP PATCH: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP PATCH: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -322,7 +322,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP POST: ${util.inspect(reqOpts)}`);
+        this.logger.log(`Executing HTTP POST: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
