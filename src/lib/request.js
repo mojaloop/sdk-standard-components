@@ -50,6 +50,7 @@ const request = async ({
     return new Promise((resolve, reject) => {
         const originalRequest = {
             ...reqOpts,
+            agent: '[REDACTED]',
             body,
         };
 
