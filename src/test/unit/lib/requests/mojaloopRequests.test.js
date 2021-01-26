@@ -18,11 +18,20 @@ const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
+let wso2Auth;
+beforeEach(() => {
+    wso2Auth = new WSO2Auth({
+        auth: {},
+        tls: {
+            enabled: false
+        },
+        logger: console,
+    });
+})
+
 describe('PUT /parties', () => {
 
     async function testPutParties(jwsSign, jwsSignPutParties, expectUndefined) {
-        const wso2Auth = new WSO2Auth({logger: console});
-
         // Everything is false by default
         const conf = {
             logger: mockLogger({ app: 'put-parties-test' }),
@@ -93,8 +102,6 @@ describe('PUT /parties', () => {
 describe('PUT /quotes', () => {
 
     async function testPutQuotes(jwsSign, jwsSignPutParties, expectUndefined) {
-        const wso2Auth = new WSO2Auth({logger: console});
-
         // Everything is false by default
         const conf = {
             // Disable logging in tests

@@ -22,7 +22,13 @@ describe('request error handling', () => {
         let jwsSign = false;
         let jwsSignPutParties = false;
 
-        const wso2Auth = new WSO2Auth({logger: console});
+        const wso2Auth = new WSO2Auth({
+            logger: console,
+            auth: {},
+            tls: {
+                enabled: false,
+            },
+        });
 
         // Everything is false by default
         const conf = {

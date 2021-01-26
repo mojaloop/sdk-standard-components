@@ -21,10 +21,15 @@ describe('WSO2Auth', () => {
         const clientSecret = 'client-secret';
         mockOpts = {
             logger: mockLogger({ app: 'wso2-auth' }),
-            clientKey,
-            clientSecret,
-            tokenEndpoint: 'http://token-endpoint.com/v2',
-            refreshSeconds: 2,
+            auth: {
+                clientKey,
+                clientSecret,
+                tokenEndpoint: 'http://token-endpoint.com/v2',
+                refreshSeconds: 2,
+            },
+            tls: {
+                enabled: false,
+            },
         };
         basicToken = Buffer.from(`${clientKey}:${clientSecret}`).toString('base64');
     });
@@ -36,7 +41,10 @@ describe('WSO2Auth', () => {
         const actualRefreshMs = Math.min(userRefreshSeconds, tokenExpirySeconds) * 1000;
         const opts = {
             ...mockOpts,
-            refreshSeconds: userRefreshSeconds,
+            auth: {
+                ...mockOpts.auth,
+                refreshSeconds: userRefreshSeconds,
+            },
         };
         const now = Date.now();
         let tokenRefreshTime = now;
@@ -73,8 +81,13 @@ describe('WSO2Auth', () => {
         const TOKEN = 'abc123';
         const auth = new WSO2Auth({
             logger: mockLogger({ app: 'wso2-auth' }),
-            staticToken: TOKEN,
-            refreshSeconds: 2,
+            auth: {
+                staticToken: TOKEN,
+                refreshSeconds: 2,
+            },
+            tls: {
+                enabled: false,
+            },
         });
         await auth.start();
         const token = auth.getToken();

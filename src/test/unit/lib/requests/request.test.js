@@ -36,7 +36,7 @@ describe('request', () => {
             .post(request.uri + (qs ? `?${qs}` : ''), request.body)
             .reply(expectedResponse.statusCode, expectedResponse.data, expectedResponse.headers);
 
-        const wso2Auth = new WSO2Auth({logger: console});
+        const wso2Auth = new WSO2Auth({logger: console, auth: {}, tls: { enabled: false }});
 
         // Everything is false by default
         const conf = {

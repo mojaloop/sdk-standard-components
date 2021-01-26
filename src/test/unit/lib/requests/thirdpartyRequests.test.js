@@ -37,9 +37,18 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 
 
 describe('ThirdpartyRequests', () => {
+    let wso2Auth;
+    beforeEach(() => {
+        wso2Auth = new WSO2Auth({
+            logger: mockLogger({ app: 'third-party-wso2-logger' }),
+            auth: {},
+            tls: {
+                enabled: false,
+            },
+        });
+    })
     describe('putConsents', () => {
         const putConsentsRequest = require('../../data/putConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consents-test' }) });
         const config = {
             logger: mockLogger({ app: 'put-consents-test' }),
             peerEndpoint: '127.0.0.1',
@@ -86,7 +95,6 @@ describe('ThirdpartyRequests', () => {
 
     describe('patchConsents', () => {
         const patchConsentsRequest = require('../../data/patchConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consents-test' }) });
         const config = {
             logger: mockLogger({ app: 'patch-consents-test' }),
             peerEndpoint: '127.0.0.1',
@@ -159,7 +167,6 @@ describe('ThirdpartyRequests', () => {
 
     describe('postConsents', () => {
         const postConsentsRequest = require('../../data/postConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consents-test' }) });
         const config = {
             logger: mockLogger({ app: 'post-consents-test' }),
             peerEndpoint: '127.0.0.1',
@@ -205,7 +212,6 @@ describe('ThirdpartyRequests', () => {
 
     describe('putConsentRequests', () => {
         const putConsentRequestsRequests = require('../../data/putConsentRequestsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-test' }) });
         const config = {
             logger: mockLogger({ app: 'put-consent-requests-test' }),
             peerEndpoint: '127.0.0.1',
@@ -252,7 +258,6 @@ describe('ThirdpartyRequests', () => {
 
     describe('postConsentRequests', () => {
         const postConsentRequestsRequest = require('../../data/postConsentRequestsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consent-requests-test' }) });
         const config = {
             logger: mockLogger({ app: 'post-consent-requests-test' }),
             peerEndpoint: '127.0.0.1',
@@ -297,7 +302,6 @@ describe('ThirdpartyRequests', () => {
     });
 
     describe('postAuthorizations', () => {
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-authorizations-test'})});
         const config = {
             logger: mockLogger({ app: 'postAuthorizations-test' }),
             peerEndpoint: '127.0.0.1',
@@ -343,7 +347,6 @@ describe('ThirdpartyRequests', () => {
     });
 
     describe('getThirdpartyRequestsTransactions', () => {
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
         const config = {
             logger: mockLogger({ app: 'getthirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
@@ -389,7 +392,6 @@ describe('ThirdpartyRequests', () => {
     describe('postThirdpartyRequestsTransactions', () => {
         const postTransactionRequest = require('../../data/postThirdpartyRequestsTransaction.json');
         const postTransactionRequestAuthorization = require('../../data/postThirdpartyRequestsTransactionAuthorization.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-thirdparty-request-transaction-test'})});
         const config = {
             logger: mockLogger({ app: 'postThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
@@ -463,7 +465,6 @@ describe('ThirdpartyRequests', () => {
     describe('putThirdpartyRequestsTransactions', () => {
         const putSuccessRequest = require('../../data/putThirdpartyRequestTransaction.json');
         const putErrorRequest = require('../../data/putThirdpartyRequestTransactionError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'put-thirdparty-request-transaction-test'})});
         const config = {
             logger: mockLogger({ app: 'putThirdpartyRequestsTransaction-test' }),
             peerEndpoint: '127.0.0.1',
@@ -539,7 +540,6 @@ describe('ThirdpartyRequests', () => {
     describe('putThirdpartyRequestsTransactionsAuthorizations', () => {
         const putTransactionsAuthorizationsRequest = require('../../data/putThirdpartyRequestsTransactionAuthorization.json');
         const putErrorRequest = require('../../data/putThirdpartyRequestTransactionAuthorizationsError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-authorization-test'})});
         const config = {
             logger: mockLogger({ app: 'putThirdpartyRequestsTransactionAuthorization-test' }),
             peerEndpoint: '127.0.0.1',

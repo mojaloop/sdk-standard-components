@@ -25,24 +25,26 @@ const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
 class WSO2Auth extends EventEmitter {
     /**
      *
-     * @param {Object} opts
-     * @param {Object} opts.logger
-     * @param {String} [opts.tlsCreds]
-     * @param {String} opts.tlsCreds.ca
-     * @param {String} opts.tlsCreds.cert
-     * @param {String} opts.tlsCreds.key
-     * @param {String} [opts.clientKey] Customer Key
-     * @param {String} [opts.clientSecret] Customer Secret
-     * @param {String} [opts.tokenEndpoint] WSO2 Endpoint URL
-     * @param {String} [opts.refreshSeconds] WSO2 token refresh interval in seconds
-     * @param {String} [opts.refreshRetrySeconds] WSO2 token refresh retry interval in seconds
-     * @param {String} [opts.staticToken] WSO2 static bearer token
+     * @param {Object}  opts
+     * @param {Object}  opts.logger
+     * @param {Object}  opts.tls
+     * @param {Boolean} opts.tls.enabled
+     * @param {Object}  opts.tls.creds
+     * @param {String}  opts.tls.creds.ca
+     * @param {String}  opts.tls.creds.cert
+     * @param {String}  opts.tls.creds.key
+     * @param {String}  [opts.auth.clientKey] Customer Key
+     * @param {String}  [opts.auth.clientSecret] Customer Secret
+     * @param {String}  [opts.auth.tokenEndpoint] WSO2 Endpoint URL
+     * @param {String}  [opts.auth.refreshSeconds] WSO2 token refresh interval in seconds
+     * @param {String}  [opts.auth.refreshRetrySeconds] WSO2 token refresh retry interval in seconds
+     * @param {String}  [opts.auth.staticToken] WSO2 static bearer token
      */
-    constructor(opts) {
+    constructor({ logger, auth, tls }) {
         super({ captureExceptions: true });
-        this._logger = opts.logger;
-        this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
-        this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
+        this._logger = logger;
+        this._refreshSeconds = auth.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
+        this._refreshRetrySeconds = auth.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
 
         if ((typeof this._refreshSeconds !== 'number') || (this._refreshSeconds <= 0)) {
             throw new Error('WSO2 auth config: refreshSeconds must be a positive integer value');
@@ -61,20 +63,20 @@ class WSO2Auth extends EventEmitter {
             }),
         };
 
-        if(opts.tlsCreds) {
-            this._reqOpts.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
+        if (tls.enabled) {
+            this._reqOpts.agent = new https.Agent({ ...tls.creds, keepAlive: true });
         }
         else {
             this._reqOpts.agent = http.globalAgent;
         }
 
-        if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
-            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
+        if (auth.tokenEndpoint && auth.clientKey && auth.clientSecret) {
+            this._basicToken = Buffer.from(`${auth.clientKey}:${auth.clientSecret}`)
                 .toString('base64');
-            this._reqOpts.uri = opts.tokenEndpoint;
-        } else if (opts.staticToken) {
+            this._reqOpts.uri = auth.tokenEndpoint;
+        } else if (auth.staticToken) {
             this._logger.log('WSO2 auth config token API data not set, fallback to static token');
-            this._token = opts.staticToken;
+            this._token = auth.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
             this._token = null;
