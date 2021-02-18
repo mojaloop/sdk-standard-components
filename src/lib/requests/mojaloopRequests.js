@@ -248,6 +248,15 @@ class MojaloopRequests extends BaseRequests {
     }
 
     /**
+     * Executes a POST /authorizations request for the specified authorization request
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postAuthorizations(authorizationRequest, destFspId) {
+        return this._post('authorizations', 'authorizations', authorizationRequest, destFspId);
+    }
+
+    /**
      * Executes a PUT /authorizations/{ID} request for the specified transactionRequestId
      *
      * @returns {object} - JSON response body if one was received
