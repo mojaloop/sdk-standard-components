@@ -553,6 +553,19 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
 
         /**
+         * @function postAuthorizations
+         * @description
+         *   Executes a `POST /authorizations` request for the specified `authorizations request`
+         * @param {Object} authorizationRequest The authorization request
+         * @param {string} destFspId The id of the destination participant
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        postAuthorizations (
+            authorizationRequest: PostAuthorizationsRequest,
+            destFspId: string
+        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+
+        /**
          * @function putAuthorizations
          * @description 
          *   Executes a 'PUT /authorizations' request
