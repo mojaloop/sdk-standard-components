@@ -1,132 +1,20 @@
 import http from 'http'
 import { KeyObject } from 'tls'
+import {
+    v1_0 as fspiopAPI,
+    thirdparty as tpAPI
+} from '@mojaloop/api-snippets'
 declare namespace SDKStandardComponents {
-    /* Base Mojaloop Types */
 
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Currency.yaml
-    type TCurrency = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' |
-        'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' |
-        'CAD' | 'CDF' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' |
-        'DJF' | 'DKK' | 'DOP' | 'DZD' |
-        'EGP' | 'ERN' | 'ETB' | 'EUR' |
-        'FJD' | 'FKP' |
-        'GBP' | 'GEL' | 'GGP' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' |
-        'HKD' | 'HNL' | 'HRK' | 'HTG' | 'HUF' |
-        'IDR' | 'ILS' | 'IMP' | 'INR' | 'IQD' | 'IRR' | 'ISK' |
-        'JEP' | 'JMD' | 'JOD' | 'JPY' |
-        'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' |
-        'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' |
-        'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MYR' | 'MZN' |
-        'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' |
-        'OMR' |
-        'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' |
-        'QAR' |
-        'RON' | 'RSD' | 'RUB' | 'RWF' |
-        'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SLL' | 'SOS' | 'SPL' | 'SRD' | 'STD' | 'SVC' | 'SYP' | 'SZL' |
-        'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TVD' | 'TWD' | 'TZS' |
-        'UAH' | 'UGX' | 'USD' | 'UYU' | 'UZS' |
-        'VEF' | 'VND' | 'VUV' |
-        'WST' |
-        'XAF' | 'XCD' | 'XDR' | 'XOF' | 'XPF' |
-        'YER' |
-        'ZAR' | 'ZMW' | 'ZWD';
-
-    type TAuthChannel = 'WEB' | 'OTP';
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Party.yaml
-    type TParty = {
-        partyIdInfo: {
-            fspId: string;
-            partyIdType: string;
-            partyIdentifier: string;
-            partySubIdentifier?: string;
-        }
-        merchantClassificationCode?: string;
-        name?: string;
-        personalInfo?: {
-            complexName?: {
-                firstName?: string;
-                middleName?: string;
-                lastName?: string;
-            }
-            dateOfBirth?: string
-        };
-    };
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/Money.yaml
-    type TMoney = {
-        amount: string;
-        currency: TCurrency;
-    };
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/GeoCode.yaml
-    type TGeoCode = {
-        latitude: string;
-        longitude: string;
-    }
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ExtensionList.yaml
-    type TExtensionList = {
-        extension: Array<{
-            key: string;
-            value: string;
-        }>
-    }
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/QuotesIDPutResponse.yaml
-    type TQuotesIDPutResponse = {
-        transferAmount: TMoney;
-        expiration: Date;
-        ilpPacket: string;
-        condition: string;
-        payeeReceiveAmount?: TMoney;
-        payeeFspFee?: TMoney;
-        payeeFspCommission?: TMoney;
-        geoCode?: TGeoCode;
-        extensionList?: TExtensionList
-    }
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ErrorInformationObject.yaml
-    type TErrorInformationObject = {
-        errorInformation: TErrorInformation;
-    }
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/ErrorInformation.yaml
-    type TErrorInformation = {
-        errorCode: string;
-        errorDescription: string;
-        extensionList?: TExtensionList;
-    }
-
-    type TCredential = {
-        id: string | null;
-        credentialType: 'FIDO';
-        status: 'PENDING' | 'VERIFIED';
-        challenge: {
-            payload: string;
-            signature: string | null;
-        },
-        payload: string | null;
-    }
-
-    type TCredentialScope = {
-        actions: string[];
-        accountId: string;
-    }
-
-    // Ref: https://github.com/mojaloop/api-snippets/blob/master/v1.0/openapi3/schemas/AmountType.yaml
-    enum TAmountType {
-        SEND = 'SEND',
-        RECEIVE = 'RECEIVE',
-    }
 
     /* hashmap of versions of various resources */
-    type TResourceVersions = {
+    type ResourceVersions = {
         [resource: string]: {
             contentVersion: string,
             acceptVersion: string
         }
     }
+
 
     /* Base Request Types */
     type GenericRequestResponse = {
@@ -135,7 +23,9 @@ declare namespace SDKStandardComponents {
         data: Buffer;
     };
 
-    type MojaloopRequestResponse = undefined;
+    // response could be undefined if there are problems with JSON.parse
+    // the legacy code catches such exception and silently returns undefined value <- OMG
+    type GenericRequestResponseUndefined = undefined;
     interface BaseRequestTLSConfig {
         mutualTLS: {
             enabled: boolean;
@@ -163,132 +53,11 @@ declare namespace SDKStandardComponents {
         bulkTransfersEndpoint?: string;
         transactionRequestsEndpoint?: string;
         thirdpartyRequestsEndpoint?: string;
-        resourceVersions?: TResourceVersions;
-    }
-
-    /* Individual Request Types */
-    type PutConsentsRequest = {
-        requestId: string;
-        initiatorId: string;
-        participantId: string;
-        scopes: Array<{
-            accountId: string;
-            actions: Array<string>;
-        }>;
-        credential: TCredential;
-    }
-
-    type PostConsentsRequest = {
-        id: string;
-        requestId: string;
-        initiatorId: string;
-        participantId: string;
-        scopes: TCredentialScope[];
-        credential?: TCredential;
-    }
-
-    type PutConsentRequestsRequest = {
-        initiatorId: string;
-        authChannels: TAuthChannel[];
-        scopes: TCredentialScope[];
-        callbackUri: string;
-        authUri: string | null;
-        authToken: string;
-    }
-
-    type PostConsentRequestsRequest = {
-        id: string;
-        initiatorId: string;
-        authChannels: TAuthChannel[];
-        scopes: TCredentialScope[];
-        callbackUri: string;
-    }
-
-    type PostAuthorizationsRequest = {
-        transactionRequestId: string;
-        authenticationType: 'U2F';
-        retriesLeft: string;
-        amount: TMoney;
-        transactionId: string;
-        quote: TQuotesIDPutResponse;
-    }
-
-    type AuthenticationType = 'OTP' | 'QRCODE' | 'U2F'
-      
-    type AuthenticationValue = {
-        pinValue: string;
-        counter: string;
-    }
-    
-    type AuthenticationInfo = {
-        authentication: AuthenticationType;
-        authenticationValue: AuthenticationValue | string;
-    }
-      
-    type AuthorizationResponse = 'ENTERED' | 'REJECTED' | 'RESEND';
-    
-    type PutAuthorizationRequest = {
-        authenticationInfo: AuthenticationInfo;
-        responseType: AuthorizationResponse;
-    }
-
-    type TransactionType = {
-        scenario: string;
-        initiator: string;
-        initiatorType: string;
-    }
-    type PostThirdPartyRequestTransactionsRequest = {
-        transactionRequestId: string;
-        sourceAccountId: string;
-        consentId: string;
-        payee: TParty;
-        payer: TParty;
-        amountType: TAmountType;
-        amount: TMoney;
-        transactionType: TransactionType;
-        expiration: string;
-    }
-
-    type PutThirdpartyRequestsTransactionsAuthorizationsRequest = {
-        challenge: string;
-        consentId: string;
-        sourceAccountId: string;
-        status: 'PENDING' | 'VERIFIED';
-        value: string;
-    }
-
-    type PatchConsentsRequest = {
-        status: 'REVOKED';
-        revokedAt: string;
+        resourceVersions?: ResourceVersions;
     }
 
     class BaseRequests {
         constructor(config: BaseRequestConfigType)
-    }
-
-    type PutThirdpartyRequestsTransactionsRequest = {
-        transactionRequestId: string;
-        transactionRequestState: 'RECEIVED' | 'PENDING' | 'ACCEPTED' | 'REJECTED';
-    }
-
-    type PostThirdpartyRequestsTransactionsAuthorizationsRequest = {
-        challenge: string;
-        consentId: string;
-        sourceAccountId: string;
-        status: 'PENDING' | 'VERIFIED';
-        value: string;
-    }
-
-    type PostQuoteRequest = {
-        quoteId: string;
-        transactionId: string;
-        transactionRequestId: string;
-        payee: TParty;
-        payer: TParty;
-        amountType: TAmountType;
-        amount: TMoney;
-        transactionType: TransactionType;
-        note: string;
     }
 
     /**
@@ -306,9 +75,9 @@ declare namespace SDKStandardComponents {
          */
         patchConsents(
             consentId: string,
-            consentBody: PatchConsentsRequest,
+            consentBody: tpAPI.Schemas.ConsentsIDPatchResponse,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putConsents
@@ -319,9 +88,9 @@ declare namespace SDKStandardComponents {
          */
         putConsents(
             consentId: string,
-            consentBody: PutConsentsRequest,
+            consentBody: tpAPI.Schemas.ConsentsIDPutResponseUnsigned | tpAPI.Schemas.ConsentsIDPutResponseSigned | tpAPI.Schemas.ConsentsIDPutResponseVerified,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putConsents
@@ -332,9 +101,9 @@ declare namespace SDKStandardComponents {
          */
         putConsentsError(
             consentId: string,
-            consentBody: TErrorInformationObject,
+            consentBody: fspiopAPI.Schemas.ErrorInformationObject,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function postConsents
@@ -343,9 +112,9 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant
          */
         postConsents(
-            consentBody: PostConsentsRequest,
+            consentBody: tpAPI.Schemas.ConsentsPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putConsentRequests
@@ -356,9 +125,12 @@ declare namespace SDKStandardComponents {
          */
         putConsentRequests(
             consentRequestId: string,
-            consentRequestBody: PutConsentRequestsRequest,
+            consentRequestBody: tpAPI.Schemas.ConsentRequestsIDPutResponseOTP
+                | tpAPI.Schemas.ConsentRequestsIDPutResponseOTPAuth 
+                | tpAPI.Schemas.ConsentRequestsIDPutResponseWeb
+                | tpAPI.Schemas.ConsentRequestsIDPutResponseWebAuth,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function postConsentRequests
@@ -367,9 +139,9 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant
          */
         postConsentRequests(
-            consentRequestBody: PostConsentRequestsRequest,
+            consentRequestBody: tpAPI.Schemas.ConsentRequestsPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
 
         /**
@@ -381,9 +153,9 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postAuthorizations(
-            authorizationBody: PostAuthorizationsRequest,
+            authorizationBody: tpAPI.Schemas.AuthorizationsPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function getThirdpartyRequestsTransactions
@@ -396,7 +168,7 @@ declare namespace SDKStandardComponents {
         getThirdpartyRequestsTransactions(
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function postThirdpartyRequestsTransactions
@@ -407,9 +179,9 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postThirdpartyRequestsTransactions(
-            thirdpartyRequestsTransactionsBody: PostThirdPartyRequestTransactionsRequest,
+            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putThirdpartyRequestsTransactions
@@ -421,10 +193,10 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactions(
-            thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsRequest,
+            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDPutResponse,
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putThirdpartyRequestsTransactionsError
@@ -436,10 +208,10 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsError(
-            thirdpartyRequestsTransactionsBody: TErrorInformationObject,
+            thirdpartyRequestsTransactionsBody: fspiopAPI.Schemas.ErrorInformationObject,
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function postThirdpartyRequestsTransactionsAuthorizations
@@ -451,10 +223,10 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postThirdpartyRequestsTransactionsAuthorizations(
-            thirdpartyRequestsTransactionsBody: PostThirdpartyRequestsTransactionsAuthorizationsRequest,
+            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDAuthorizationsPostRequest,
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizations
@@ -466,10 +238,10 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsAuthorizations(
-            thirdpartyRequestsTransactionsBody: PutThirdpartyRequestsTransactionsAuthorizationsRequest,
+            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDAuthorizationsPutResponse,
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putThirdpartyRequestsTransactionsAuthorizationsError
@@ -481,10 +253,10 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsAuthorizationsError(
-            thirdpartyRequestsTransactionsBody: TErrorInformationObject,
+            thirdpartyRequestsTransactionsBody: fspiopAPI.Schemas.ErrorInformationObject,
             transactionRequestId: string,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
     }
 
     class MojaloopRequests extends BaseRequests {
@@ -501,7 +273,7 @@ declare namespace SDKStandardComponents {
             idType: string,
             idValue: string,
             idSubValue?: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putParties
@@ -517,9 +289,9 @@ declare namespace SDKStandardComponents {
             idType: string,
             idValue: string,
             idSubValue: string | undefined,
-            body: TParty,
+            body: fspiopAPI.Schemas.Party,
             destFspId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putPartiesError
@@ -535,9 +307,9 @@ declare namespace SDKStandardComponents {
             idType: string,
             idValue: string,
             idSubValue: string | undefined,
-            error: TErrorInformationObject,
+            error: fspiopAPI.Schemas.ErrorInformationObject,
             destFspId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
         
         /**
          * @function postQuotes
@@ -548,9 +320,9 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postQuotes(
-            quoteRequest: PostQuoteRequest,
+            quoteRequest: fspiopAPI.Schemas.QuotesPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function postAuthorizations
@@ -561,9 +333,9 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postAuthorizations (
-            authorizationRequest: PostAuthorizationsRequest,
+            authorizationRequest: tpAPI.Schemas.AuthorizationsPostRequest,
             destFspId: string
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>;
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
          * @function putAuthorizations
@@ -575,9 +347,9 @@ declare namespace SDKStandardComponents {
          */
         putAuthorizations(
             transactionRequestId: string,
-            authorizationResponse: PutAuthorizationRequest,
+            authorizationResponse: fspiopAPI.Schemas.AuthorizationsIDPutResponse,
             destFspId: string 
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
         /**
          * @function putAuthorizationsError
@@ -589,9 +361,9 @@ declare namespace SDKStandardComponents {
          */
         putAuthorizationsError(
             transactionRequestId: string,
-            error: TErrorInformationObject,
+            error: fspiopAPI.Schemas.ErrorInformationObject,
             destFspId: string 
-        ): Promise<GenericRequestResponse | MojaloopRequestResponse>
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
     }
 
