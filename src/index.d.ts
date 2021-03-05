@@ -1,7 +1,7 @@
 import http from 'http'
 import { KeyObject } from 'tls'
 import {
-    v1_0 as fspiopAPI,
+    v1_1 as fspiopAPI,
     thirdparty as tpAPI
 } from '@mojaloop/api-snippets'
 declare namespace SDKStandardComponents {
