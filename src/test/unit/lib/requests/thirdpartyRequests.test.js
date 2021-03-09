@@ -203,6 +203,53 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
+    describe('patchConsentRequests', () => {
+        const patchConsentRequestsRequests = require('../../data/patchConsentRequestsRequest.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consent-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'patch-consent-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `PATCH /consentRequests/{ID}` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const consentRequestsBody = patchConsentRequestsRequests;
+            const consentRequestsId = '123';
+            const expected = expect.objectContaining({
+                host: 'thirdparty-api-adapter.local',
+                method: 'PATCH',
+                path: '/consentRequests/123',
+                headers: expect.objectContaining({
+                    'fspiop-destination': 'dfspa'
+                })
+            });
+
+            // Act
+            await tpr.patchConsentRequests(consentRequestsId, consentRequestsBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(consentRequestsBody)));
+            expect(http.__request).toHaveBeenCalledWith(expected);
+        });
+    });
+
     describe('putConsentRequests', () => {
         const putConsentRequestsRequests = require('../../data/putConsentRequestsRequest.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-test' }) });
@@ -221,7 +268,7 @@ describe('ThirdpartyRequests', () => {
             wso2Auth,
         };
 
-        it('executes a `POST /consentRequests/{ID}` request', async () => {
+        it('executes a `PUT /consentRequests/{ID}` request', async () => {
             // Arrange
             http.__request = jest.fn(() => ({
                 statusCode: 202,

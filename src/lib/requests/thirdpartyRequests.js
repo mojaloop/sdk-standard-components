@@ -22,6 +22,11 @@ class ThirdpartyRequests extends BaseRequests {
         return this._post('consents', 'thirdparty', consentBody, destParticipantId);
     }
 
+    async patchConsentRequests(consentRequestId, consentRequestBody, destParticipantId) {
+        const url = `consentRequests/${consentRequestId}`;
+        return this._patch(url, 'thirdparty', consentRequestBody, destParticipantId);
+    }
+
     async putConsentRequests(consentRequestId, consentRequestBody, destParticipantId) {
         const url = `consentRequests/${consentRequestId}`;
         return this._put(url, 'thirdparty', consentRequestBody, destParticipantId);
