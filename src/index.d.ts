@@ -117,6 +117,17 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
+         * @function patchConsentRequests
+         * @description Executes a `PATCH /consentRequests{id}` request.
+         * @param {PatchConsentRequestsRequest} consentRequestBody The body of the consent requests object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        patchConsentRequests(
+            consentRequestBody: tpAPI.Schemas.ConsentRequestsIDPatchRequest,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
          * @function putConsentRequests
          * @description Executes a `PUT /consentRequests/{id}` request.
          * @param {string} consentRequestId The `id` of the consent requests object to be updated
@@ -126,7 +137,7 @@ declare namespace SDKStandardComponents {
         putConsentRequests(
             consentRequestId: string,
             consentRequestBody: tpAPI.Schemas.ConsentRequestsIDPutResponseOTP
-                | tpAPI.Schemas.ConsentRequestsIDPutResponseOTPAuth 
+                | tpAPI.Schemas.ConsentRequestsIDPutResponseOTPAuth
                 | tpAPI.Schemas.ConsentRequestsIDPutResponseWeb
                 | tpAPI.Schemas.ConsentRequestsIDPutResponseWebAuth,
             destParticipantId: string
@@ -142,7 +153,6 @@ declare namespace SDKStandardComponents {
             consentRequestBody: tpAPI.Schemas.ConsentRequestsPostRequest,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
 
         /**
          * @function postAuthorizations
@@ -284,7 +294,7 @@ declare namespace SDKStandardComponents {
          * @param {string} [idSubValue] The party id sub value - pass `undefined` if not specified
          * @param {object} body The party's properties
          * @param {string} destFspId The id of the destination participant, in this case, a DFSP
-         */ 
+         */
         putParties(
             idType: string,
             idValue: string,
@@ -310,7 +320,7 @@ declare namespace SDKStandardComponents {
             error: fspiopAPI.Schemas.ErrorInformationObject,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-        
+
         /**
          * @function postQuotes
          * @description
@@ -339,30 +349,30 @@ declare namespace SDKStandardComponents {
 
         /**
          * @function putAuthorizations
-         * @description 
+         * @description
          *   Executes a 'PUT /authorizations' request
-         * @param {string} transactionRequestId 
-         * @param {object} authorizationResponse 
-         * @param {string} destFspId 
+         * @param {string} transactionRequestId
+         * @param {object} authorizationResponse
+         * @param {string} destFspId
          */
         putAuthorizations(
             transactionRequestId: string,
             authorizationResponse: fspiopAPI.Schemas.AuthorizationsIDPutResponse,
-            destFspId: string 
+            destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
         /**
          * @function putAuthorizationsError
          * @description
          *   Executes a `PUT /authorizations/{ID}/error
-         * @param {string} transactionRequestId 
-         * @param {object} error 
-         * @param {string} destFspId 
+         * @param {string} transactionRequestId
+         * @param {object} error
+         * @param {string} destFspId
          */
         putAuthorizationsError(
             transactionRequestId: string,
             error: fspiopAPI.Schemas.ErrorInformationObject,
-            destFspId: string 
+            destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
     }
@@ -413,23 +423,23 @@ declare namespace SDKStandardComponents {
         type Level = 'verbose' | 'debug' | 'warn' | 'error' | 'trace' | 'info' | 'fatal'
         type TimestampFormatter = (ts: Date) => string;
         type Stringify = (toBeStringified: unknown) => string;
-        interface LoggerStringifyParams { 
+        interface LoggerStringifyParams {
             ctx: unknown
             msg: unknown
-            level: Level 
+            level: Level
         }
 
         type LoggerStringify = (params: LoggerStringifyParams) => string
 
-        
+
         interface BuildStringifyParams {
             space?: number
             printTimestamp?: boolean
-            timestampFmt?: TimestampFormatter 
+            timestampFmt?: TimestampFormatter
             stringify?: Stringify
         }
         type BuildStringify = (params: BuildStringifyParams) => LoggerStringify;
-        
+
         function buildStringify(params: BuildStringifyParams): LoggerStringify
 
         interface LoggerOptions {
@@ -439,7 +449,7 @@ declare namespace SDKStandardComponents {
         }
 
         interface LoggerConstructorParams {
-            ctx?: unknown 
+            ctx?: unknown
             stringify?: BuildStringify
             opts?: LoggerOptions
         }
@@ -449,23 +459,23 @@ declare namespace SDKStandardComponents {
             opts?: LoggerOptions
         }
 
-        /** 
+        /**
          * @class Logger
-         * @description fast and lightweight logger which do pretty dumping of anything into the log in a pretty way 
+         * @description fast and lightweight logger which do pretty dumping of anything into the log in a pretty way
          */
         class Logger {
             protected stringify: BuildStringify
             protected opts: LoggerOptions
-    
+
             constructor(params?: LoggerConstructorParams)
-            
+
             configure(params?: LoggerConfigureParams): void
 
             push(arg: unknown): Logger
             log(...args: unknown[]): void
 
             // default set of logging methods taken from default levels
-            // if you want to use different log levels 
+            // if you want to use different log levels
             // this part of code will not work for you
             verbose(arg: unknown): void
             debug(arg: unknown): void
@@ -506,7 +516,7 @@ declare namespace SDKStandardComponents {
 
     namespace requests {
         namespace common {
-            function bodyStringifier(arg0: unknown): string | Buffer 
+            function bodyStringifier(arg0: unknown): string | Buffer
         }
     }
 
