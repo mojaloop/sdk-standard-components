@@ -74,6 +74,21 @@ class ThirdpartyRequests extends BaseRequests {
         const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error`;
         return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
+
+    async getAccounts (userId, destParticipantId) {
+        const url = `accounts/${userId}`;
+        return this._get(url, 'thirdparty', destParticipantId);
+    }
+
+    async putAccounts (userId, accountsBody, destParticipantId) {
+        const url = `accounts/${userId}`;
+        return this._put(url, 'thirdparty', accountsBody, destParticipantId);
+    }
+
+    async putAccountsError (userId, accountsBody, destParticipantId) {
+        const url = `accounts/${userId}/error`;
+        return this._put(url, 'thirdparty', accountsBody, destParticipantId);
+    }
 }
 
 
