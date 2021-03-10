@@ -656,4 +656,108 @@ describe('ThirdpartyRequests', () => {
             );
         });
     });
+
+    describe('accountRequests', () => {
+        const putAccountsRequest = require('../../data/putAccountsByUserIdRequest.json');
+        const putErrorRequest = require('../../data/putAccountsByRequestError.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'accounts-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `GET /accounts/{ID}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const userId = 'username1234';
+
+            // Act
+            await tpr.getAccounts(userId, 'dfspa');
+
+            // Assert
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'GET',
+                    'path': '/accounts/username1234',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /accounts/{ID}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putAccountsRequest;
+            const userId = 'username1234';
+
+            // Act
+            await tpr.putAccounts(userId, requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/accounts/username1234',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /accounts/{ID}/error` request', async () => {
+            http.__request.mockClear();
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putErrorRequest;
+            const userId = 'username1234';
+
+            // Act
+            await tpr.putAccountsError(userId, requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/accounts/username1234/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+    });
 });

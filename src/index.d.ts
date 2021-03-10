@@ -269,6 +269,43 @@ declare namespace SDKStandardComponents {
             transactionRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+        
+        /**
+         * @function getAccounts
+         * @description Executes a `GET /accounts/{id}` request.
+         * @param {string} userId The `id` of the user
+         * @param {string} destParticipantId The id of the destination participant
+         */
+         getAccounts (
+            userId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putAccounts
+         * @description Executes a `PUT /accounts/{id}` request.
+         * @param {string} userId The `id` of the user
+         * @param {AccountsIDPutResponse} accountsBody The body of the accounts object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putAccounts (
+            userId: string,
+            accountsBody: tpAPI.Schemas.AccountsIDPutResponse,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putAccountsError
+         * @description Executes a `PUT /accounts/{id}/error` request.
+         * @param {string} userId The `id` of the user
+         * @param {TErrorInformationObject} accountsBody The body of the error object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putAccountsError (
+            userId: string,
+            accountsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;        
     }
 
     class MojaloopRequests extends BaseRequests {
