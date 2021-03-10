@@ -119,10 +119,12 @@ declare namespace SDKStandardComponents {
         /**
          * @function patchConsentRequests
          * @description Executes a `PATCH /consentRequests{id}` request.
+         * @param {string} consentRequestId The `id` of the consent requests object
          * @param {PatchConsentRequestsRequest} consentRequestBody The body of the consent requests object
          * @param {string} destParticipantId The id of the destination participant
          */
         patchConsentRequests(
+            consentRequestId: string,
             consentRequestBody: tpAPI.Schemas.ConsentRequestsIDPatchRequest,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
