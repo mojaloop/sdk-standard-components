@@ -297,6 +297,53 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
+    describe('putConsentRequestsRequestError', () => {
+        const putConsentRequestsRequestError = require('../../data/putConsentRequestsRequestError.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-error-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'put-consent-requests-error-test' }),
+            peerEndpoint: '127.0.0.1',
+            thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `PUT /consentRequests/{ID}/error` request', async () => {
+            http.__request.mockClear();
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putConsentRequestsRequestError;
+            const consentRequestId = '12345';
+            // Act
+            await tpr.putConsentRequestsError(consentRequestId, requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/consentRequests/12345/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+    });
+
     describe('postConsentRequests', () => {
         const postConsentRequestsRequest = require('../../data/postConsentRequestsRequest.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consent-requests-test' }) });
