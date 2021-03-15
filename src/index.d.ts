@@ -163,7 +163,7 @@ declare namespace SDKStandardComponents {
          * @param {PutConsentsRequest} consentRequestBody The body of the consent request object
          * @param {string} destParticipantId The id of the destination participant
          */
-        putConsentsError(
+        putConsentRequestsError(
             consentRequestId: string,
             consentRequestBody: fspiopAPI.Schemas.ErrorInformationObject,
             destParticipantId: string
