@@ -157,6 +157,19 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
+         * @function putConsentRequestsError
+         * @description Executes a `PUT /consentRequests/{id}/error` request.
+         * @param {string} consentRequestId The `id` of the consent request object to be updated
+         * @param {PutConsentsRequest} consentRequestBody The body of the consent request object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putConsentRequestsError(
+            consentRequestId: string,
+            consentRequestBody: fspiopAPI.Schemas.ErrorInformationObject,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
          * @function postAuthorizations
          * @description
          *   Executes a `POST /authorizations` request for the specified `transactionRequestId`
@@ -269,7 +282,7 @@ declare namespace SDKStandardComponents {
             transactionRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-        
+
         /**
          * @function getAccounts
          * @description Executes a `GET /accounts/{id}` request.
@@ -305,7 +318,7 @@ declare namespace SDKStandardComponents {
             userId: string,
             accountsBody: fspiopAPI.Schemas.ErrorInformationObject,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;        
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
     }
 
     class MojaloopRequests extends BaseRequests {
