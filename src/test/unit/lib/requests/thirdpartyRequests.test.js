@@ -436,6 +436,52 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
+    describe('patchThirdpartyRequestsTransactions', () => {
+        const patchSuccessRequest = require('../../data/patchThirdpartyRequestTransaction.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'patch-thirdparty-request-transaction-test'})});
+        const config = {
+            logger: mockLogger({ app: 'patchThirdpartyRequestsTransaction-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a `PATCH /thirdpartyRequests/transactions/{ID}` request', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = patchSuccessRequest;
+            const transactionRequestId = 1;
+
+            // Act
+            await tpr.patchThirdpartyRequestsTransactions(requestBody, transactionRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PATCH',
+                    'path': '/thirdpartyRequests/transactions/1',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+    });
+
     describe('getThirdpartyRequestsTransactions', () => {
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
         const config = {
