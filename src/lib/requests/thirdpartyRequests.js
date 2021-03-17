@@ -50,6 +50,11 @@ class ThirdpartyRequests extends BaseRequests {
         return this._get(url, 'thirdparty', destParticipantId);
     }
 
+    async patchThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
+        const url = `thirdpartyRequests/transactions/${transactionRequestId}`;
+        return this._patch(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
+    }
+
     async putThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
         const url = `thirdpartyRequests/transactions/${transactionRequestId}`;
         return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);

@@ -224,6 +224,21 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
+         * @function patchThirdpartyRequestsTransactions
+         * @description
+         *   Executes a `PATCH /thirdpartyRequests/transactions/${transactionRequestId}` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
+         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+         patchThirdpartyRequestsTransactions(
+            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDPatchResponse,
+            transactionRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
          * @function putThirdpartyRequestsTransactionsError
          * @description
          *   Executes a `PUT thirdpartyRequests/transactions/${transactionRequestId}/error` request
