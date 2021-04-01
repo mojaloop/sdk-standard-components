@@ -96,7 +96,7 @@ const MojaloopApiErrorCodes = {
     PAYEE_PERMISSION_ERROR:           { code: '5300', message: 'Payee permission error' },
     GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' },
 
-    // thirdparty errors - WIP
+    // thirdparty errors
     THIRDPARTY_ERROR:                 { code: '7000', message: 'Generic Thirdparty error' },
     THIRDPARTY_TRANSACTION_ERROR:     { code: '7100', message: 'Generic Thirdparty transaction error' },
     THIRDPARTY_ACCOUNT_LINKING_ERROR: { code: '7200', message: 'Generic Thirdparty account linking error' },
