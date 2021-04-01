@@ -94,7 +94,13 @@ const MojaloopApiErrorCodes = {
     PAYEE_UNSUPPORTED_CURRENCY:       { code: '5106', message: 'Payee unsupported currency' },
     PAYEE_LIMIT_ERROR:                { code: '5200', message: 'Payee limit error' },
     PAYEE_PERMISSION_ERROR:           { code: '5300', message: 'Payee permission error' },
-    GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' }
+    GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' },
+
+    // thirdparty errors - WIP
+    THIRDPARTY_ERROR:                 { code: '7000', message: 'Generic Thirdparty error' },
+    THIRDPARTY_TRANSACTION_ERROR:     { code: '7100', message: 'Generic Thirdparty transaction error' },
+    THIRDPARTY_ACCOUNT_LINKING_ERROR: { code: '7200', message: 'Generic Thirdparty account linking error' },
+    THIRDPARTY_AUTH_SERVICE_ERROR:    { code: '7300', message: 'Generic Thirdparty auth service error' },
 };
 
 
