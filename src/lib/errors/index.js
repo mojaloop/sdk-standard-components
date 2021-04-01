@@ -94,7 +94,18 @@ const MojaloopApiErrorCodes = {
     PAYEE_UNSUPPORTED_CURRENCY:       { code: '5106', message: 'Payee unsupported currency' },
     PAYEE_LIMIT_ERROR:                { code: '5200', message: 'Payee limit error' },
     PAYEE_PERMISSION_ERROR:           { code: '5300', message: 'Payee permission error' },
-    GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' }
+    GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' },
+
+    // thirdparty errors - WIP
+    THIRDPARTY_ERROR:                 { code: '7000', message: 'Generic Thirdparty error' },
+    THIRDPARTY_TRANSACTION_ERROR:     { code: '7100', message: 'Generic Thirdparty transaction error' },
+    THIRDPARTY_AUTHENTICATION_ERROR:  { code: '7200', message: 'Generic Thirdparty authentication error' },
+    THIRDPARTY_AUTHORIZATION_ERROR:   { code: '7300', message: 'Generic Thirdparty authorization error' },
+    THIRDPARTY_ACCOUNT_LINKING_ERROR: { code: '7500', message: 'Generic Thirdparty account linking error' },
+    THIRDPARTY_ACCOUNTS_ERROR:        { code: '7600', message: 'Generic Thirdparty accounts error' },
+    THIRDPARTY_CONSENT_ERROR:         { code: '7700', message: 'Generic Thirdparty consent error' },
+    THIRDPARTY_CONSENT_REQUEST_ERROR: { code: '7800', message: 'Generic Thirdparty consent request error' },
+    THIRDPARTY_CREDENTIAL_ERROR:      { code: '7900', message: 'Generic Thirdparty credential error' },
 };
 
 
