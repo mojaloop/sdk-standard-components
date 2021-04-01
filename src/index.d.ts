@@ -675,6 +675,12 @@ declare namespace SDKStandardComponents {
             PAYEE_LIMIT_ERROR:                MojaloopApiErrorCode
             PAYEE_PERMISSION_ERROR:           MojaloopApiErrorCode
             GENERIC_PAYEE_BLOCKED_ERROR:      MojaloopApiErrorCode
+
+            // thirdparty errors - WIP
+            THIRDPARTY_ERROR:                 MojaloopApiErrorCode
+            THIRDPARTY_TRANSACTION_ERROR:     MojaloopApiErrorCode
+            THIRDPARTY_ACCOUNT_LINKING_ERROR: MojaloopApiErrorCode
+            THIRDPARTY_AUTH_SERVICE_ERROR:    MojaloopApiErrorCode
         }
 
         const MojaloopApiErrorCodes: MojaloopApiErrorCodesEnum
