@@ -561,7 +561,7 @@ declare namespace SDKStandardComponents {
         method: RequestMethod
         uri: string
         agent: http.Agent
-        qs?: string
+        qs?: { [key: string]: any }
         headers?: Record<string, string>
         // body is passed to http.ClientRequest.write
         // https://nodejs.org/api/http.html#http_class_http_clientrequest
