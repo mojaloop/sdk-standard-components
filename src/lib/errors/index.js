@@ -97,10 +97,17 @@ const MojaloopApiErrorCodes = {
     GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' },
 
     // thirdparty errors
-    THIRDPARTY_ERROR:                 { code: '7000', message: 'Generic Thirdparty error' },
-    THIRDPARTY_TRANSACTION_ERROR:     { code: '7100', message: 'Generic Thirdparty transaction error' },
-    THIRDPARTY_ACCOUNT_LINKING_ERROR: { code: '7200', message: 'Generic Thirdparty account linking error' },
-    THIRDPARTY_AUTH_SERVICE_ERROR:    { code: '7300', message: 'Generic Thirdparty auth service error' },
+    TP_ERROR:                         { code: '7000', message: 'Generic Thirdparty error' },
+    TP_TRANSACTION_ERROR:             { code: '7100', message: 'Generic Thirdparty transaction error' },
+    TP_ACCOUNT_LINKING_ERROR:         { code: '7200', message: 'Generic Thirdparty account linking error' },
+    TP_NO_SERVICE_PROVIDERS_FOUND:    { code: '7201', message: 'No thirdparty enabled FSP found' },
+    TP_NO_ACCOUNTS_FOUND:             { code: '7202', message: 'No accounts found for generic ID' },
+    TP_NO_SUPPORTED_AUTH_CHANNELS:    { code: '7203', message: 'FSP does not support any requested authentication channels' },
+    TP_NO_SUPPORTED_SCOPE_ACTIONS:    { code: '7204', message: 'FSP does not support any requested scope actions' },
+    TP_OTP_VALIDATION_ERROR:          { code: '7205', message: 'OTP failed validation' },
+    TP_FSP_OTP_VALIDATION_ERROR:      { code: '7206', message: 'FSP failed to validate OTP' },
+    TP_FSP_CONSENT_SCOPES_ERROR:      { code: '7207', message: 'FSP failed retrieve scopes for consent request' },
+    TP_AUTH_SERVICE_ERROR:            { code: '7300', message: 'Generic Thirdparty auth service error' },
 };
 
 

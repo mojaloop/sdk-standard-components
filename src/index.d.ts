@@ -677,10 +677,17 @@ declare namespace SDKStandardComponents {
             GENERIC_PAYEE_BLOCKED_ERROR:      MojaloopApiErrorCode
 
             // thirdparty errors
-            THIRDPARTY_ERROR:                 MojaloopApiErrorCode
-            THIRDPARTY_TRANSACTION_ERROR:     MojaloopApiErrorCode
-            THIRDPARTY_ACCOUNT_LINKING_ERROR: MojaloopApiErrorCode
-            THIRDPARTY_AUTH_SERVICE_ERROR:    MojaloopApiErrorCode
+            TP_ERROR:                         MojaloopApiErrorCode
+            TP_TRANSACTION_ERROR:             MojaloopApiErrorCode
+            TP_ACCOUNT_LINKING_ERROR:         MojaloopApiErrorCode
+            TP_NO_SERVICE_PROVIDERS_FOUND:    MojaloopApiErrorCode
+            TP_NO_ACCOUNTS_FOUND:             MojaloopApiErrorCode
+            TP_NO_SUPPORTED_AUTH_CHANNELS:    MojaloopApiErrorCode
+            TP_NO_SUPPORTED_SCOPE_ACTIONS:    MojaloopApiErrorCode
+            TP_OTP_VALIDATION_ERROR:          MojaloopApiErrorCode
+            TP_FSP_OTP_VALIDATION_ERROR:      MojaloopApiErrorCode
+            TP_FSP_CONSENT_SCOPES_ERROR:      MojaloopApiErrorCode
+            TP_AUTH_SERVICE_ERROR:            MojaloopApiErrorCode
         }
 
         const MojaloopApiErrorCodes: MojaloopApiErrorCodesEnum
