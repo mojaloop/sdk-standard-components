@@ -687,6 +687,10 @@ declare namespace SDKStandardComponents {
             TP_OTP_VALIDATION_ERROR:          MojaloopApiErrorCode
             TP_FSP_OTP_VALIDATION_ERROR:      MojaloopApiErrorCode
             TP_FSP_CONSENT_SCOPES_ERROR:      MojaloopApiErrorCode
+            TP_CONSENT_REQ_VALIDATION_ERROR:  MojaloopApiErrorCode
+            TP_FSP_CONSENT_REQ_NO_SCOPES:     MojaloopApiErrorCode
+            TP_NO_TRUSTED_CALLBACK_URI:       MojaloopApiErrorCode
+            TP_CONSENT_REQ_USER_NOT_ALLOWED:  MojaloopApiErrorCode
             TP_AUTH_SERVICE_ERROR:            MojaloopApiErrorCode
         }
 
