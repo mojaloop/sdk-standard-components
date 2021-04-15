@@ -107,6 +107,10 @@ const MojaloopApiErrorCodes = {
     TP_OTP_VALIDATION_ERROR:          { code: '7205', message: 'OTP failed validation' },
     TP_FSP_OTP_VALIDATION_ERROR:      { code: '7206', message: 'FSP failed to validate OTP' },
     TP_FSP_CONSENT_SCOPES_ERROR:      { code: '7207', message: 'FSP failed retrieve scopes for consent request' },
+    TP_CONSENT_REQ_VALIDATION_ERROR:  { code: '7208', message: 'FSP failed to validate consent request' },
+    TP_FSP_CONSENT_REQ_NO_SCOPES:     { code: '7209', message: 'FSP does not find scopes suitable' },
+    TP_NO_TRUSTED_CALLBACK_URI:       { code: '7210', message: 'FSP does not trust PISP callback URI' },
+    TP_CONSENT_REQ_USER_NOT_ALLOWED:  { code: '7211', message: 'FSP does not allow consent requests for specified username' },
     TP_AUTH_SERVICE_ERROR:            { code: '7300', message: 'Generic Thirdparty auth service error' },
 };
 
