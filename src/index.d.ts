@@ -679,6 +679,16 @@ declare namespace SDKStandardComponents {
             // thirdparty errors
             TP_ERROR:                         MojaloopApiErrorCode
             TP_TRANSACTION_ERROR:             MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_REQUEST_NOT_VALID: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_UPDATE_FAILED: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_REQUEST_QUOTE_FAILED: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_REQUEST_AUTHORIZATION_FAILED: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_AUTHORIZATION_NOT_VALID: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_AUTHORIZATION_REJECTED_BY_USER: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_AUTHORIZATION_UNEXPECTED: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_TRANSFER_FAILED: MojaloopApiErrorCode
+            TP_FSP_TRANSACTION_NOTIFICATION_FAILED: MojaloopApiErrorCode
+        
             TP_ACCOUNT_LINKING_ERROR:         MojaloopApiErrorCode
             TP_NO_SERVICE_PROVIDERS_FOUND:    MojaloopApiErrorCode
             TP_NO_ACCOUNTS_FOUND:             MojaloopApiErrorCode
