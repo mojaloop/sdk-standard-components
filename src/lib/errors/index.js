@@ -99,6 +99,16 @@ const MojaloopApiErrorCodes = {
     // thirdparty errors
     TP_ERROR:                         { code: '7000', message: 'Generic Thirdparty error' },
     TP_TRANSACTION_ERROR:             { code: '7100', message: 'Generic Thirdparty transaction error' },
+    TP_FSP_TRANSACTION_REQUEST_NOT_VALID: { code: '7101', message: 'Transaction request failed DFSP validation' },
+    TP_FSP_TRANSACTION_UPDATE_FAILED: { code: '7102', message: 'Transaction request PUT update send to PISP failed' },
+    TP_FSP_TRANSACTION_REQUEST_QUOTE_FAILED: { code: '7103', message: 'Transaction request quote send to payee DFSP failed' },
+    TP_FSP_TRANSACTION_REQUEST_AUTHORIZATION_FAILED: { code: '7104', message: 'Transaction request for user authorization send to PISP failed' },
+    TP_FSP_TRANSACTION_AUTHORIZATION_NOT_VALID: { code: '7105', message: 'Authorization received from PISP failed DFSP validation' },
+    TP_FSP_TRANSACTION_AUTHORIZATION_REJECTED_BY_USER: { code: '7106', message: 'DFSP received reject by user authorization, so transaction cancelled' },
+    TP_FSP_TRANSACTION_AUTHORIZATION_UNEXPECTED: { code: '7107', message: 'DFSP received unexpected authorization responseType' },
+    TP_FSP_TRANSACTION_TRANSFER_FAILED: { code: '7108', message: 'Transaction request transfer failed' },
+    TP_FSP_TRANSACTION_NOTIFICATION_FAILED: { code: '7109', message: 'Transaction request transfer failed' },
+
     TP_ACCOUNT_LINKING_ERROR:         { code: '7200', message: 'Generic Thirdparty account linking error' },
     TP_NO_SERVICE_PROVIDERS_FOUND:    { code: '7201', message: 'No thirdparty enabled FSP found' },
     TP_NO_ACCOUNTS_FOUND:             { code: '7202', message: 'No accounts found for generic ID' },
