@@ -107,7 +107,7 @@ const MojaloopApiErrorCodes = {
     TP_FSP_TRANSACTION_AUTHORIZATION_REJECTED_BY_USER: { code: '7106', message: 'DFSP received reject by user authorization, so transaction cancelled' },
     TP_FSP_TRANSACTION_AUTHORIZATION_UNEXPECTED: { code: '7107', message: 'DFSP received unexpected authorization responseType' },
     TP_FSP_TRANSACTION_TRANSFER_FAILED: { code: '7108', message: 'Transaction request transfer failed' },
-    TP_FSP_TRANSACTION_NOTIFICATION_FAILED: { code: '7109', message: 'Transaction request transfer failed' },
+    TP_FSP_TRANSACTION_NOTIFICATION_FAILED: { code: '7109', message: 'Transaction request notification failed' },
 
     TP_ACCOUNT_LINKING_ERROR:         { code: '7200', message: 'Generic Thirdparty account linking error' },
     TP_NO_SERVICE_PROVIDERS_FOUND:    { code: '7201', message: 'No thirdparty enabled FSP found' },
