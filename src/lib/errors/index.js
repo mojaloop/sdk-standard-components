@@ -121,6 +121,9 @@ const MojaloopApiErrorCodes = {
     TP_FSP_CONSENT_REQ_NO_SCOPES:     { code: '7209', message: 'FSP does not find scopes suitable' },
     TP_NO_TRUSTED_CALLBACK_URI:       { code: '7210', message: 'FSP does not trust PISP callback URI' },
     TP_CONSENT_REQ_USER_NOT_ALLOWED:  { code: '7211', message: 'FSP does not allow consent requests for specified username' },
+    TP_SIGNED_CHALLENGE_MISMATCH:     { code: '7212', message: 'Signed challenge does not match derived challenge' },
+    TP_CONSENT_INVALID:               { code: '7213', message: 'Consent is invalid' },
+    TP_FAILED_REG_ACCOUNT_LINKS:      { code: '7214', message: 'Failed to register account links with oracle' },
     TP_AUTH_SERVICE_ERROR:            { code: '7300', message: 'Generic Thirdparty auth service error' },
 };
 

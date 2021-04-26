@@ -688,7 +688,7 @@ declare namespace SDKStandardComponents {
             TP_FSP_TRANSACTION_AUTHORIZATION_UNEXPECTED: MojaloopApiErrorCode
             TP_FSP_TRANSACTION_TRANSFER_FAILED: MojaloopApiErrorCode
             TP_FSP_TRANSACTION_NOTIFICATION_FAILED: MojaloopApiErrorCode
-        
+
             TP_ACCOUNT_LINKING_ERROR:         MojaloopApiErrorCode
             TP_NO_SERVICE_PROVIDERS_FOUND:    MojaloopApiErrorCode
             TP_NO_ACCOUNTS_FOUND:             MojaloopApiErrorCode
@@ -701,6 +701,9 @@ declare namespace SDKStandardComponents {
             TP_FSP_CONSENT_REQ_NO_SCOPES:     MojaloopApiErrorCode
             TP_NO_TRUSTED_CALLBACK_URI:       MojaloopApiErrorCode
             TP_CONSENT_REQ_USER_NOT_ALLOWED:  MojaloopApiErrorCode
+            TP_SIGNED_CHALLENGE_MISMATCH:     MojaloopApiErrorCode
+            TP_CONSENT_INVALID:               MojaloopApiErrorCode
+            TP_FAILED_REG_ACCOUNT_LINKS:      MojaloopApiErrorCode
             TP_AUTH_SERVICE_ERROR:            MojaloopApiErrorCode
         }
 
