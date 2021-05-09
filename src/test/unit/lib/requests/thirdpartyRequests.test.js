@@ -873,6 +873,29 @@ describe('ThirdpartyRequests', () => {
             servicesEndpoint: '127.0.0.2',
         };
 
+        it('resolves to service endpoint', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const serviceType = 'THIRD_PARTY_DFSP';
+
+            // Act
+            await tpr.getServices(serviceType);
+
+            // Assert
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'host': '127.0.0.2'
+                })
+            );
+        });
+
         it('executes a `GET /services/{ServiceType}` request', async () => {
             // Arrange
             http.__request.mockClear();
@@ -892,7 +915,7 @@ describe('ThirdpartyRequests', () => {
             expect(http.__request).toHaveBeenCalledWith(
                 expect.objectContaining({
                     'method': 'GET',
-                    'path': '/services/THIRD_PARTY_DFSP',
+                    'path': '/services/THIRD_PARTY_DFSP'
                 })
             );
         });
