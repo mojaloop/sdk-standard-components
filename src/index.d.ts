@@ -334,6 +334,67 @@ declare namespace SDKStandardComponents {
             accountsBody: fspiopAPI.Schemas.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+                /**
+         * @function putAccounts
+         * @description Executes a `PUT /accounts/{id}` request.
+         * @param {string} userId The `id` of the user
+         * @param {AccountsIDPutResponse} accountsBody The body of the accounts object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putAccounts (
+            userId: string,
+            accountsBody: tpAPI.Schemas.AccountsIDPutResponse,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putAccountsError
+         * @description Executes a `PUT /accounts/{id}/error` request.
+         * @param {string} userId The `id` of the user
+         * @param {TErrorInformationObject} accountsBody The body of the error object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putAccountsError (
+            userId: string,
+            accountsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function getServices
+         * @description Executes a `GET /services/{ServiceType}` request.
+         * @param {string} serviceType The `serviceType` to query
+         */
+         getServices (
+            serviceType: string,
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putServices
+         * @description Executes a `PUT /services/{ServiceType}` request.
+         * @param {string} serviceType The `serviceType` that was queried
+         * @param {ServicesServiceTypePutResponse} servicesBody The body of the services object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+        putServices (
+            serviceType: string,
+            servicesBody: tpAPI.Schemas.ServicesServiceTypePutResponse,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putServicesError
+         * @description Executes a `PUT /services/{ServiceType}/error` request.
+         * @param {string} serviceType The `serviceType` that was queried
+         * @param {TErrorInformationObject} servicesBody The body of the error object
+         * @param {string} destParticipantId The id of the destination participant
+         */
+         putServicesError (
+            serviceType: string,
+            servicesBody: fspiopAPI.Schemas.ErrorInformationObject,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
     }
 
     class MojaloopRequests extends BaseRequests {
