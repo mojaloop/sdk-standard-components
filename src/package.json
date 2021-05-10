@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "15.9.0",
+  "version": "15.10.0",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "index.js",
   "types": "index.d.ts",
@@ -34,7 +34,7 @@
     "jws": "4.0.0"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^12.2.0",
+    "@mojaloop/api-snippets": "^12.3.5",
     "@types/jest": "^25.2.1",
     "@types/node": "^14.11.8",
     "eslint": "7.0.0",

@@ -853,4 +853,129 @@ describe('ThirdpartyRequests', () => {
             );
         });
     });
+
+    describe('servicesRequests', () => {
+        const putServicesRequest = require('../../data/putServicesByServiceTypeRequest.json');
+        const putErrorRequest = require('../../data/putServicesByServiceTypeRequestError.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'services-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'services-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+            servicesEndpoint: '127.0.0.2',
+        };
+
+        it('resolves to service endpoint', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const serviceType = 'THIRD_PARTY_DFSP';
+
+            // Act
+            await tpr.getServices(serviceType);
+
+            // Assert
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'host': '127.0.0.2'
+                })
+            );
+        });
+
+        it('executes a `GET /services/{ServiceType}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const serviceType = 'THIRD_PARTY_DFSP';
+
+            // Act
+            await tpr.getServices(serviceType);
+
+            // Assert
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'GET',
+                    'path': '/services/THIRD_PARTY_DFSP'
+                })
+            );
+        });
+
+        it('executes a `PUT /services/{ServiceType}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putServicesRequest;
+            const serviceType = 'THIRD_PARTY_DFSP';
+
+            // Act
+            await tpr.putServices(serviceType, requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/services/THIRD_PARTY_DFSP',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /services/{ID}/error` request', async () => {
+            http.__request.mockClear();
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putErrorRequest;
+            const serviceType = 'THIRD_PARTY_DFSP';
+
+            // Act
+            await tpr.putServicesError(serviceType, requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/services/THIRD_PARTY_DFSP/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+    });
 });

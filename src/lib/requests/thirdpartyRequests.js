@@ -99,6 +99,21 @@ class ThirdpartyRequests extends BaseRequests {
         const url = `accounts/${userId}/error`;
         return this._put(url, 'thirdparty', accountsBody, destParticipantId);
     }
+
+    async getServices (serviceType) {
+        const url = `services/${serviceType}`;
+        return this._get(url, 'services');
+    }
+
+    async putServices (serviceType, servicesBody, destParticipantId) {
+        const url = `services/${serviceType}`;
+        return this._put(url, 'services', servicesBody, destParticipantId);
+    }
+
+    async putServicesError (serviceType, servicesBody, destParticipantId) {
+        const url = `services/${serviceType}/error`;
+        return this._put(url, 'services', servicesBody, destParticipantId);
+    }
 }
 
 

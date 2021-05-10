@@ -118,6 +118,10 @@ class BaseRequests {
                 contentVersion: '1.0',
                 acceptVersion: '1',
             },
+            services: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
             ...config.resourceVersions
         };
 
@@ -132,6 +136,7 @@ class BaseRequests {
             transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
             authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
         };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
