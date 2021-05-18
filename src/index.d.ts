@@ -51,6 +51,7 @@ declare namespace SDKStandardComponents {
         bulkQuotesEndpoint?: string;
         transfersEndpoint?: string;
         bulkTransfersEndpoint?: string;
+        servicesEndpoint?: string;
         transactionRequestsEndpoint?: string;
         thirdpartyRequestsEndpoint?: string;
         resourceVersions?: ResourceVersions;
