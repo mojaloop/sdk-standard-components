@@ -29,10 +29,10 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue, idSubValue) {
+    async getParties(idType, idValue, idSubValue, destFspId) {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._get(url, 'parties');
+        return this._get(url, 'parties', destFspId);
     }
 
     /**
