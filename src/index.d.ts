@@ -76,7 +76,7 @@ declare namespace SDKStandardComponents {
          */
         patchConsents(
             consentId: string,
-            consentBody: tpAPI.Schemas.ConsentsIDPatchResponse,
+            consentBody: tpAPI.Schemas.ConsentsIDPatchResponseVerified | tpAPI.Schemas.ConsentsIDPatchResponseRevoked,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -89,7 +89,7 @@ declare namespace SDKStandardComponents {
          */
         putConsents(
             consentId: string,
-            consentBody: tpAPI.Schemas.ConsentsIDPutResponseUnsigned | tpAPI.Schemas.ConsentsIDPutResponseSigned | tpAPI.Schemas.ConsentsIDPutResponseVerified,
+            consentBody: tpAPI.Schemas.ConsentsIDPutResponseSigned | tpAPI.Schemas.ConsentsIDPutResponseVerified,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -139,10 +139,9 @@ declare namespace SDKStandardComponents {
          */
         putConsentRequests(
             consentRequestId: string,
-            consentRequestBody: tpAPI.Schemas.ConsentRequestsIDPutResponseOTP
-                | tpAPI.Schemas.ConsentRequestsIDPutResponseOTPAuth
-                | tpAPI.Schemas.ConsentRequestsIDPutResponseWeb
-                | tpAPI.Schemas.ConsentRequestsIDPutResponseWebAuth,
+            consentRequestBody:
+                tpAPI.Schemas.ConsentRequestsIDPutResponseOTP |
+                tpAPI.Schemas.ConsentRequestsIDPutResponseWeb,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
