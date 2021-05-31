@@ -478,6 +478,17 @@ declare namespace SDKStandardComponents {
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
+        /**
+         * @function postParticipants
+         * @description
+         *   Executes a `POST /participants`
+         * @param {object} participantRequest The participant request
+         * @param {string} destFspId The id of the destination participant
+         */
+        postParticipants(
+            participantRequest: fspiopAPI.Schemas.ParticipantsPostRequest,
+            destFspId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
     }
 
     interface WSO2AuthConfig {
