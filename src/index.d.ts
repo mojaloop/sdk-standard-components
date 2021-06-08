@@ -113,7 +113,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destParticipantId The id of the destination participant
          */
         postConsents(
-            consentBody: tpAPI.Schemas.ConsentsPostRequest,
+            consentBody: tpAPI.Schemas.ConsentsPostRequestAUTH | tpAPI.Schemas.ConsentsPostRequestPISP,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
