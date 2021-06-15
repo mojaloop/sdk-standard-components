@@ -165,6 +165,15 @@ class MojaloopRequests extends BaseRequests {
     }
 
     /**
+     * Executes a PATCH /transfers/{ID} request for the specified transfer update
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async patchTransfers(transferId, body, destFspId) {
+        return this._patch(`transfers/${transferId}`, 'transfers', body, destFspId);
+    }
+
+    /**
      * Executes a PUT /transfers/{ID}/error request for the specified error
      *
      * @returns {object} - JSON response body if one was received

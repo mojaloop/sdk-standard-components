@@ -215,3 +215,48 @@ describe('postAuthorizations', () => {
         expect(http.__request.mock.calls[0][0].path).toBe('/authorizations');
     });
 });
+
+describe('patchTransfers', () => {
+    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) });
+    const conf = {
+        logger: mockLogger({ app: 'postAuthorizations-test' }),
+        peerEndpoint: '127.0.0.1',
+        tls: {
+            mutualTLS: {
+                enabled: false
+            }
+        },
+        jwsSign: false,
+        jwsSignPutParties: false,
+        jwsSigningKey: jwsSigningKey,
+        wso2Auth,
+    };
+
+    it('executes a PATCH /transfers request', async () => {
+        // Arrange
+        http.__request = jest.fn(() => ({
+            statusCode: 202,
+            headers: {
+                'content-length': 0
+            },
+        }));
+        const testMR = new mr(conf);
+
+        const now = new Date();
+        const xferId = '123456';
+
+        const patchRequest = {
+            completedTimestamp: now.toISOString(),
+            transferState: 'COMMITTED',
+        };
+
+        // Act
+        await testMR.patchTransfers(xferId, patchRequest, 'patchdfsp');
+
+        // Assert
+        expect(http.__write.mock.calls[0][0]).toStrictEqual(JSON.stringify(patchRequest));
+        expect(http.__request.mock.calls[0][0].headers['fspiop-destination']).toBe('patchdfsp');
+        expect(http.__request.mock.calls[0][0].path).toBe(`/transfers/${xferId}`);
+        expect(http.__request.mock.calls[0][0].method).toBe('PATCH');
+    });
+});
