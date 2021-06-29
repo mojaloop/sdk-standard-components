@@ -19,6 +19,7 @@ const requests = require('./lib/requests');
 const request = require('./lib/request');
 const WSO2Auth = require('./lib/WSO2Auth');
 const { MojaloopRequests, ThirdpartyRequests } = requests;
+const randomPhrase = require('./lib/randomphrase');
 
 module.exports = {
     Errors,
@@ -30,4 +31,5 @@ module.exports = {
     request,
     requests,
     WSO2Auth,
+    randomPhrase,
 };
