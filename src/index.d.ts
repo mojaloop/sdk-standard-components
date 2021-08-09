@@ -379,8 +379,7 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postThirdpartyRequestsVerifications(
-            // TODO: wait for auth-service changes!
-            thirdpartyRequestsVerificationsBody: unknown,
+            thirdpartyRequestsVerificationsBody: tpAPI.Schemas.ThirdpartyRequestsVerificationsPostRequest,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -394,8 +393,7 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsVerifications(
-            // TODO: wait for auth-service changes!
-            thirdpartyRequestsVerificationsBody: unknown,
+            thirdpartyRequestsVerificationsBody: tpAPI.Schemas.ThirdpartyRequestsVerificationsIDPutResponse,
             verificationsRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
