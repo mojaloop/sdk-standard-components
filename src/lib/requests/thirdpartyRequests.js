@@ -86,18 +86,18 @@ class ThirdpartyRequests extends BaseRequests {
     }
 
     async postThirdpartyRequestsVerifications(thirdpartyRequestsVerificationsBody, destParticipantId) {
-        const url = `thirdpartyRequests/verifications`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId)
+        const url = 'thirdpartyRequests/verifications';
+        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
     }
 
     async putThirdpartyRequestsVerifications(thirdpartyRequestsVerificationsBody, verificationRequestId, destParticipantId) {
         const url = `thirdpartyRequests/verifications/${verificationRequestId}`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId)
+        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
     }
 
     async putThirdpartyRequestsVerificationsError(thirdpartyRequestsVerificationsBody, verificationRequestId, destParticipantId) {
         const url = `thirdpartyRequests/verifications/${verificationRequestId}/error`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId)
+        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
     }
 
     async getAccounts (userId, destParticipantId) {
