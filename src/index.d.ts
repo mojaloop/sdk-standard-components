@@ -369,6 +369,51 @@ declare namespace SDKStandardComponents {
             servicesBody: fspiopAPI.Schemas.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function postThirdpartyRequestsVerifications
+         * @description
+         *   Executes a `POST /thirdpartyRequests/verifications` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsVerificationsBody
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        postThirdpartyRequestsVerifications(
+            // TODO: wait for auth-service changes!
+            thirdpartyRequestsVerificationsBody: unknown,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putThirdpartyRequestsVerifications
+         * @description
+         *   Executes a `PUT /thirdpartyRequests/verifications/{ID}` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsVerificationsBody
+         * @param {string} verificationsRequestId The id of the verification request send by the DFSP
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsVerifications(
+            // TODO: wait for auth-service changes!
+            thirdpartyRequestsVerificationsBody: unknown,
+            verificationsRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+        /**
+         * @function putThirdpartyRequestsVerificationsError
+         * @description
+         *   Executes a `PUT /thirdpartyRequests/verifications/{ID}/error` request
+         * @param {Object} thirdpartyRequestsTransactionsBody The body of the error object
+         * @param {string} verificationsRequestId The id of the verification request send by the DFSP
+         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
+         * @returns {Promise<object>} JSON response body if one was received
+         */
+        putThirdpartyRequestsVerificationsError(
+            thirdpartyRequestsVerificationsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            verificationsRequestId: string,
+            destParticipantId: string
+        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
     }
 
     class MojaloopRequests extends BaseRequests {
