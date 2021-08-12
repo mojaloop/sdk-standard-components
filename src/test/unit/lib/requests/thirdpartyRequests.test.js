@@ -854,6 +854,114 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
+    describe('/verifications requests', () => {
+        const postThirdpartyRequestsVerifications = require('../../data/postThirdpartyRequestsVerifications.json');
+        const putThirdpartyRequestsVerificationsId = require('../../data/putThirdpartyRequestsVerificationsId.json');
+        const putThirdpartyRequestsVerificationsIdError = require('../../data/putThirdpartyRequestsVerificationsIdError.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) });
+        const config = {
+            logger: mockLogger({ app: 'accounts-requests-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+
+        it('executes a `POST /thirdpartyRequests/verifications` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = postThirdpartyRequestsVerifications;
+
+            // Act
+            await tpr.postThirdpartyRequestsVerifications(requestBody, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'POST',
+                    'path': '/thirdpartyRequests/verifications',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /thirdpartyRequests/verifications/{ID}` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putThirdpartyRequestsVerificationsId;
+            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e';
+
+            // Act
+            await tpr.putThirdpartyRequestsVerifications(requestBody, verificationRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': `/thirdpartyRequests/verifications/${verificationRequestId}`,
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+
+        it('executes a `PUT /thirdpartyRequests/verifications/{ID}/error` request', async () => {
+            // Arrange
+            http.__request.mockClear();
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const requestBody = putThirdpartyRequestsVerificationsIdError;
+            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e';
+
+            // Act
+            await tpr.putThirdpartyRequestsVerificationsError(requestBody, verificationRequestId, 'pispa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(requestBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'pispa'
+                    })
+                })
+            );
+        });
+    });
+
+
     describe('servicesRequests', () => {
         const putServicesRequest = require('../../data/putServicesByServiceTypeRequest.json');
         const putErrorRequest = require('../../data/putServicesByServiceTypeRequestError.json');
