@@ -1,5 +1,5 @@
 {
-  "verificationRequestId": "44444444-0000-0000-0000-000000000000",
+  "verificationRequestId": "282352f3-ed76-4a66-91c4-705947060c7e",
   "challenge": "<base64 encoded binary - the encoded challenge>",
   "consentId": "8d34f91d-d078-4077-8263-2c0498dhbjr",
   "signedPayloadType": "FIDO",

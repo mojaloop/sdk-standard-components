@@ -92,12 +92,12 @@ class ThirdpartyRequests extends BaseRequests {
 
     async putThirdpartyRequestsVerifications(thirdpartyRequestsVerificationsBody, verificationRequestId, destParticipantId) {
         const url = `thirdpartyRequests/verifications/${verificationRequestId}`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
+        return this._put(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
     }
 
     async putThirdpartyRequestsVerificationsError(thirdpartyRequestsVerificationsBody, verificationRequestId, destParticipantId) {
         const url = `thirdpartyRequests/verifications/${verificationRequestId}/error`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
+        return this._put(url, 'thirdparty', thirdpartyRequestsVerificationsBody, destParticipantId);
     }
 
     async getAccounts (userId, destParticipantId) {
