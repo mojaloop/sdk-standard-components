@@ -900,7 +900,7 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
+        });
 
         it('executes a `PUT /thirdpartyRequests/verifications/{ID}` request', async () => {
             // Arrange
@@ -913,7 +913,7 @@ describe('ThirdpartyRequests', () => {
             }));
             const tpr = new ThirdpartyRequests(config);
             const requestBody = putThirdpartyRequestsVerificationsId;
-            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e'
+            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e';
 
             // Act
             await tpr.putThirdpartyRequestsVerifications(requestBody, verificationRequestId, 'pispa');
@@ -929,7 +929,7 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
+        });
 
         it('executes a `PUT /thirdpartyRequests/verifications/{ID}/error` request', async () => {
             // Arrange
@@ -942,7 +942,7 @@ describe('ThirdpartyRequests', () => {
             }));
             const tpr = new ThirdpartyRequests(config);
             const requestBody = putThirdpartyRequestsVerificationsIdError;
-            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e'
+            const verificationRequestId = '282352f3-ed76-4a66-91c4-705947060c7e';
 
             // Act
             await tpr.putThirdpartyRequestsVerificationsError(requestBody, verificationRequestId, 'pispa');
@@ -958,8 +958,8 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
-    })
+        });
+    });
 
 
     describe('servicesRequests', () => {
