@@ -71,20 +71,20 @@ class ThirdpartyRequests extends BaseRequests {
     }
 
     async postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.warn('postThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `postThirdpartyRequestsAuthorizations` instead')
+        this.logger.log('postThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `postThirdpartyRequestsAuthorizations` instead')
         const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
         return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
 
     async putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.warn('putThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `putThirdpartyRequestsAuthorizations` instead')
+        this.logger.log('putThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `putThirdpartyRequestsAuthorizations` instead')
 
         const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
         return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
 
     async putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.warn('putThirdpartyRequestsTransactionsAuthorizationsError is deprecated. Use `putThirdpartyRequestsAuthorizationsError` instead')
+        this.logger.log('putThirdpartyRequestsTransactionsAuthorizationsError is deprecated. Use `putThirdpartyRequestsAuthorizationsError` instead')
         const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error`;
         return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }

@@ -750,6 +750,109 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
+    describe('*ThirdpartyRequestsAuthorizations', () => {
+        const postThirdpartyRequestsAuthorizationBody = require('../../data/postThirdpartyRequestsAuthorizationBody.json');
+        const putThirdpartyRequestsAuthorizationBody = require('../../data/putThirdpartyRequestsAuthorizationBody.json');
+        const putThirdpartyRequestsAuthorizationErrorBody = require('../../data/putThirdpartyRequestsAuthorizationErrorBody.json');
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }) });
+
+        const config = {
+            logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }),
+            peerEndpoint: '127.0.0.1',
+            tls: {
+                mutualTLS: {
+                    enabled: false
+                }
+            },
+            jwsSign: false,
+            jwsSignPutParties: false,
+            jwsSigningKey: jwsSigningKey,
+            wso2Auth,
+        };
+
+        it('executes a POST /thirdpartyRequests/authorizations call', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 202,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+
+            // Act
+            await tpr.postThirdpartyRequestsAuthorizations(postThirdpartyRequestsAuthorizationBody, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(postThirdpartyRequestsAuthorizationBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'POST',
+                    'path': '/thirdpartyRequests/authorizations',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        })
+
+        it('executes a PUT /thirdpartyRequests/authorizations/{ID} call', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const authorizationRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsAuthorizations(putThirdpartyRequestsAuthorizationBody, authorizationRequestId, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(putThirdpartyRequestsAuthorizationBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/authorizations/1',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        })
+
+        it('executes a PUT /thirdpartyRequests/authorizations/{ID}/error call', async () => {
+            // Arrange
+            http.__request = jest.fn(() => ({
+                statusCode: 200,
+                headers: {
+                    'content-length': 0
+                },
+            }));
+            const tpr = new ThirdpartyRequests(config);
+            const authorizationRequestId = 1;
+
+            // Act
+            await tpr.putThirdpartyRequestsAuthorizationsError(putThirdpartyRequestsAuthorizationErrorBody, authorizationRequestId, 'dfspa');
+
+            // Assert
+            expect(http.__write).toHaveBeenCalledWith((JSON.stringify(putThirdpartyRequestsAuthorizationErrorBody)));
+            expect(http.__request).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'PUT',
+                    'path': '/thirdpartyRequests/authorizations/1/error',
+                    'headers': expect.objectContaining({
+                        'fspiop-destination': 'dfspa'
+                    })
+                })
+            );
+        })
+
+        
+    })
+
     describe('accountRequests', () => {
         const putAccountsRequest = require('../../data/putAccountsByUserIdRequest.json');
         const putErrorRequest = require('../../data/putAccountsByRequestError.json');
