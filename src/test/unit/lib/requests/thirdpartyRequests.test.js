@@ -794,7 +794,7 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
+        });
 
         it('executes a PUT /thirdpartyRequests/authorizations/{ID} call', async () => {
             // Arrange
@@ -821,7 +821,7 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
+        });
 
         it('executes a PUT /thirdpartyRequests/authorizations/{ID}/error call', async () => {
             // Arrange
@@ -848,10 +848,10 @@ describe('ThirdpartyRequests', () => {
                     })
                 })
             );
-        })
+        });
 
         
-    })
+    });
 
     describe('accountRequests', () => {
         const putAccountsRequest = require('../../data/putAccountsByUserIdRequest.json');
