@@ -41,10 +41,6 @@ class ThirdpartyRequests extends BaseRequests {
         return this._put(url, 'thirdparty', consentRequestBody, destParticipantId);
     }
 
-    async postAuthorizations(authorizationBody, destParticipantId) {
-        return this._post('authorizations', 'authorizations', authorizationBody, destParticipantId);
-    }
-
     async getThirdpartyRequestsTransactions(transactionRequestId, destParticipantId) {
         const url = `thirdpartyRequests/transactions/${transactionRequestId}`;
         return this._get(url, 'thirdparty', destParticipantId);
@@ -68,25 +64,6 @@ class ThirdpartyRequests extends BaseRequests {
     async postThirdpartyRequestsTransactions(thirdpartyRequestsTransactionsBody, destParticipantId) {
         const url = 'thirdpartyRequests/transactions';
         return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
-    }
-
-    async postThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.log('postThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `postThirdpartyRequestsAuthorizations` instead');
-        const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
-        return this._post(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
-    }
-
-    async putThirdpartyRequestsTransactionsAuthorizations(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.log('putThirdpartyRequestsTransactionsAuthorizations is deprecated. Use `putThirdpartyRequestsAuthorizations` instead');
-
-        const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations`;
-        return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
-    }
-
-    async putThirdpartyRequestsTransactionsAuthorizationsError(thirdpartyRequestsTransactionsBody, transactionRequestId, destParticipantId) {
-        this.logger.log('putThirdpartyRequestsTransactionsAuthorizationsError is deprecated. Use `putThirdpartyRequestsAuthorizationsError` instead');
-        const url = `thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error`;
-        return this._put(url, 'thirdparty', thirdpartyRequestsTransactionsBody, destParticipantId);
     }
 
     async postThirdpartyRequestsAuthorizations(body, destParticipantId) {
