@@ -390,24 +390,6 @@ describe('ThirdpartyRequests', () => {
         });
     });
 
-    describe('postAuthorizations', () => {
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'post-authorizations-test'})});
-        const config = {
-            logger: mockLogger({ app: 'postAuthorizations-test' }),
-            peerEndpoint: '127.0.0.1',
-            tls: {
-                mutualTLS: {
-                    enabled: false
-                }
-            },
-            jwsSign: false,
-            jwsSignPutParties: false,
-            jwsSigningKey: jwsSigningKey,
-            wso2Auth,
-        };
-
-    });
-
     describe('patchThirdpartyRequestsTransactions', () => {
         const patchSuccessRequest = require('../../data/patchThirdpartyRequestTransaction.json');
         const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'patch-thirdparty-request-transaction-test'})});
