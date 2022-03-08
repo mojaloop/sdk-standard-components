@@ -34,7 +34,7 @@
     "jws": "4.0.0"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^12.6.6",
+    "@mojaloop/api-snippets": "^13.0.7",
     "@types/jest": "^25.2.1",
     "@types/node": "^14.11.8",
     "eslint": "7.0.0",

@@ -170,19 +170,6 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
-         * @function postAuthorizations
-         * @description
-         *   Executes a `POST /authorizations` request for the specified `transactionRequestId`
-         * @param {Object} authorizationBody The authorizationBody
-         * @param {string} destParticipantId The id of the destination participant, in this case, a PISP
-         * @returns {Promise<object>} JSON response body if one was received
-         */
-        postAuthorizations(
-            authorizationBody: tpAPI.Schemas.AuthorizationsPostRequest,
-            destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
-        /**
          * @function getThirdpartyRequestsTransactions
          * @description
          *   Executes a `GET /thirdpartyRequests/transactions/{transactionRequestId}` request for the specified `transactionRequestId`
@@ -252,55 +239,6 @@ declare namespace SDKStandardComponents {
             transactionRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
-        /**
-         * @deprecated  - use postThirdpartyRequestsAuthorizations instead
-         * @function postThirdpartyRequestsTransactionsAuthorizations
-         * @description
-         *   Executes a `POST /thirdpartyRequests/transactions/${transactionRequestId}/authorizations` request
-         * @param {Object} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
-         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
-         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
-         * @returns {Promise<object>} JSON response body if one was received
-         */
-        postThirdpartyRequestsTransactionsAuthorizations(
-            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDAuthorizationsPostRequest,
-            transactionRequestId: string,
-            destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
-        /**
-         * @deprecated - use putThirdpartyRequestsAuthorizations instead
-         * @function putThirdpartyRequestsTransactionsAuthorizations
-         * @description
-         *   Executes a `PUT /thirdpartyRequests/transactions/${transactionRequestId}/authorizations` request
-         * @param {putThirdpartyRequestsTransactionsAuthorizationsRequest} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
-         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
-         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
-         * @returns {Promise<object>} JSON response body if one was received
-         */
-        putThirdpartyRequestsTransactionsAuthorizations(
-            thirdpartyRequestsTransactionsBody: tpAPI.Schemas.ThirdpartyRequestsTransactionsIDAuthorizationsPutResponse,
-            transactionRequestId: string,
-            destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
-        /**
-         * @deprecated - use putThirdpartyRequestsAuthorizationsError instead
-         * @function putThirdpartyRequestsTransactionsAuthorizationsError
-         * @description
-         *   Executes a `PUT thirdpartyRequests/transactions/${transactionRequestId}/authorizations/error` request
-         * @param {putThirdpartyRequestsTransactionsAuthorizationsRequest} thirdpartyRequestsTransactionsBody The thirdpartyRequestsTransactionsBody
-         * @param {string} transactionRequestId The `id` of the transactionRequest/thirdpartyRequest
-         * @param {string} destParticipantId The id of the destination participant, in this case, a DFSP
-         * @returns {Promise<object>} JSON response body if one was received
-         */
-        putThirdpartyRequestsTransactionsAuthorizationsError(
-            thirdpartyRequestsTransactionsBody: fspiopAPI.Schemas.ErrorInformationObject,
-            transactionRequestId: string,
-            destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
 
         /**
          * @function postThirdpartyRequestsAuthorizations
@@ -524,19 +462,6 @@ declare namespace SDKStandardComponents {
         postQuotes(
             quoteRequest: fspiopAPI.Schemas.QuotesPostRequest,
             destParticipantId: string
-        ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-
-        /**
-         * @function postAuthorizations
-         * @description
-         *   Executes a `POST /authorizations` request for the specified `authorizations request`
-         * @param {Object} authorizationRequest The authorization request
-         * @param {string} destFspId The id of the destination participant
-         * @returns {Promise<object>} JSON response body if one was received
-         */
-        postAuthorizations (
-            authorizationRequest: tpAPI.Schemas.AuthorizationsPostRequest,
-            destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
         /**
