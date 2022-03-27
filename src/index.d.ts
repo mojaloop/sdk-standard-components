@@ -782,14 +782,14 @@ declare namespace SDKStandardComponents {
             cause?: string
         }
         class MojaloopFSPIOPError extends Error {
-            public cause: Error | unknown
+            public cause: Error | undefined
             public message: string
             public replyTo: string
             public apiErrorCode: MojaloopApiErrorCode
             public extensions: unknown
 
             constructor(
-                cause: Error | unknown,
+                cause: Error | undefined,
                 message: string,
                 replyTo: string,
                 apiErrorCode: MojaloopApiErrorCode,
