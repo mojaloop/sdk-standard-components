@@ -1,32 +1,39 @@
 # CircleCI v2 Config
-version: 2
+version: 2.1
 
-defaults_working_directory: &defaults_working_directory
-  working_directory: /home/circleci/project
+##
+# orbs
+#
+# Orbs used in this pipeline
+##
+orbs:
+  slack: circleci/slack@3.4.2
+  pr-tools: mojaloop/pr-tools@0.1.8
+  github-release: h-matsuo/github-release@0.1.3
 
-defaults_docker_node: &defaults_docker_node
-  docker:
-    - image: node:12.19.0-alpine
-
+##
+# defaults
+#
+# YAML defaults templates, in alphabetical order
+##
 defaults_Dependencies: &defaults_Dependencies |
     apk --no-cache add git
     apk --no-cache add ca-certificates
     apk --no-cache add curl
     apk --no-cache add openssh-client
-    apk --no-cache add bash
-    apk add --no-cache -t build-dependencies make gcc g++ python libtool autoconf automake
+    apk add --no-cache -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
     npm config set unsafe-perm true
     npm install -g node-gyp
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
+    apk upgrade --no-cache
     apk --no-cache add \
-            python \
-            py-pip \
+            python3 \
+            py3-pip \
             groff \
             less \
             mailcap
-    pip install --upgrade awscli==1.14.5 s3cmd==2.0.1 python-magic
-    apk -v --purge del py-pip
+    pip3 install --upgrade pip awscli==1.14.5 s3cmd==2.0.1 python-magic
 
 defaults_license_scanner: &defaults_license_scanner
   name: Install and set up license-scanner
@@ -36,21 +43,21 @@ defaults_license_scanner: &defaults_license_scanner
 
 defaults_npm_auth: &defaults_npm_auth
   name: Update NPM registry auth token
-  command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > src/.npmrc
+  command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
 defaults_npm_publish_version: &defaults_npm_publish
   name: Update version to prerelease
   command: |
     source $BASH_ENV
     echo "Publishing tag $CIRCLE_TAG"
-    cd src && npm publish --tag $CIRCLE_TAG --access public
+    npm publish --tag $CIRCLE_TAG --access public
 
 defaults_npm_publish_release: &defaults_npm_publish_release
   name: Publish NPM $RELEASE_TAG artifact
   command: |
     source $BASH_ENV
     echo "Publishing tag $RELEASE_TAG"
-    cd src && npm publish --tag $RELEASE_TAG --access public
+    npm publish --tag $RELEASE_TAG --access public
 
 defaults_slack_announcement: &defaults_slack_announcement
   name: Slack announcement for tag releases
@@ -63,10 +70,32 @@ defaults_slack_announcement: &defaults_slack_announcement
       \"text\": \"*${CIRCLE_PROJECT_REPONAME}* - Release \`${CIRCLE_TAG}\`: https://github.com/mojaloop/${CIRCLE_PROJECT_REPONAME}/releases/tag/${CIRCLE_TAG}\"
     }"
 
+defaults_export_version_from_package: &defaults_export_version_from_package
+  # TODO: this is rather imperfect, but will do for now
+  name: Format the changelog into the github release body and get release tag
+  command: |
+    git diff --no-indent-heuristic master~1 HEAD CHANGELOG.md | sed -n '/^+[^+]/ s/^+//p' > /tmp/changes
+    echo 'export RELEASE_CHANGES=`cat /tmp/changes`' >> $BASH_ENV
+    echo 'export RELEASE_TAG=`cat package-lock.json | jq -r .version`' >> $BASH_ENV
+
+##
+# Executors
+#
+# CircleCI Executors
+##
+executors:
+  default-docker:
+    working_directory: /home/circleci/project/src
+    docker:
+      - image: node:16.14.2-alpine
+
+  default-machine:
+    machine:
+      image: ubuntu-2004:current
+
 jobs:
   setup:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
@@ -74,143 +103,106 @@ jobs:
       - checkout
       - run:
           name: Update NPM install
-          command: cd src && npm ci
+          command: npm install
       - save_cache:
-          key: dependency-cache-1-{{ checksum "src/package.json" }}
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - src/node_modules
+            - node_modules
 
   test-unit:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
       - checkout
       - restore_cache:
-          key: dependency-cache-1-{{ checksum "src/package.json" }}
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Install tape, tapes and tap-xunit
+          command: npm install tape tapes tap-xunit
       - run:
           name: Create dir for test results
-          command: cd src && mkdir -p /test/results
+          command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: cd src && npm run test > /test/results/results.txt
+          command: npm -s run test:xunit > ./test/results/tape.xml
       - store_artifacts:
-          path: /test/results
+          path: ./test/results
+          prefix: test
       - store_test_results:
-          path: /test/results
+          path: ./test/results
 
-  lint:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+  test-coverage:
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
+      - run:
+          name: Install AWS CLI dependencies
+          command: *defaults_awsCliDependencies
       - checkout
       - restore_cache:
-          keys:
-          - dependency-cache-1-{{ checksum "src/package.json" }}
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: Create dir for lint results
-          command: cd src && mkdir -p /lintresults
-      - run:
-          name: Execute linting
-          command: cd src && (npm run lint > /lintresults/results.txt)
+          name: Execute code coverage check
+          command: npm -s run test:coverage-check
       - store_artifacts:
-          path: /lintresults
+          path: coverage
+          prefix: test
+      - store_test_results:
+          path: coverage/lcov.info
+      - run:
+          name: Copy code coverage to SonarQube
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ];
+            then
+                echo "Sending lcov.info to SonarQube..."
+                aws s3 cp coverage/lcov.info $AWS_S3_DIR_SONARQUBE/${CIRCLE_PROJECT_REPONAME}/lcov.info
+            else
+                echo "Not a release (env CIRCLE_BRANCH != 'master'), skipping sending lcov.info to SonarQube."
+            fi
 
-  build-typescript:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+  vulnerability-check:
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
       - checkout
       - restore_cache:
-          keys:
-          - dependency-cache-1-{{ checksum "src/package.json" }}
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: Run the ts compiler
-          command: cd src && npm run build
+          name: Create dir for test results
+          command: mkdir -p ./audit/results
+      - run:
+          name: Check for new npm vulnerabilities
+          command: npm run audit:check --silent -- --json > ./audit/results/auditResults.json
+      - store_artifacts:
+          path: ./audit/results
+          prefix: audit
 
-
-#  test-coverage:
-#    <<: *defaults_working_directory
-#    <<: *defaults_docker_node
-#    steps:
-#      - run:
-#          name: Install general dependencies
-#          command: *defaults_Dependencies
-#      - run:
-#          name: Install AWS CLI dependencies
-#          command: *defaults_awsCliDependencies
-#      - checkout
-#      - restore_cache:
-#          key: dependency-cache-{{ checksum "package.json" }}
-#      - run:
-#          name: Execute code coverage check
-#          command: npm -s run test:coverage-check
-#      - store_artifacts:
-#          path: coverage
-#          prefix: test
-#      - store_test_results:
-#          path: coverage/lcov.info
-#      - run:
-#          name: Copy code coverage to SonarQube
-#          command: |
-#            if [ "${CIRCLE_BRANCH}" == "master" ];
-#            then
-#                echo "Sending lcov.info to SonarQube..."
-#                aws s3 cp coverage/lcov.info $AWS_S3_DIR_SONARQUBE/central-services-shared/lcov.info
-#            else
-#                echo "Not a release (env CIRCLE_BRANCH != 'master'), skipping sending lcov.info to SonarQube."
-#            fi
-
-#  vulnerability-check:
-#    <<: *defaults_working_directory
-#    <<: *defaults_docker_node
-#    steps:
-#      - run:
-#          name: Install general dependencies
-#          command: *defaults_Dependencies
-#      - checkout
-#      - restore_cache:
-#          key: dependency-cache-{{ checksum "package.json" }}
-#      - run:
-#          name: Create dir for test results
-#          command: mkdir -p ./audit/results
-#      - run:
-#          name: Check for new npm vulnerabilities
-#          command: npm run audit:check -- --json > ./audit/results/auditResults.json 
-#      - store_artifacts:
-#          path: ./audit/results
-#          prefix: audit
-
-#  audit-licenses:
-#    <<: *defaults_working_directory
-#    <<: *defaults_docker_node
-#    steps:
-#      - run:
-#          name: Install general dependencies
-#          command: *defaults_Dependencies
-#      - run:
-#          <<: *defaults_license_scanner
-#      - checkout
-#      - restore_cache:
-#          key: dependency-cache-{{ checksum "package.json" }}
-#      - run:
-#          name: Run the license-scanner
-#          command: cd /tmp/license-scanner && pathToRepo=$CIRCLE_WORKING_DIRECTORY make run
-#      - store_artifacts:
-#          path: /tmp/license-scanner/results
-#          prefix: licenses
+  audit-licenses:
+    executor: default-docker
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - run:
+          <<: *defaults_license_scanner
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Run the license-scanner
+          command: cd /tmp/license-scanner && pathToRepo=$CIRCLE_WORKING_DIRECTORY make run
+      - store_artifacts:
+          path: /tmp/license-scanner/results
+          prefix: licenses
 
   build-snapshot:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
@@ -227,9 +219,68 @@ jobs:
       - run:
           <<: *defaults_slack_announcement
 
-  build:
-    <<: *defaults_working_directory
-    <<: *defaults_docker_node
+  release:
+    executor: default-docker
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - checkout
+      - restore_cache:
+          keys:
+          - dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Configure git
+          command: |
+            git config user.email ${GIT_CI_EMAIL}
+            git config user.name ${GIT_CI_USER}
+            git checkout ${CIRCLE_BRANCH}
+      - run:
+          name: Configure ssh
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Generate changelog and bump package version
+          command: npm run release
+      - run:
+          name: Push the release
+          command: git push --follow-tags origin ${CIRCLE_BRANCH}
+
+  github-release:
+    executor: default-machine
+    steps:
+      - run:
+          name: Install git
+          command: |
+            sudo apt-get update && sudo apt-get install -y git
+      - checkout
+      - run:
+          name: Fetch updated release branch
+          command: |
+            git config user.email ${GIT_CI_EMAIL}
+            git config user.name ${GIT_CI_USER}
+            git fetch origin
+            git checkout origin/${CIRCLE_BRANCH}
+      - run:
+          <<: *defaults_export_version_from_package
+      - run:
+          name: check the release changes
+          command: |
+            echo "Changes are: ${RELEASE_CHANGES}"
+      - github-release/create:
+          github-token-variable: ${GITHUB_TOKEN}
+          tag: v${RELEASE_TAG}
+          title: v${RELEASE_TAG} Release
+          description: ${RELEASE_CHANGES}
+          file-path: CHANGELOG.md
+      - slack/status:
+          webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
+
+  publish:
+    executor: default-docker
     steps:
       - run:
           name: Install general dependencies
@@ -243,13 +294,13 @@ jobs:
           <<: *defaults_npm_auth
       - run:
           <<: *defaults_npm_publish_release
-      - run:
-          <<: *defaults_slack_announcement
 
 workflows:
   version: 2
   build_and_test:
     jobs:
+      - pr-tools/pr-title-check:
+          context: org-global
       - setup:
           context: org-global
           filters:
@@ -270,7 +321,7 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - lint:
+      - test-coverage:
           context: org-global
           requires:
             - setup
@@ -281,7 +332,7 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - build-typescript:
+      - vulnerability-check:
           context: org-global
           requires:
             - setup
@@ -292,68 +343,79 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-
-#      - test-coverage:
-#          context: org-global
-#          requires:
-#            - setup
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore:
-#                - /feature*/
-#                - /bugfix*/
-#      - vulnerability-check:
-#          context: org-global
-#          requires:
-#            - setup
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore:
-#                - /feature*/
-#                - /bugfix*/
-#      - audit-licenses:
-#          context: org-global
-#          requires:
-#            - setup
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore:
-#                - /feature*/
-#                - /bugfix*/
+      - audit-licenses:
+          context: org-global
+          requires:
+            - setup
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore:
+                - /feature*/
+                - /bugfix*/
       - build-snapshot:
           context: org-global
           requires:
             - setup
             - test-unit
-            - build-typescript
-#            - test-coverage
-#            - vulnerability-check
-#            - audit-licenses
+            - test-coverage
+            - vulnerability-check
+            - audit-licenses
           filters:
             tags:
               only: /v[0-9]+(\.[0-9]+)*\-snapshot+((\.[0-9]+)?)/
             branches:
               ignore:
                 - /.*/
-      - build:
+      # - build:
+      #     context: org-global
+      #     requires:
+      #       - setup
+      #       - test-unit
+      #       - test-coverage
+      #       - vulnerability-check
+      #       - audit-licenses
+      #     filters:
+      #       tags:
+      #         only: /v[0-9]+(\.[0-9]+)*/
+      #       branches:
+      #         ignore:
+      #           - /.*/
+      # New commits to master release automatically
+      - release:
           context: org-global
           requires:
-            - setup
+            - pr-tools/pr-title-check
             - test-unit
-            - build-typescript
-#            - test-coverage
-#            - vulnerability-check
-#            - audit-licenses
+            - test-coverage
+            - vulnerability-check
+            - audit-licenses
+          filters:
+            branches:
+              only:
+                - master
+                - /release\/v.*/
+      - github-release:
+          context: org-global
+          requires:
+            - release
+          filters:
+            branches:
+              only:
+                - master
+                - /release\/v.*/
+      - publish:
+          context: org-global
+          requires:
+            - pr-tools/pr-title-check
+            - test-unit
+            - test-coverage
+            - vulnerability-check
+            - audit-licenses
           filters:
             tags:
-              only: /v[0-9]+(\.[0-9]+)*/
+              only: /.*/
             branches:
               ignore:
                 - /.*/
-

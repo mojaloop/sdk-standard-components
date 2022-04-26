@@ -1,0 +1,3 @@
+reject: 
+  # ILP-Packet <= v2.2.0 is required to support the ILP-Packet version used by the Mojaloop Specification v1.x.
+  - "ilp-packet" 
