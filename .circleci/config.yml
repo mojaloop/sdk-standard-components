@@ -257,7 +257,8 @@ jobs:
             gh release create "v${RELEASE_TAG}" --title "v${RELEASE_TAG} Release" --draft=false --notes "${RELEASE_CHANGES}" ./CHANGELOG.md
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Git Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/v"${RELEASE_TAG}"'
+          success_message: '*${CIRCLE_PROJECT_REPONAME}* - GH Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/${CIRCLE_PROJECT_REPONAME}/releases/tag/v${RELEASE_TAG}'
+
 
   publish:
     executor: default-docker
@@ -281,7 +282,7 @@ jobs:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM "${RELEASE_TAG}" Release \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/"${CIRCLE_TAG:1}"'
+          success_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM `"${RELEASE_TAG}"` Release \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG:1}'
 
   publish-snapshot:
     executor: default-docker
@@ -308,7 +309,8 @@ jobs:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: "*${CIRCLE_PROJECT_REPONAME}* - NPM ${RELEASE_TAG} Release `${CIRCLE_TAG}` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG:1}"
+          success_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM `"${RELEASE_TAG}"` Release \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG:1}'
+
 workflows:
   version: 2
   build_and_test:
