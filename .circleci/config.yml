@@ -270,13 +270,18 @@ jobs:
           name: Setup environment vars for LATEST release
           command: |
             echo 'export RELEASE_TAG=$RELEASE_TAG_PROD' >> $BASH_ENV
+            echo 'RELEASE_TAG=$RELEASE_TAG'
+
+            PACKAGE_VERSION=$(npm view . version)
+            echo 'export PACKAGE_VERSION=$PACKAGE_VERSION' >> $BASH_ENV
+            echo 'PACKAGE_VERSION=$PACKAGE_VERSION'
       - run:
           <<: *defaults_npm_auth
       - run:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release \`"v${RELEASE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG}"'
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:${RELEASE_TAG} \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${PACKAGE_VERSION}"'
 
   publish-snapshot:
     executor: default-docker
@@ -291,18 +296,20 @@ jobs:
       - run:
           name: Setup environment vars for SNAPSHOT release
           command: |
-            echo 'export RELEASE_TAG=$CIRCLE_TAG' >> $BASH_ENV
+            RELEASE_TAG = $(npm-snapshot $CIRCLE_BUILD_NUM)
+            echo 'export RELEASE_TAG=$RELEASE_TAG' >> $BASH_ENV
+            echo 'RELEASE_TAG=$RELEASE_TAG'
+
+            PACKAGE_VERSION=$(npm view . version)
+            echo 'export PACKAGE_VERSION=$PACKAGE_VERSION' >> $BASH_ENV
+            echo 'PACKAGE_VERSION=$PACKAGE_VERSION'
       - run:
           <<: *defaults_npm_auth
-      - run:
-          name: Update package snapshot
-          command: |
-            npx npm-snapshot $CIRCLE_BUILD_NUM
       - run:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Snapshot \`"v${RELEASE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG}"'
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:${RELEASE_TAG} \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${PACKAGE_VERSION}"'
 workflows:
   version: 2
   build_and_test:
