@@ -98,6 +98,19 @@ jobs:
           paths:
             - node_modules
 
+  test-lint:
+    executor: default-docker
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Execute unit tests
+          command: npm run lint
+
   test-unit:
     executor: default-docker
     steps:
@@ -115,7 +128,7 @@ jobs:
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: npm -s run test:xunit > ./test/results/tape.xml
+          command: npm -s run test:xunit > ./test/results/test.xml
       - store_artifacts:
           path: ./test/results
           prefix: test
@@ -337,6 +350,7 @@ workflows:
           context: org-global
           requires:
             - setup
+            - test-lint
             - test-unit
             - test-coverage
             - vulnerability-check
@@ -366,6 +380,7 @@ workflows:
           context: org-global
           requires:
             - pr-tools/pr-title-check
+            - test-lint
             - test-unit
             - test-coverage
             - vulnerability-check
@@ -388,6 +403,7 @@ workflows:
           context: org-global
           requires:
             - pr-tools/pr-title-check
+            - test-lint
             - test-unit
             - test-coverage
             - vulnerability-check
