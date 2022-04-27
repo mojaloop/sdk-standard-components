@@ -38,12 +38,6 @@ defaults_npm_auth: &defaults_npm_auth
   name: Update NPM registry auth token
   command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
-defaults_npm_publish_version: &defaults_npm_publish
-  name: Update version to prerelease
-  command: |
-    source $BASH_ENV
-    echo "Publishing tag $CIRCLE_TAG"
-    npm publish --tag $CIRCLE_TAG --access public
 
 defaults_npm_publish_release: &defaults_npm_publish_release
   name: Publish NPM $RELEASE_TAG artifact
@@ -53,7 +47,6 @@ defaults_npm_publish_release: &defaults_npm_publish_release
     npm publish --tag $RELEASE_TAG --access public
 
 defaults_export_version_from_package: &defaults_export_version_from_package
-  # TODO: this is rather imperfect, but will do for now
   name: Format the changelog into the github release body and get release tag
   command: |
     git diff --no-indent-heuristic master~1 HEAD CHANGELOG.md | sed -n '/^+[^+]/ s/^+//p' > /tmp/changes
@@ -134,6 +127,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
+          # This is needed for legacy core tests. Remove this once 'tape' is fully deprecated.
           name: Install tape, tapes and tap-xunit
           command: npm install tape tapes tap-xunit
       - run:
@@ -263,7 +257,7 @@ jobs:
             gh release create "v${RELEASE_TAG}" --title "v${RELEASE_TAG} Release" --draft=false --notes "${RELEASE_CHANGES}" ./CHANGELOG.md
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Git Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
 
   publish:
     executor: default-docker
@@ -280,6 +274,9 @@ jobs:
           <<: *defaults_npm_auth
       - run:
           <<: *defaults_npm_publish_release
+      - slack/status:
+          webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release \`"v${RELEASE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG}"'
 
   publish-snapshot:
     executor: default-docker
@@ -294,7 +291,7 @@ jobs:
       - run:
           name: Setup environment vars for SNAPSHOT release
           command: |
-            echo 'export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT' >> $BASH_ENV
+            echo 'export RELEASE_TAG=$CIRCLE_TAG' >> $BASH_ENV
       - run:
           <<: *defaults_npm_auth
       - run:
@@ -305,8 +302,7 @@ jobs:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
-
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Snapshot \`"v${RELEASE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG}"'
 workflows:
   version: 2
   build_and_test:
