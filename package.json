@@ -23,7 +23,7 @@
     "dep:check": "ncu -e 2",
     "dep:update": "ncu -u",
     "release": "standard-version --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
-    "snapshot": "standard-version --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}} [skip ci]'"
+    "snapshot": "standard-version --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "author": "James Bush, ModusBox Inc.",
   "contributors": [
