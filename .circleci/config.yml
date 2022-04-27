@@ -98,6 +98,19 @@ jobs:
           paths:
             - node_modules
 
+  test-updated-dependencies:
+    executor: default-docker
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Execute dependency tests
+          command: npm run dep:check
+
   test-lint:
     executor: default-docker
     steps:
@@ -302,6 +315,17 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
+      - test-updated-dependencies:
+          context: org-global
+          requires:
+            - setup
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore:
+                - /feature*/
+                - /bugfix*/
       - test-lint:
           context: org-global
           requires:
@@ -361,6 +385,7 @@ workflows:
           context: org-global
           requires:
             - setup
+            - test-updated-dependencies
             - test-lint
             - test-unit
             - test-coverage
@@ -391,6 +416,7 @@ workflows:
           context: org-global
           requires:
             - pr-tools/pr-title-check
+            - test-updated-dependencies
             - test-lint
             - test-unit
             - test-coverage
