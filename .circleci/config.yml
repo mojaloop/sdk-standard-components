@@ -268,7 +268,7 @@ jobs:
           command: *defaults_Dependencies
       - checkout
       - run:
-          name: Setup environment vars for LATEST release
+          name: Setup for LATEST release
           command: |
             echo "export RELEASE_TAG=$RELEASE_TAG_PROD" >> $BASH_ENV
             echo "RELEASE_TAG=$RELEASE_TAG_PROD"
@@ -293,7 +293,7 @@ jobs:
           command: *defaults_Dependencies
       - checkout
       - run:
-          name: Setup environment vars for SNAPSHOT release
+          name: Setup for SNAPSHOT release
           command: |
             echo "export RELEASE_TAG=${RELEASE_TAG_SNAPSHOT}" >> $BASH_ENV
             echo "RELEASE_TAG=${RELEASE_TAG_SNAPSHOT}"
