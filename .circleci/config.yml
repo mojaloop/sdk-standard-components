@@ -258,7 +258,7 @@ jobs:
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
           success_message: '*${CIRCLE_PROJECT_REPONAME}* - GH Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/${CIRCLE_PROJECT_REPONAME}/releases/tag/v${RELEASE_TAG}'
-          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - GH Release \`"v${RELEASE_TAG}"\` Failed'
+          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - GH Release \`"v${RELEASE_TAG}"\` Failed!'
 
   publish:
     executor: default-docker
@@ -283,7 +283,7 @@ jobs:
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
           success_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG:1}'
-          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` Failed'
+          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` Failed!'
 
   publish-snapshot:
     executor: default-docker
@@ -311,7 +311,7 @@ jobs:
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
           success_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${CIRCLE_TAG:1}'
-          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` Failed'
+          failure_message: '*${CIRCLE_PROJECT_REPONAME}* - NPM \`"${RELEASE_TAG}"\` Release \`"${CIRCLE_TAG}"\` Failed!'
 
 workflows:
   version: 2
