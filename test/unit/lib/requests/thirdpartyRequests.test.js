@@ -29,8 +29,8 @@ const fs = require('fs');
 jest.mock('http');
 const http = require('http');
 
-const ThirdpartyRequests = require('../../../../lib/requests/thirdpartyRequests');
-const WSO2Auth = require('../../../../lib/WSO2Auth');
+const ThirdpartyRequests = require('../../../../src/lib/requests/thirdpartyRequests');
+const WSO2Auth = require('../../../../src/lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');

@@ -9,7 +9,7 @@
  **************************************************************************/
 
 describe('index layout', () => {
-    const index = require('../../index');
+    const index = require('../../src/index');
     const shouldBeExported = [
         'Errors',
         'Ilp',

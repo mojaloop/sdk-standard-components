@@ -1,4 +1,4 @@
-const { Logger } = require(`${__ROOT__}/lib/logger`);
+const { Logger } = require(`${__ROOT__}/src/lib/logger`);
 
 describe('Logger', () => {
     // From https://stackoverflow.com/a/14322189

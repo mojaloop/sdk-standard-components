@@ -11,7 +11,7 @@
 'use strict';
 
 const fs = require('fs');
-const JwsTest = require('../../lib/jws');
+const JwsTest = require('../../src/lib/jws');
 const Signer = JwsTest.signer;
 const Validator = JwsTest.validator;
 const mockLogger = require('../__mocks__/mockLogger');

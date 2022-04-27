@@ -73,7 +73,7 @@ defaults_configure_git: &defaults_configure_git
 ##
 executors:
   default-docker:
-    working_directory: &WORKING_DIR /home/circleci/project/src
+    working_directory: &WORKING_DIR /home/circleci/project
     docker:
       - image: node:16.14.2-alpine
 

@@ -12,8 +12,8 @@ const fs = require('fs');
 jest.mock('http');
 const http = require('http');
 
-const mr = require('../../../../lib/requests/mojaloopRequests.js');
-const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
+const WSO2Auth = require('../../../../src/lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');

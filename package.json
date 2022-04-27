@@ -2,8 +2,8 @@
   "name": "@mojaloop/sdk-standard-components",
   "version": "16.0.1",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "pre-commit": [
     "lint",
     "dep:check",

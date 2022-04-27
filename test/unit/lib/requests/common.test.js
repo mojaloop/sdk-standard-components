@@ -8,7 +8,7 @@
  *       Murthy Kakarlamudi - murthy@modusbox.com                             *
  **************************************************************************/
 
-const Common = require('../../../../lib/requests/common');
+const Common = require('../../../../src/lib/requests/common');
 
 describe('Common', () => {
 

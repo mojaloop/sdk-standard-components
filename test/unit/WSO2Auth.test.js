@@ -10,7 +10,7 @@
 
 jest.mock('http');
 const http = require('http');
-const WSO2Auth = require('../../lib/WSO2Auth');
+const WSO2Auth = require('../../src/lib/WSO2Auth');
 const mockLogger = require('../__mocks__/mockLogger');
 
 describe('WSO2Auth', () => {

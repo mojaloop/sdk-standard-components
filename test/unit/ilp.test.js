@@ -10,7 +10,7 @@
 
 'use strict';
 
-const Ilp = require('../../lib/ilp');
+const Ilp = require('../../src/lib/ilp');
 const IlpPacket = require('ilp-packet');
 
 const quoteRequest = require('./data/quoteRequest');
