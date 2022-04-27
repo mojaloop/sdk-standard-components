@@ -296,7 +296,7 @@ jobs:
       - run:
           name: Setup environment vars for SNAPSHOT release
           command: |
-            RELEASE_TAG = $(npm-snapshot $CIRCLE_BUILD_NUM)
+            RELEASE_TAG=$(npm-snapshot $CIRCLE_BUILD_NUM)
             echo 'export RELEASE_TAG=$RELEASE_TAG' >> $BASH_ENV
             echo 'RELEASE_TAG=$RELEASE_TAG'
 
