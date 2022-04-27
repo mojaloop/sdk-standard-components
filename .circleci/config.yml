@@ -92,7 +92,7 @@ jobs:
       - checkout
       - run:
           name: Update NPM install
-          command: npm install
+          command: npm ci
       - save_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
