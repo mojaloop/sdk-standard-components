@@ -98,7 +98,7 @@ jobs:
           paths:
             - node_modules
 
-  test-updated-dependencies:
+  test-dependencies:
     executor: default-docker
     steps:
       - run:
@@ -315,7 +315,7 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - test-updated-dependencies:
+      - test-dependencies:
           context: org-global
           requires:
             - setup
@@ -385,7 +385,7 @@ workflows:
           context: org-global
           requires:
             - setup
-            - test-updated-dependencies
+            - test-dependencies
             - test-lint
             - test-unit
             - test-coverage
@@ -416,7 +416,7 @@ workflows:
           context: org-global
           requires:
             - pr-tools/pr-title-check
-            - test-updated-dependencies
+            - test-dependencies
             - test-lint
             - test-unit
             - test-coverage
