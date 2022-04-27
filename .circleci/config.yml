@@ -224,7 +224,7 @@ jobs:
           <<: *defaults_configure_git
       - run:
           name: Generate changelog and bump package version
-          command: npm run release
+          command: npm run release -- --no-verify
       - run:
           name: Push the release
           command: git push --follow-tags origin ${CIRCLE_BRANCH}
