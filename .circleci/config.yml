@@ -128,7 +128,7 @@ jobs:
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: npm -s run test:xunit > ./test/results/test.xml
+          command: npm -s run test:xunit
       - store_artifacts:
           path: ./test/results
           prefix: test
