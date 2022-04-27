@@ -273,7 +273,7 @@ jobs:
           command: *defaults_Dependencies
       - checkout
       - run:
-          name: setup environment vars for LATEST release
+          name: Setup environment vars for LATEST release
           command: |
             echo 'export RELEASE_TAG=$RELEASE_TAG_PROD' >> $BASH_ENV
       - run:
@@ -287,13 +287,20 @@ jobs:
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
+      - run:
+          name: Install snapshot dependencies
+          command: npm install -g npm-snapshot
       - checkout
       - run:
-          name: setup environment vars for SNAPSHOT release
+          name: Setup environment vars for SNAPSHOT release
           command: |
             echo 'export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT' >> $BASH_ENV
       - run:
           <<: *defaults_npm_auth
+      - run:
+          name: Update package snapshot
+          command: |
+            npx npm-snapshot $CIRCLE_BUILD_NUM
       - run:
           <<: *defaults_npm_publish_release
       - slack/status:
