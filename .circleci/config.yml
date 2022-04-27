@@ -281,7 +281,7 @@ jobs:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:${RELEASE_TAG} \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${PACKAGE_VERSION}"'
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:"${RELEASE_TAG}"" \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/"${PACKAGE_VERSION}"'
 
   publish-snapshot:
     executor: default-docker
@@ -308,7 +308,7 @@ jobs:
           <<: *defaults_npm_publish_release
       - slack/status:
           webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:${RELEASE_TAG} \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/${PACKAGE_VERSION}"'
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - NPM Release:"${RELEASE_TAG}" \`"${CIRCLE_TAG}"\` \nhttps://www.npmjs.com/package/@mojaloop/${CIRCLE_PROJECT_REPONAME}/v/"${PACKAGE_VERSION}"'
 workflows:
   version: 2
   build_and_test:
