@@ -216,25 +216,6 @@ jobs:
           path: /tmp/license-scanner/results
           prefix: licenses
 
-  build-snapshot:
-    executor: default-docker
-    steps:
-      - run:
-          name: Install general dependencies
-          command: *defaults_Dependencies
-      - checkout
-      - run:
-          name: setup environment vars for SNAPSHOT release
-          command: |
-            echo 'export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT' >> $BASH_ENV
-      - run:
-          <<: *defaults_npm_auth
-      - run:
-          <<: *defaults_npm_publish_release
-      - slack/status:
-          webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
-          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
-
   release:
     executor: default-docker
     steps:
@@ -299,6 +280,25 @@ jobs:
           <<: *defaults_npm_auth
       - run:
           <<: *defaults_npm_publish_release
+
+  publish-snapshot:
+    executor: default-docker
+    steps:
+      - run:
+          name: Install general dependencies
+          command: *defaults_Dependencies
+      - checkout
+      - run:
+          name: setup environment vars for SNAPSHOT release
+          command: |
+            echo 'export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT' >> $BASH_ENV
+      - run:
+          <<: *defaults_npm_auth
+      - run:
+          <<: *defaults_npm_publish_release
+      - slack/status:
+          webhook: "$SLACK_WEBHOOK_ANNOUNCEMENT"
+          success_message: '*"${CIRCLE_PROJECT_REPONAME}"* - Release \`"v${RELEASE_TAG}"\` \nhttps://github.com/mojaloop/"${CIRCLE_PROJECT_REPONAME}"/releases/tag/"v${RELEASE_TAG}"'
 
 workflows:
   version: 2
@@ -381,36 +381,6 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      # - build-snapshot:
-      #     context: org-global
-      #     requires:
-      #       - setup
-      #       - test-dependencies
-      #       - test-lint
-      #       - test-unit
-      #       - test-coverage
-      #       - vulnerability-check
-      #       - audit-licenses
-      #     filters:
-      #       tags:
-      #         only: /v[0-9]+(\.[0-9]+)*\-snapshot+((\.[0-9]+)?)/
-      #       branches:
-      #         ignore:
-      #           - /.*/
-      # - build:
-      #     context: org-global
-      #     requires:
-      #       - setup
-      #       - test-unit
-      #       - test-coverage
-      #       - vulnerability-check
-      #       - audit-licenses
-      #     filters:
-      #       tags:
-      #         only: /v[0-9]+(\.[0-9]+)*/
-      #       branches:
-      #         ignore:
-      #           - /.*/
       # New commits to master release automatically
       - release:
           context: org-global
@@ -447,7 +417,22 @@ workflows:
             - audit-licenses
           filters:
             tags:
-              only: /.*/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore:
+                - /.*/
+      - publish-snapshot:
+          context: org-global
+          requires:
+            - pr-tools/pr-title-check
+            - test-lint
+            - test-unit
+            - test-coverage
+            - vulnerability-check
+            - audit-licenses
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*\-snapshot+((\.[0-9]+)?)/
             branches:
               ignore:
                 - /.*/
