@@ -8,7 +8,7 @@
  *       Paweł Marzec - pawel.marzec@modusbox.com                         *
  **************************************************************************/
 
-const { Logger } = require('../../lib/logger');
+const { Logger } = require('../../src/lib/logger');
 
 function mockLogger(context, keepQuiet) {
     // if keepQuiet is undefined then be quiet

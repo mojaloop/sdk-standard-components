@@ -13,8 +13,8 @@ const querystring = require('querystring');
 const crypto = require('crypto');
 const nock = require('nock');
 
-const mr = require('../../../../lib/requests/mojaloopRequests.js');
-const WSO2Auth = require('../../../../lib/WSO2Auth');
+const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
+const WSO2Auth = require('../../../../src/lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 
