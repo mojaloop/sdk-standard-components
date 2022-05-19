@@ -57,7 +57,7 @@
     "jest-junit": "^13.2.0",
     "nock": "^13.2.4",
     "npm-audit-resolver": "3.0.0-7",
-    "npm-check-updates": "^13.0.0",
+    "npm-check-updates": "^13.0.1",
     "pre-commit": "^1.2.2",
     "replace": "^1.2.1",
     "standard-version": "^9.5.0",
