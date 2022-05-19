@@ -68,7 +68,7 @@ executors:
   default-docker:
     working_directory: &WORKING_DIR /home/circleci/project
     docker:
-      - image: node:16.14.2-alpine
+      - image: node:16.15.0-alpine
 
   default-machine:
     working_directory: *WORKING_DIR
