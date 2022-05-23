@@ -578,12 +578,12 @@ declare namespace SDKStandardComponents {
 
         interface LoggerConstructorParams {
             ctx?: unknown
-            stringify?: BuildStringify
+            stringify?: Stringify
             opts?: LoggerOptions
         }
 
         interface LoggerConfigureParams {
-            stringify?: BuildStringify
+            stringify?: Stringify
             opts?: LoggerOptions
         }
 
