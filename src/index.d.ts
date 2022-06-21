@@ -6,7 +6,6 @@ import {
 } from '@mojaloop/api-snippets'
 declare namespace SDKStandardComponents {
 
-
     /* hashmap of versions of various resources */
     type ResourceVersions = {
         [resource: string]: {
@@ -800,6 +799,68 @@ declare namespace SDKStandardComponents {
             toFullErrorObject(): FullErrorObject
             toString(): string
         }
+    }
+
+    type JwsValidatorConfig = {
+        logger: Logger.Logger
+        validationKeys: Record<string, Buffer> | Record<string, string>
+    }
+
+    type JwsSignerConfig = {
+        logger: Logger.Logger
+        signingKey: String
+    }
+
+    type JwsRequest = {
+        body?: Record<string, unknown>
+        data?:  Record<string, unknown>
+        uri?: string
+        url?: string
+        method?: string
+        headers?: Record<string, unknown>
+    }
+
+    namespace Jws {
+        class JwsValidator {
+            constructor(config: JwsValidatorConfig)
+
+            /**
+             * @function validate
+             * @description Validates the JWS headers on an incoming HTTP request
+             * @param request {object} a request-promise-native/axios style request options object
+             *   (see https://github.com/request/request-promise-native)
+             *   (see https://github.com/axios/axios)
+             *
+             * Throws if the protected header or signature are not valid
+            */
+            validate(request: JwsRequest): void
+        }
+
+        class JwsSigner {
+            constructor(config: JwsSignerConfig)
+            /**
+             * @function sign
+             * @description Returns JWS signature for an outgoing HTTP request options object
+             * @param requestOptions {object} a request-promise-native/axios style request options object
+             *   (see https://github.com/request/request-promise-native)
+             *   (see https://github.com/axios/axios)
+             *
+             */
+            sign(requestOptions: JwsRequest): void
+            /**
+             * @function getSignature
+             * @description Returns JWS signature for an outgoing HTTP request options object
+             * @param requestOptions {object} a request-promise-native/axios style request options object
+             *   (see https://github.com/request/request-promise-native)
+             *   (see https://github.com/axios/axios)
+             *
+             * @returns {string} - JWS Signature as a string
+            */
+            getSignature(requestOptions: JwsRequest): string
+        }
+
+        var validator: typeof JwsValidator
+        var signer: typeof JwsSigner
     }
 }
 
