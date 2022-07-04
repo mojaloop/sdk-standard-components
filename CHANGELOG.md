@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [17.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.0.4...v17.1.0) (2022-07-04)
+
+
+### Features
+
+* log request error response ([#174](https://github.com/mojaloop/sdk-standard-components/issues/174)) ([24c4f68](https://github.com/mojaloop/sdk-standard-components/commit/24c4f688368de1ab3d2ea1436a491571e6cebcb1))
+
 ### [17.0.4](https://github.com/mojaloop/sdk-standard-components/compare/v17.0.3...v17.0.4) (2022-06-21)
 
 ### [17.0.3](https://github.com/mojaloop/sdk-standard-components/compare/v17.0.2...v17.0.3) (2022-05-23)
