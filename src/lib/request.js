@@ -73,7 +73,7 @@ const request = async ({
                     const contentType = res.headers['content-type'];
                     if (!/^application\/json/.test(contentType)) {
                         let err = new Error('Invalid content-type. ' +
-                            `Expected application/json but received ${contentType}`);
+                            `Expected application/json but received ${contentType}: ${result.toString()}`);
                         err.originalRequest = originalRequest;
                         return reject(err);
                     }
