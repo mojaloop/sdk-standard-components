@@ -49,7 +49,7 @@
   "devDependencies": {
     "@mojaloop/api-snippets": "^14.0.0",
     "@types/jest": "^28.1.4",
-    "@types/node": "^18.0.1",
+    "@types/node": "^18.0.3",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.26.0",
@@ -57,7 +57,7 @@
     "jest-junit": "^14.0.0",
     "nock": "^13.2.8",
     "npm-audit-resolver": "3.0.0-7",
-    "npm-check-updates": "^15.0.2",
+    "npm-check-updates": "^15.2.6",
     "pre-commit": "^1.2.2",
     "replace": "^1.2.1",
     "standard-version": "^9.5.0",
