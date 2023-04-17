@@ -75,6 +75,13 @@ class Ilp {
             payer: quoteRequest.payer,
             amount: quoteResponse.transferAmount,
             transactionType: quoteRequest.transactionType,
+            quote: {
+                expiration: quoteResponse.expiration,
+                payeeReceiveAmount: quoteResponse.payeeReceiveAmount,
+                payeeFspFee: quoteResponse.payeeFspFee,
+                payeeFspCommission: quoteResponse.payeeFspCommission,
+                extensionList: quoteResponse.extensionList
+            },
             note: quoteResponse.note
         });
     }
