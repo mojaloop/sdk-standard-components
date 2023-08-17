@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "17.1.2",
+  "version": "17.1.1",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -57,7 +57,7 @@
     "jest-junit": "^16.0.0",
     "nock": "^13.3.3",
     "npm-audit-resolver": "3.0.0-RC.0",
-    "npm-check-updates": "^16.11.2",
+    "npm-check-updates": "^16.12.0",
     "pre-commit": "^1.2.2",
     "replace": "^1.2.2",
     "standard-version": "^9.5.0",
