@@ -21,8 +21,8 @@ defaults_docker_Dependencies: &defaults_docker_Dependencies |
     apk --no-cache add ca-certificates
     apk --no-cache add curl
     apk --no-cache add openssh-client
-    apk add --no-cache -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
-    npm install -g node-gyp
+    apk --no-cache add -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
+    npm install --unsafe-perm=true -g node-gyp
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk --no-cache add aws-cli
@@ -58,6 +58,15 @@ defaults_configure_git: &defaults_configure_git
     git config user.email ${GIT_CI_EMAIL}
     git config user.name ${GIT_CI_USER}
 
+defaults_display_versions: &defaults_display_versions
+  name: Display Versions
+  command: |
+    echo "What is the active version of Nodejs?"
+    echo "node: $(node --version)"
+    echo "yarn: $(yarn --version)"
+    echo "npm: $(npm --version)"
+    echo "nvm: $(nvm --version)"
+
 ##
 # Executors
 #
@@ -83,6 +92,8 @@ jobs:
           command: *defaults_docker_Dependencies
       - checkout
       - run:
+          <<: *defaults_display_versions
+      - run:
           name: Update NPM install
           command: npm ci
       - save_cache:
@@ -97,6 +108,8 @@ jobs:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
       - checkout
+      - run:
+          <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -110,6 +123,8 @@ jobs:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
       - checkout
+      - run:
+          <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -123,6 +138,8 @@ jobs:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
       - checkout
+      - run:
+          <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -147,6 +164,8 @@ jobs:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
       - checkout
+      - run:
+          <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -175,6 +194,8 @@ jobs:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
       - checkout
+      - run:
+          <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
@@ -193,6 +214,8 @@ jobs:
       - run:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
+      - run:
+          <<: *defaults_display_versions
       - run:
           <<: *defaults_license_scanner
       - checkout
