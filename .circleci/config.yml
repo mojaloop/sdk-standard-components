@@ -22,6 +22,7 @@ defaults_docker_Dependencies: &defaults_docker_Dependencies |
     apk --no-cache add curl
     apk --no-cache add openssh-client
     apk --no-cache add -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
+    apk --no-cache add bash bash-doc bash-completion
     npm install --unsafe-perm=true -g node-gyp
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
@@ -65,7 +66,6 @@ defaults_display_versions: &defaults_display_versions
     echo "node: $(node --version)"
     echo "yarn: $(yarn --version)"
     echo "npm: $(npm --version)"
-    echo "nvm: $(nvm --version)"
 
 ##
 # Executors
@@ -74,11 +74,13 @@ defaults_display_versions: &defaults_display_versions
 ##
 executors:
   default-docker:
+    shell: "/bin/sh -leo pipefail" ## Ref: https://circleci.com/docs/env-vars/#alpine-linux
     working_directory: &WORKING_DIR /home/circleci/project
     docker:
       - image: node:lts-alpine # Ref: https://hub.docker.com/_/node?tab=tags&page=1&name=alpine
 
   default-machine:
+    shell: "/bin/bash -leo pipefail" ## Ref: https://circleci.com/docs/env-vars/#alpine-linux
     working_directory: *WORKING_DIR
     machine:
       image: ubuntu-2204:2023.04.2 # Ref: https://circleci.com/developer/machine/image/ubuntu-2204
