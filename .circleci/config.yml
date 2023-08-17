@@ -66,6 +66,9 @@ defaults_configure_git: &defaults_configure_git
 executors:
   default-docker:
     working_directory: &WORKING_DIR /home/circleci/project
+    shell: "/bin/sh -leo pipefail" ## Ref: https://circleci.com/docs/env-vars/#alpine-linux
+    environment:
+      NPM_CONFIG_UNSAFE_PERM: true
     docker:
       - image: node:lts-alpine # Ref: https://hub.docker.com/_/node?tab=tags&page=1&name=alpine
 
