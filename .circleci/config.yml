@@ -9,7 +9,7 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.5 # Ref: https://github.com/mojaloop/ci-config/tree/master/slack-templates
   pr-tools: mojaloop/pr-tools@0.1.10 # Ref: https://github.com/mojaloop/ci-config/
-  gh: circleci/github-cli@2.1.0
+  gh: circleci/github-cli@2.2.0
 
 ##
 # defaults
@@ -23,7 +23,7 @@ defaults_docker_Dependencies: &defaults_docker_Dependencies |
     apk --no-cache add openssh-client
     apk --no-cache add -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
     apk --no-cache add bash bash-doc bash-completion
-    npm install --unsafe-perm=true -g node-gyp
+    npm install -g node-gyp
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk --no-cache add aws-cli
