@@ -113,6 +113,7 @@ defaults_display_versions: &defaults_display_versions
     echo "node: $(node --version)"
     echo "yarn: $(yarn --version)"
     echo "npm: $(npm --version)"
+    echo "nvm: $(nvm --version)"
 
 ##
 # Executors
