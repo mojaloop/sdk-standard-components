@@ -59,6 +59,53 @@ defaults_configure_git: &defaults_configure_git
     git config user.email ${GIT_CI_EMAIL}
     git config user.name ${GIT_CI_USER}
 
+defaults_configure_nvm: &defaults_configure_nvm
+  name: Configure NVM
+  command: |
+    cd $HOME
+
+    export ENV_DOT_PROFILE=$HOME/.profile
+    touch $ENV_DOT_PROFILE
+
+    echo "1. Export env variable"
+    export NVM_DIR="$HOME/.nvm"
+    if [ -z "$NVMRC_VERSION" ]; then
+      echo "==> Configuring NVMRC_VERSION!"
+      export NVMRC_VERSION=$(cat $CIRCLE_WORKING_DIRECTORY/.nvmrc)
+      echo "export NVMRC_VERSION=$NVMRC_VERSION" >> $ENV_DOT_PROFILE
+    fi
+
+    if [ -f "$NVM_DIR" ]; then
+      echo "==> $NVM_DIR exists. Skipping steps 2-4!"
+    else 
+      echo "==> $NVM_DIR does not exists. Executing steps 2-4!"
+
+      echo "2. Installing NVM"
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+      echo "3. Executing $NVM_DIR/nvm.sh"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+      # echo "4. Update $ENV_DOT_PROFILE"
+      # echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $ENV_DOT_PROFILE
+      # echo "export NVM_DIR=$NVM_DIR" >> $ENV_DOT_PROFILE
+    fi
+
+    ## Ref: https://github.com/nvm-sh/nvm/issues/1102#issuecomment-550572252
+    if [ ! -z "$NVM_ARCH_UNOFFICIAL_OVERRIDE" ]; then
+      echo "==> Handle NVM_ARCH_UNOFFICIAL_OVERRIDE=$NVM_ARCH_UNOFFICIAL_OVERRIDE!"
+      echo "nvm_get_arch() { nvm_echo \"${NVM_ARCH_UNOFFICIAL_OVERRIDE}\"; }" >> $ENV_DOT_PROFILE
+      echo "export NVM_NODEJS_ORG_MIRROR=https://unofficial-builds.nodejs.org/download/release" >> $ENV_DOT_PROFILE
+      source $ENV_DOT_PROFILE
+    fi
+
+    echo "4. Installing Node version: $NVMRC_VERSION"
+    nvm install $NVMRC_VERSION
+    nvm alias default $NVMRC_VERSION
+    nvm use $NVMRC_VERSION
+
+    cd $CIRCLE_WORKING_DIRECTORY
+
 defaults_display_versions: &defaults_display_versions
   name: Display Versions
   command: |
@@ -75,6 +122,9 @@ defaults_display_versions: &defaults_display_versions
 executors:
   default-docker:
     shell: "/bin/sh -leo pipefail" ## Ref: https://circleci.com/docs/env-vars/#alpine-linux
+    environment:
+      BASH_ENV: /etc/profile ## Ref: https://circleci.com/docs/env-vars/#alpine-linux
+      NVM_ARCH_UNOFFICIAL_OVERRIDE: x64-musl ## Ref: https://github.com/nvm-sh/nvm/issues/1102#issuecomment-550572252
     working_directory: &WORKING_DIR /home/circleci/project
     docker:
       - image: node:lts-alpine # Ref: https://hub.docker.com/_/node?tab=tags&page=1&name=alpine
@@ -94,6 +144,8 @@ jobs:
           command: *defaults_docker_Dependencies
       - checkout
       - run:
+          <<: *defaults_configure_nvm
+      - run:
           <<: *defaults_display_versions
       - run:
           name: Update NPM install
@@ -111,6 +163,8 @@ jobs:
           command: *defaults_docker_Dependencies
       - checkout
       - run:
+          <<: *defaults_configure_nvm
+      - run:
           <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
@@ -126,6 +180,8 @@ jobs:
           command: *defaults_docker_Dependencies
       - checkout
       - run:
+          <<: *defaults_configure_nvm
+      - run:
           <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
@@ -140,6 +196,8 @@ jobs:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
       - checkout
+      - run:
+          <<: *defaults_configure_nvm
       - run:
           <<: *defaults_display_versions
       - restore_cache:
@@ -166,6 +224,8 @@ jobs:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
       - checkout
+      - run:
+          <<: *defaults_configure_nvm
       - run:
           <<: *defaults_display_versions
       - restore_cache:
@@ -197,6 +257,8 @@ jobs:
           command: *defaults_docker_Dependencies
       - checkout
       - run:
+          <<: *defaults_configure_nvm
+      - run:
           <<: *defaults_display_versions
       - restore_cache:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
@@ -216,6 +278,8 @@ jobs:
       - run:
           name: Install general dependencies
           command: *defaults_docker_Dependencies
+      - run:
+          <<: *defaults_configure_nvm
       - run:
           <<: *defaults_display_versions
       - run:
@@ -378,7 +442,6 @@ jobs:
           template: SLACK_TEMP_RELEASE_FAILURE
 
 workflows:
-  version: 2
   build_and_test:
     jobs:
       - pr-tools/pr-title-check:
