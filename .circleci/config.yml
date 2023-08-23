@@ -325,6 +325,7 @@ jobs:
 
   github-release:
     executor: default-machine
+    shell: "/bin/bash -eo pipefail"
     steps:
       - run:
           name: Install git
