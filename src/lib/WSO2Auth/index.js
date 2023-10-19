@@ -10,11 +10,10 @@
 
 'use strict';
 
-const http = require('http');
 const https = require('https');
 const qs = require('querystring');
-const request = require('../request');
 const EventEmitter = require('events');
+const request = require('../request');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -61,11 +60,10 @@ class WSO2Auth extends EventEmitter {
             }),
         };
 
-        if(opts.tlsCreds) {
+        if (opts.tlsCreds) {
             this._reqOpts.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
-        }
-        else {
-            this._reqOpts.agent = http.globalAgent;
+        } else {
+            this._reqOpts.agent = new https.Agent();
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {

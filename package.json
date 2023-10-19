@@ -48,8 +48,8 @@
   },
   "devDependencies": {
     "@mojaloop/api-snippets": "^17.2.5",
-    "@types/jest": "^29.5.5",
-    "@types/node": "^20.8.6",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.7",
     "audit-ci": "^6.6.1",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "15.0.0",
