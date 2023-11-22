@@ -4,6 +4,7 @@ const util = require('util');
 const http = require('http');
 const https = require('https');
 
+const { RESOURCES } = require('../constants');
 const {
     bodyStringifier,
     buildUrl,
@@ -106,6 +107,14 @@ class BaseRequests {
                 contentVersion: '1.0',
                 acceptVersion: '1',
             },
+            [RESOURCES.fxQuotes]: {
+                contentVersion: '2.0',
+                acceptVersion: '2',
+            },
+            [RESOURCES.fxTransfers]: {
+                contentVersion: '2.0',
+                acceptVersion: '2',
+            },
             transfers: {
                 contentVersion: '1.0',
                 acceptVersion: '1',
@@ -135,6 +144,8 @@ class BaseRequests {
             bulkTransfers: formatEndpointOrDefault(config.bulkTransfersEndpoint, this.transportScheme, this.peerEndpoint),
             transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
             authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            [RESOURCES.fxQuotes]: formatEndpointOrDefault(config.fxQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+            [RESOURCES.fxTransfers]: formatEndpointOrDefault(config.fxTransfersEndpoint, this.transportScheme, this.peerEndpoint),
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
             services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
         };

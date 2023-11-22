@@ -40,6 +40,7 @@
     }
   ],
   "dependencies": {
+    "@mojaloop/api-snippets": "^17.3.0-snapshot.0",
     "base64url": "3.0.1",
     "fast-safe-stringify": "^2.1.1",
     "ilp-packet": "2.2.0",
@@ -47,7 +48,6 @@
     "jws": "4.0.0"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^17.2.5",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.9.4",
     "audit-ci": "^6.6.1",
