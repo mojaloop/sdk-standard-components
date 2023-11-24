@@ -70,6 +70,7 @@ const MojaloopApiErrorCodes = {
     TXN_REQUEST_EXPIRED:              { code: '3301', message: 'Transaction request expired' },
     QUOTE_EXPIRED:                    { code: '3302', message: 'Quote expired' },
     TRANSFER_EXPIRED:                 { code: '3303', message: 'Transfer expired' },
+    FX_QUOTE_EXPIRED:                 { code: '3304', message: 'FX quote expired' },
 
     //payer errors
     PAYER_ERROR:                      { code: '4000', message: 'Generic Payer error' },
@@ -224,8 +225,8 @@ class MojaloopFSPIOPError extends Error {
 
 
 module.exports = {
-    MojaloopApiErrorCodes: MojaloopApiErrorCodes,
+    MojaloopApiErrorCodes,
     MojaloopApiErrorObjectFromCode,
-    MojaloopFSPIOPError: MojaloopFSPIOPError,
-    MojaloopApiErrorCodeFromCode: MojaloopApiErrorCodeFromCode
+    MojaloopFSPIOPError,
+    MojaloopApiErrorCodeFromCode
 };
