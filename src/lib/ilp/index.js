@@ -104,9 +104,12 @@ class Ilp {
     makeFxQuotePacketInput(transactionObject) {
         return Object.freeze({
             data: this.makeIlpData(transactionObject),
-            sourceAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount), // unsigned 64bit integer as a string
-            targetAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.targetAmount),
-            account: this._getFxIlpAddress(transactionObject.conversionTerms) // ilp address
+            account: this._getFxIlpAddress(transactionObject.conversionTerms), // ilp address
+            amount: '0',
+            // (!) without "amount"-field we have an error from ilpPacket.serializeIlpPayment() method: amount must be a string
+            sourceAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount),
+            targetAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.targetAmount)
+            // (!) ilpPacket will contain only data, account and amount fields
         });
     }
 
