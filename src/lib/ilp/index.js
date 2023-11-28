@@ -105,11 +105,8 @@ class Ilp {
         return Object.freeze({
             data: this.makeIlpData(transactionObject),
             account: this._getFxIlpAddress(transactionObject.conversionTerms), // ilp address
-            amount: '0',
-            // (!) without "amount"-field we have an error from ilpPacket.serializeIlpPayment() method: amount must be a string
-            sourceAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount),
-            targetAmount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.targetAmount)
-            // (!) ilpPacket will contain only data, account and amount fields
+            amount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount)
+            // todo: discuss what amount we should use for FX: sourceAmount or targetAmount
         });
     }
 
