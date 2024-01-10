@@ -38,10 +38,13 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
-    async putParties(idType, idValue, idSubValue, body, destFspId) {
+    async putParties(idType, idValue, idSubValue, body, destFspId, headers = {}) {
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
+        
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._put(url, 'parties', body, destFspId);
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        return this._put(url, 'parties', body, destFspId, headers);
     }
 
     /**
@@ -94,8 +97,10 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteId, quoteResponse, destFspId) {
-        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId);
+    async putQuotes(quoteId, quoteResponse, destFspId,  headers = {}) {
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers);
     }
 
     /**
@@ -160,8 +165,10 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransfers(transferId, fulfilment, destFspId) {
-        return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId);
+    async putTransfers(transferId, fulfilment, destFspId, headers = {}) {
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId, headers);
     }
 
     /**
