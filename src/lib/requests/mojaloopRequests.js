@@ -22,6 +22,8 @@ const { ResponseType } = require('./common');
 class MojaloopRequests extends BaseRequests {
     constructor(config) {
         super(config);
+
+        this._config = config;
     }
 
     /**
@@ -29,21 +31,22 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue, idSubValue, destFspId) {
+    async getParties(idType, idValue, idSubValue, destFspId, headers = {}) {
+        headers.tracestate = this._config.tracestate;
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._get(url, 'parties', destFspId);
+        return this._get(url, 'parties', destFspId, headers);
     }
 
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
     async putParties(idType, idValue, idSubValue, body, destFspId, headers = {}) {
-        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
         
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
         return this._put(url, 'parties', body, destFspId, headers);
     }
 
@@ -98,10 +101,11 @@ class MojaloopRequests extends BaseRequests {
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
     async putQuotes(quoteId, quoteResponse, destFspId,  headers = {}) {
-        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers);
     }
+
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
@@ -166,8 +170,8 @@ class MojaloopRequests extends BaseRequests {
      * @returns {object} - JSON response body if one was received
      */
     async putTransfers(transferId, fulfilment, destFspId, headers = {}) {
-        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
+        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
         return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId, headers);
     }
 
