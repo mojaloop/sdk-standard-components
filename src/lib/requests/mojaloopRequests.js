@@ -32,7 +32,9 @@ class MojaloopRequests extends BaseRequests {
      * @returns {object} - JSON response body if one was received
      */
     async getParties(idType, idValue, idSubValue, destFspId, headers = {}) {
-        headers.tracestate = this._config.tracestate;
+        if (this._config.tracestate) {
+            headers.tracestate = this._config.tracestate;
+        }
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
         return this._get(url, 'parties', destFspId, headers);
@@ -46,7 +48,9 @@ class MojaloopRequests extends BaseRequests {
         
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        if (headers.tracestate) {
+            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        }
         return this._put(url, 'parties', body, destFspId, headers);
     }
 
@@ -170,8 +174,10 @@ class MojaloopRequests extends BaseRequests {
      * @returns {object} - JSON response body if one was received
      */
     async putTransfers(transferId, fulfilment, destFspId, headers = {}) {
-        const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-        headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        if (headers.tracestate) {
+            const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
+            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
+        }
         return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId, headers);
     }
 
