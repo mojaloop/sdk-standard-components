@@ -31,27 +31,22 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getParties(idType, idValue, idSubValue, destFspId, headers = {}) {
-        if (headers.tracestate) {
-            const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
-        }
+    async getParties(idType, idValue, idSubValue, destFspId, headers) {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._get(url, 'parties', destFspId, headers);
+        
+        return headers
+            ? this._get(url, 'parties', destFspId, headers)
+            : this._get(url, 'parties', destFspId);
     }
 
     /**
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
-    async putParties(idType, idValue, idSubValue, body, destFspId, headers = {}) {
+    async putParties(idType, idValue, idSubValue, body, destFspId, headers) {
         
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        if (headers.tracestate) {
-            const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
-        }
         return this._put(url, 'parties', body, destFspId, headers);
     }
 
@@ -105,11 +100,7 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteId, quoteResponse, destFspId,  headers = {}) {
-        if (headers.tracestate) {
-            const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
-        }
+    async putQuotes(quoteId, quoteResponse, destFspId,  headers) {
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers);
     }
 
@@ -176,11 +167,7 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransfers(transferId, fulfilment, destFspId, headers = {}) {
-        if (headers.tracestate) {
-            const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts';
-            headers.tracestate = headers.tracestate + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`;
-        }
+    async putTransfers(transferId, fulfilment, destFspId, headers) {
         return this._put(`transfers/${transferId}`, 'transfers', fulfilment, destFspId, headers);
     }
 
