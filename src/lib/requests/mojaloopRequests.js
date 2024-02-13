@@ -35,7 +35,7 @@ class MojaloopRequests extends BaseRequests {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
         
-        return this._get(url, 'parties', destFspId, headers)
+        return this._get(url, 'parties', destFspId, headers);
     }
 
     /**
