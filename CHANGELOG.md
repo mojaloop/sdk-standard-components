@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [17.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.1.3...v17.2.0) (2024-02-13)
+
+
+### Features
+
+* **mojaloop/#3670:** add headers to callbacks ([#191](https://github.com/mojaloop/sdk-standard-components/issues/191)) ([40d0a72](https://github.com/mojaloop/sdk-standard-components/commit/40d0a72a17f0389b2bc11bdb8dc435caf4f9d315)), closes [mojaloop/#3670](https://github.com/mojaloop/project/issues/3670)
+
+### [17.1.3](https://github.com/mojaloop/sdk-standard-components/compare/v17.1.2...v17.1.3) (2023-08-29)
+
+### [17.1.2](https://github.com/mojaloop/sdk-standard-components/compare/v17.1.1...v17.1.2) (2023-08-24)
+
 ### [17.1.1](https://github.com/mojaloop/sdk-standard-components/compare/v17.1.0...v17.1.1) (2022-07-12)
 
 ## [17.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.0.4...v17.1.0) (2022-07-04)
