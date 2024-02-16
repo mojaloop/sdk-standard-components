@@ -40,7 +40,7 @@ describe('request', () => {
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-test' }),
+            logger: mockLogger({ app: 'request-test' }, undefined),
             peerEndpoint: request.host,
             tls: {
                 mutualTLS: {

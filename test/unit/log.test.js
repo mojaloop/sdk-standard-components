@@ -58,6 +58,18 @@ describe('Logger', () => {
         expect(l._write.mock.calls.map(call => JSON.parse(call[0]))).toStrictEqual(expected);
     });
 
+
+    test('standard levels should be silent and not throw an error when log level excludes them', () => {
+        const l = new Logger({ opts: { levels: ['mylevel']} });
+        l.verbose('test');
+        l.debug('test');
+        l.warn('test');
+        l.info('test');
+        l.error('test');
+        l.trace('test');
+        l.fatal('test');
+    });
+
     test('added context should be printed on the child', () => {
         const l = new Logger();
         l._write = jest.fn();
