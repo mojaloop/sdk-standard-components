@@ -26,7 +26,7 @@ describe('request error handling', () => {
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-errors-test' }),
+            logger: mockLogger({ app: 'request-errors-test' }, undefined, false),
             tls: {
                 mutualTLS: {
                     enabled: false
@@ -55,6 +55,7 @@ describe('request error handling', () => {
             try {
                 await primRequestSerializationTest('_post');
             } catch (err) {
+                console.log(err);
                 expect(err.code).toBe('ECONNREFUSED');
                 expect(err.address).toBe('127.0.0.1');
                 expect(err.port).toBe(9999);

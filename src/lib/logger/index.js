@@ -18,7 +18,6 @@
 //    for the same reason no 'pop' method has been implemented.
 
 const util = require('util');
-
 const safeStringify = require('fast-safe-stringify');
 
 // Utility functions
@@ -130,6 +129,7 @@ class Logger {
         this.opts = { ...this.opts, ...opts };
         this.opts.levels.forEach(level => {
             this[level] = (...args) => {
+
                 this._log(level, ...args);
             };
         });
@@ -186,6 +186,18 @@ class Logger {
             process.stdout.write(msg + '\n');
         }
     }
+
+    // Define empty methods for all standard log levels
+    // if the user provides their own custom levels that are not standard levels
+    // so that the logger does not throw an error.
+    // An easy way to do level silencing.
+    verbose(){}
+    debug(){}
+    warn(){}
+    error(){}
+    trace(){}
+    info(){}
+    fatal(){}
 }
 
 module.exports = {

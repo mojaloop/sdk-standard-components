@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('util');
+const safeStringify = require('fast-safe-stringify');
 const http = require('http');
 const https = require('https');
 
@@ -150,7 +150,7 @@ class BaseRequests {
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
                 if (retry) {
-                    this.logger.log('Received HTTP 401 for request. Attempting to retrieve a new token.');
+                    this.logger.debug('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
@@ -212,7 +212,7 @@ class BaseRequests {
 
         // Note we do not JWS sign requests with no body i.e. GET requests
 
-        this.logger.log(`Executing HTTP GET: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
+        this.logger.debug(`Executing HTTP GET: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -251,7 +251,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP PUT: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
+        this.logger.debug(`Executing HTTP PUT: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -287,7 +287,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP PATCH: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
+        this.logger.debug(`Executing HTTP PATCH: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -327,7 +327,7 @@ class BaseRequests {
 
         reqOpts.body = bodyStringifier(reqOpts.body);
 
-        this.logger.log(`Executing HTTP POST: ${util.inspect({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
+        this.logger.debug(`Executing HTTP POST: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 

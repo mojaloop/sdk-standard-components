@@ -10,7 +10,7 @@
 
 const { Logger } = require('../../src/lib/logger');
 
-function mockLogger(context, keepQuiet) {
+function mockLogger(context, opts, keepQuiet) {
     // if keepQuiet is undefined then be quiet
     if (keepQuiet || typeof keepQuiet === 'undefined') {
         const log = {
@@ -22,7 +22,7 @@ function mockLogger(context, keepQuiet) {
         };
     }
 
-    return new Logger({ context });
+    return new Logger({ context, opts });
 }
 
 module.exports = mockLogger;

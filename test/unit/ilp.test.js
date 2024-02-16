@@ -23,7 +23,7 @@ describe('ILP', () => {
     beforeEach(() => {
         ilp = new Ilp({
             secret: 'test',
-            logger: mockLogger({ app: 'ilp-test' })
+            logger: mockLogger({ app: 'ilp-test'}, undefined, false)
         });
     });
 
@@ -90,7 +90,7 @@ describe('Ilp Packet Decoding and Validation', () => {
     beforeEach(() => {
         ilp = new Ilp({
             secret: 'test',
-            logger: mockLogger({ app: 'ilp-packet-test' })
+            logger: mockLogger({ app: 'ilp-packet-test'}, undefined, false)
         });
         ilpCombo = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
         transferRequest.ilpPacket = ilpCombo.ilpPacket;

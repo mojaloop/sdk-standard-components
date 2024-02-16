@@ -39,9 +39,9 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 describe('ThirdpartyRequests', () => {
     describe('putConsents', () => {
         const putConsentsRequest = require('../../data/putConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consents-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consents-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'put-consents-test' }),
+            logger: mockLogger({ app: 'put-consents-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -86,9 +86,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('patchConsents', () => {
         const patchConsentsRequest = require('../../data/patchConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consents-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consents-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'patch-consents-test' }),
+            logger: mockLogger({ app: 'patch-consents-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -102,7 +102,7 @@ describe('ThirdpartyRequests', () => {
             wso2Auth,
         };
         const config2 = {
-            logger: mockLogger({ app: 'patch-consents-test' }),
+            logger: mockLogger({ app: 'patch-consents-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -159,9 +159,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('postConsents', () => {
         const postConsentsRequest = require('../../data/postConsentsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consents-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consents-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'post-consents-test' }),
+            logger: mockLogger({ app: 'post-consents-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -205,9 +205,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('patchConsentRequests', () => {
         const patchConsentRequestsRequests = require('../../data/patchConsentRequestsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consent-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'patch-consent-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'patch-consent-requests-test' }),
+            logger: mockLogger({ app: 'patch-consent-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -252,9 +252,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('putConsentRequests', () => {
         const putConsentRequestsRequests = require('../../data/putConsentRequestsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'put-consent-requests-test' }),
+            logger: mockLogger({ app: 'put-consent-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -299,9 +299,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('putConsentRequestsRequestError', () => {
         const putConsentRequestsRequestError = require('../../data/putConsentRequestsRequestError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-error-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'put-consent-requests-error-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'put-consent-requests-error-test' }),
+            logger: mockLogger({ app: 'put-consent-requests-error-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -346,9 +346,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('postConsentRequests', () => {
         const postConsentRequestsRequest = require('../../data/postConsentRequestsRequest.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consent-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-consent-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'post-consent-requests-test' }),
+            logger: mockLogger({ app: 'post-consent-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             thirdpartyRequestsEndpoint: 'thirdparty-api-adapter.local',
             tls: {
@@ -392,9 +392,9 @@ describe('ThirdpartyRequests', () => {
 
     describe('patchThirdpartyRequestsTransactions', () => {
         const patchSuccessRequest = require('../../data/patchThirdpartyRequestTransaction.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'patch-thirdparty-request-transaction-test'})});
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'patch-thirdparty-request-transaction-test'})}, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'patchThirdpartyRequestsTransaction-test' }),
+            logger: mockLogger({ app: 'patchThirdpartyRequestsTransaction-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -437,9 +437,9 @@ describe('ThirdpartyRequests', () => {
     });
 
     describe('getThirdpartyRequestsTransactions', () => {
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})});
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({app: 'get-thirdparty-request-transaction-test'})}, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'getthirdpartyRequestsTransaction-test' }),
+            logger: mockLogger({ app: 'getthirdpartyRequestsTransaction-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -484,10 +484,10 @@ describe('ThirdpartyRequests', () => {
         const postThirdpartyRequestsAuthorizationBody = require('../../data/postThirdpartyRequestsAuthorizationBody.json');
         const putThirdpartyRequestsAuthorizationBody = require('../../data/putThirdpartyRequestsAuthorizationBody.json');
         const putThirdpartyRequestsAuthorizationErrorBody = require('../../data/putThirdpartyRequestsAuthorizationErrorBody.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }) }, undefined, false);
 
         const config = {
-            logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }),
+            logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -586,9 +586,9 @@ describe('ThirdpartyRequests', () => {
     describe('accountRequests', () => {
         const putAccountsRequest = require('../../data/putAccountsByUserIdRequest.json');
         const putErrorRequest = require('../../data/putAccountsByRequestError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'accounts-requests-test' }),
+            logger: mockLogger({ app: 'accounts-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -691,9 +691,9 @@ describe('ThirdpartyRequests', () => {
         const postThirdpartyRequestsVerifications = require('../../data/postThirdpartyRequestsVerifications.json');
         const putThirdpartyRequestsVerificationsId = require('../../data/putThirdpartyRequestsVerificationsId.json');
         const putThirdpartyRequestsVerificationsIdError = require('../../data/putThirdpartyRequestsVerificationsIdError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'accounts-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'accounts-requests-test' }),
+            logger: mockLogger({ app: 'accounts-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -798,9 +798,9 @@ describe('ThirdpartyRequests', () => {
     describe('servicesRequests', () => {
         const putServicesRequest = require('../../data/putServicesByServiceTypeRequest.json');
         const putErrorRequest = require('../../data/putServicesByServiceTypeRequestError.json');
-        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'services-requests-test' }) });
+        const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'services-requests-test' }) }, undefined, false);
         const config = {
-            logger: mockLogger({ app: 'services-requests-test' }),
+            logger: mockLogger({ app: 'services-requests-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {

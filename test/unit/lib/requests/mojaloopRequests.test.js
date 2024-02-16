@@ -25,7 +25,7 @@ describe('PUT /parties', () => {
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'put-parties-test' }),
+            logger: mockLogger({ app: 'put-parties-test' }, undefined, false),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -98,7 +98,7 @@ describe('PUT /quotes', () => {
         // Everything is false by default
         const conf = {
             // Disable logging in tests
-            logger: mockLogger({ app: 'put-quotes-test' }),
+            logger: mockLogger({ app: 'put-quotes-test' }, undefined, false),
             tls: {
                 mutualTLS: {
                     enabled: false
@@ -171,9 +171,9 @@ describe('PUT /quotes', () => {
 });
 
 describe('postAuthorizations', () => {
-    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) });
+    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }, undefined, false) });
     const conf = {
-        logger: mockLogger({ app: 'postAuthorizations-test' }),
+        logger: mockLogger({ app: 'postAuthorizations-test' }, undefined, false),
         peerEndpoint: '127.0.0.1',
         tls: {
             mutualTLS: {
@@ -217,9 +217,9 @@ describe('postAuthorizations', () => {
 });
 
 describe('patchTransfers', () => {
-    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) });
+    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) }, undefined, false);
     const conf = {
-        logger: mockLogger({ app: 'postAuthorizations-test' }),
+        logger: mockLogger({ app: 'postAuthorizations-test' }, undefined, false),
         peerEndpoint: '127.0.0.1',
         tls: {
             mutualTLS: {

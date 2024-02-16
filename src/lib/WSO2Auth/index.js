@@ -73,7 +73,7 @@ class WSO2Auth extends EventEmitter {
                 .toString('base64');
             this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this._logger.log('WSO2 auth config token API data not set, fallback to static token');
+            this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
             this._token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
@@ -101,7 +101,7 @@ class WSO2Auth extends EventEmitter {
         // Prevent the timeout from expiring and triggering an extraneous refresh
         this.stop();
 
-        this._logger.log('WSO2 token refresh initiated');
+        this._logger.debug('WSO2 token refresh initiated');
         const reqOpts = {
             ...this._reqOpts,
             headers: {
@@ -122,11 +122,11 @@ class WSO2Auth extends EventEmitter {
             const tokenIsValidNumber = (typeof expires_in === 'number') && (expires_in > 0);
             const tokenExpiry = tokenIsValidNumber ? expires_in : Infinity;
             refreshSeconds = Math.min(this._refreshSeconds, tokenExpiry);
-            this._logger.log('WSO2 token refreshed successfully. ' +
+            this._logger.debug('WSO2 token refreshed successfully. ' +
                 `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this._logger.log(`Error performing WSO2 token refresh: ${error.message}. `
+            this._logger.debug(`Error performing WSO2 token refresh: ${error.message}. `
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
