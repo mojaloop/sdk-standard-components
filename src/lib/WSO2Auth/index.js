@@ -112,7 +112,7 @@ class WSO2Auth extends EventEmitter {
         let refreshSeconds;
         try {
             const response = await request(reqOpts);
-            this._logger.push({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }, response }).log('Response received from WSO2');
+            this._logger.push({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }, response }).debug('Response received from WSO2');
             if (response.statusCode > 299) {
                 this.emit('error', 'Error retrieving WSO2 auth token');
                 throw new Error(`Unexpected response code ${response.statusCode} received from WSO2 token request`);

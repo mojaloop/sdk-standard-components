@@ -156,10 +156,10 @@ class BaseRequests {
                         opts.headers['Authorization'] = `Bearer ${token}`;
                     } else {
                         const msg = 'Unable to retrieve WSO2 auth token';
-                        this.logger.push({ attempts, opts, res }).log(msg);
+                        this.logger.push({ attempts, opts, res }).debug(msg);
                         throw new Error(msg);
                     }
-                    this.logger.push({ attempts, opts }).log('Retrying request with new WSO2 token.');
+                    this.logger.push({ attempts, opts }).debug('Retrying request with new WSO2 token.');
                     return __request(opts, responseType, attempts + 1);
                 }
                 return res;
@@ -176,7 +176,7 @@ class BaseRequests {
                 };
                 this.logger
                     .push({ opts: { ...opts, agent: '[REDACTED]' }, err, body: tryParse(opts.body) })
-                    .log('Error attempting request');
+                    .debug('Error attempting request');
                 throw err;
             });
     }

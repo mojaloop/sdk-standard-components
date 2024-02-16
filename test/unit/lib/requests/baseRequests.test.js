@@ -23,7 +23,7 @@ describe('BaseRequests wso2 authorisation', () => {
             refreshToken: jest.fn(() => 'fake-token'),
         };
         defaultConf = {
-            logger: mockLogger({ app: 'BaseRequests test' }, undefined, false),
+            logger: mockLogger({ app: 'BaseRequests test' }, undefined),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -96,7 +96,7 @@ describe('BaseRequests', () => {
 
     beforeEach(() => {
         defaultConf = {
-            logger: mockLogger({ app: 'BaseRequests test' }, undefined, false),
+            logger: mockLogger({ app: 'BaseRequests test' }, undefined),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {

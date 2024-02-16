@@ -26,7 +26,7 @@ describe('request error handling', () => {
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-errors-test' }, undefined, false),
+            logger: mockLogger({ app: 'request-errors-test' }, undefined),
             tls: {
                 mutualTLS: {
                     enabled: false

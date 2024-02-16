@@ -20,7 +20,7 @@ describe('WSO2Auth', () => {
         const clientKey = 'client-key';
         const clientSecret = 'client-secret';
         mockOpts = {
-            logger: mockLogger({ app: 'wso2-auth' }, undefined, false),
+            logger: mockLogger({ app: 'wso2-auth' }, undefined),
             clientKey,
             clientSecret,
             tokenEndpoint: 'http://token-endpoint.com/v2',
@@ -72,7 +72,7 @@ describe('WSO2Auth', () => {
     test('should return static token when static token was provided', async () => {
         const TOKEN = 'abc123';
         const auth = new WSO2Auth({
-            logger: mockLogger({ app: 'wso2-auth' }, undefined, false),
+            logger: mockLogger({ app: 'wso2-auth' }, undefined),
             staticToken: TOKEN,
             refreshSeconds: 2,
         });

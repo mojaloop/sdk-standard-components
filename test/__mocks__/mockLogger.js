@@ -10,18 +10,7 @@
 
 const { Logger } = require('../../src/lib/logger');
 
-function mockLogger(context, opts, keepQuiet) {
-    // if keepQuiet is undefined then be quiet
-    if (keepQuiet || typeof keepQuiet === 'undefined') {
-        const log = {
-            log: jest.fn()
-        };
-        return {
-            ...log,
-            push: jest.fn(() => log)
-        };
-    }
-
+function mockLogger(context, opts={levels: ['silent']}) {
     return new Logger({ context, opts });
 }
 
