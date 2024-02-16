@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [17.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.2.0...v17.3.0) (2024-02-16)
+
+
+### Features
+
+* **mojaloop/#3750:** optimize object serialization and add log level silencing ([#193](https://github.com/mojaloop/sdk-standard-components/issues/193)) ([637cba1](https://github.com/mojaloop/sdk-standard-components/commit/637cba1d9e30b3c6b4459fa2896fb23b4a9e785a)), closes [mojaloop/#3750](https://github.com/mojaloop/project/issues/3750)
+
 ## [17.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.1.3...v17.2.0) (2024-02-13)
 
 
