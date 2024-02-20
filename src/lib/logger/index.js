@@ -129,8 +129,10 @@ class Logger {
         this.opts = { ...this.opts, ...opts };
         this.opts.levels.forEach(level => {
             this[level] = (...args) => {
-
                 this._log(level, ...args);
+            };
+            this[`is${level[0].toUpperCase()}${level.slice(1).toLowerCase()}Enabled`] = () => {
+                return true;
             };
         });
     }
@@ -192,12 +194,19 @@ class Logger {
     // so that the logger does not throw an error.
     // An easy way to do level silencing.
     verbose(){}
+    isVerboseEnabled(){ return false; }
     debug(){}
+    isDebugEnabled(){ return false; }
     warn(){}
+    isWarnEnabled(){ return false; }
     error(){}
+    isErrorEnabled(){ return false; }
     trace(){}
+    isTraceEnabled(){ return false; }
     info(){}
+    isInfoEnabled(){ return false; }
     fatal(){}
+    isFatalEnabled(){ return false; }
 }
 
 module.exports = {

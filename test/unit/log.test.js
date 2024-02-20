@@ -62,12 +62,37 @@ describe('Logger', () => {
     test('standard levels should be silent and not throw an error when log level excludes them', () => {
         const l = new Logger({ opts: { levels: ['mylevel']} });
         l.verbose('test');
+        expect(l.isVerboseEnabled()).toBe(false);
         l.debug('test');
+        expect(l.isDebugEnabled()).toBe(false);
         l.warn('test');
+        expect(l.isWarnEnabled()).toBe(false);
         l.info('test');
+        expect(l.isInfoEnabled()).toBe(false);
         l.error('test');
+        expect(l.isErrorEnabled()).toBe(false);
         l.trace('test');
+        expect(l.isTraceEnabled()).toBe(false);
         l.fatal('test');
+        expect(l.isFatalEnabled()).toBe(false);
+    });
+
+    test('isLevelEnabled should be true when level is passed as an opt', () => {
+        const l = new Logger({ opts: { levels: ['verbose', 'debug', 'warn', 'info', 'error', 'trace', 'fatal'] } });
+        l.verbose('test');
+        expect(l.isVerboseEnabled()).toBe(true);
+        l.debug('test');
+        expect(l.isDebugEnabled()).toBe(true);
+        l.warn('test');
+        expect(l.isWarnEnabled()).toBe(true);
+        l.info('test');
+        expect(l.isInfoEnabled()).toBe(true);
+        l.error('test');
+        expect(l.isErrorEnabled()).toBe(true);
+        l.trace('test');
+        expect(l.isTraceEnabled()).toBe(true);
+        l.fatal('test');
+        expect(l.isFatalEnabled()).toBe(true);
     });
 
     test('added context should be printed on the child', () => {
