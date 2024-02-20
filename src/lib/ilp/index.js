@@ -56,7 +56,7 @@ class Ilp {
             condition: generatedCondition
         };
 
-        this.logger.debug(`Generated ILP: transaction object: ${safeStringify(transactionObject)}\nPacket input: ${safeStringify(packetInput)}\nOutput: ${safeStringify(ret)}`);
+        this.logger.isDebugEnabled() && this.logger.debug(`Generated ILP: transaction object: ${safeStringify(transactionObject)}\nPacket input: ${safeStringify(packetInput)}\nOutput: ${safeStringify(ret)}`);
 
         return ret;
     }
