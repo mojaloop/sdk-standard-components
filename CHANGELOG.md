@@ -1,6 +1,15 @@
-# Changelog
+# Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [17.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.3.0...v17.4.0) (2024-02-20)
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### Features
+
+* **mojaloop/#3750:** add isLevelEnabled functions ([#194](https://github.com/mojaloop/sdk-standard-components/issues/194)) ([7a8e8d9](https://github.com/mojaloop/sdk-standard-components/commit/7a8e8d9861d9dd4096525458058320e827b146f3)), closes [mojaloop/#3750](https://github.com/mojaloop/project/issues/3750)
+
+
+### Bug Fixes
+
+* fix snapshot mishap ([#195](https://github.com/mojaloop/sdk-standard-components/issues/195)) ([f921f38](https://github.com/mojaloop/sdk-standard-components/commit/f921f38efe437d0d4656d30f7d4ba3db4b65a8d8))
 
 ## [17.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.2.0...v17.3.0) (2024-02-16)
 
