@@ -42,7 +42,7 @@ class JwsValidator {
             const { headers, body, data } = request;
             const payload = body || data;
 
-            this.logger.isDebugEnabled() && this.logger.debug(`Validating JWS on request with headers: ${safeStringify(headers)} and body: ${safeStringify(payload)}`);
+            this.logger.isDebugEnabled && this.logger.debug(`Validating JWS on request with headers: ${safeStringify(headers)} and body: ${safeStringify(payload)}`);
 
             if(!payload) {
                 throw new Error('Cannot validate JWS without a body');
@@ -80,13 +80,13 @@ class JwsValidator {
             this._validateProtectedHeader(headers, result.header);
 
             // const result = jwt.verify(token, pubKey, { complete: true, json: true });
-            this.logger.isDebugEnabled() && this.logger.debug(`JWS verify result: ${safeStringify(result)}`);
+            this.logger.isDebugEnabled && this.logger.debug(`JWS verify result: ${safeStringify(result)}`);
 
             // all ok if we got here
-            this.logger.isDebugEnabled() && this.logger.debug(`JWS valid for request ${safeStringify(request)}`);
+            this.logger.isDebugEnabled && this.logger.debug(`JWS valid for request ${safeStringify(request)}`);
         }
         catch(err) {
-            this.logger.isDebugEnabled() && this.logger.debug(`Error validating JWS: ${err.stack || safeStringify(err)}`);
+            this.logger.isDebugEnabled && this.logger.debug(`Error validating JWS: ${err.stack || safeStringify(err)}`);
             throw err;
         }
     }
