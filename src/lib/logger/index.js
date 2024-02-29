@@ -17,6 +17,10 @@
 // 2) No 'replace' method (or method for overwriting logged context) has been implemented. This is
 //    for the same reason no 'pop' method has been implemented.
 
+// It is extremely important that this logger define the similar function/object names to
+// that of @mojaloop/central-services-logger.
+// Various core services use the JWS signer with the central services logger
+// while the mojaloop-sdk uses the logger defined here
 const util = require('util');
 const safeStringify = require('fast-safe-stringify');
 
@@ -107,6 +111,13 @@ class Logger {
         } = {},
     } = {}) {
         this[contextSym] = context;
+        this.isVerboseEnabled = false;
+        this.isDebugEnabled = false;
+        this.isWarnEnabled = false;
+        this.isErrorEnabled = false;
+        this.isTraceEnabled = false;
+        this.isInfoEnabled = false;
+        this.isFatalEnabled = false;
         this.configure({
             stringify,
             opts: {
@@ -131,9 +142,7 @@ class Logger {
             this[level] = (...args) => {
                 this._log(level, ...args);
             };
-            this[`is${level[0].toUpperCase()}${level.slice(1).toLowerCase()}Enabled`] = () => {
-                return true;
-            };
+            this[`is${level[0].toUpperCase()}${level.slice(1).toLowerCase()}Enabled`] = true;
         });
     }
 
@@ -194,19 +203,12 @@ class Logger {
     // so that the logger does not throw an error.
     // An easy way to do level silencing.
     verbose(){}
-    isVerboseEnabled(){ return false; }
     debug(){}
-    isDebugEnabled(){ return false; }
     warn(){}
-    isWarnEnabled(){ return false; }
     error(){}
-    isErrorEnabled(){ return false; }
     trace(){}
-    isTraceEnabled(){ return false; }
     info(){}
-    isInfoEnabled(){ return false; }
     fatal(){}
-    isFatalEnabled(){ return false; }
 }
 
 module.exports = {
