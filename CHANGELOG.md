@@ -1,4 +1,20 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [18.0.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.4.0...v18.0.0) (2024-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **mojaloop/#3759:** change logger functions to object variables (#196)
+
+### Features
+
+* **mojaloop/#3759:** change logger functions to object variables ([#196](https://github.com/mojaloop/sdk-standard-components/issues/196)) ([f78818d](https://github.com/mojaloop/sdk-standard-components/commit/f78818d0bcbbfab1dd9f7ee87f514a69dfaff5bb)), closes [mojaloop/#3759](https://github.com/mojaloop/project/issues/3759)
+
+
+### Chore
+
+* update deps ([#197](https://github.com/mojaloop/sdk-standard-components/issues/197)) ([67b8168](https://github.com/mojaloop/sdk-standard-components/commit/67b81685004ffa1516469eb60b12fb76a84663a5))
+
 ## [17.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v17.3.0...v17.4.0) (2024-02-20)
 
 
