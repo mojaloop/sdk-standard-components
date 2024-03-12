@@ -77,7 +77,7 @@ defaults_configure_nvm: &defaults_configure_nvm
 
     if [ -f "$NVM_DIR" ]; then
       echo "==> $NVM_DIR exists. Skipping steps 2-4!"
-    else 
+    else
       echo "==> $NVM_DIR does not exists. Executing steps 2-4!"
 
       echo "2. Installing NVM"
@@ -456,6 +456,7 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
+                - master
       - test-lint:
           context: org-global
           requires:
