@@ -35,14 +35,7 @@ class Ilp {
      *
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
-    getResponseIlp(transactionObject) {
-        const ilpData = Buffer.from(base64url(JSON.stringify(transactionObject)));
-        const packetInput = {
-            amount: this._getIlpCurrencyAmount(transactionObject.amount), // unsigned 64bit integer as a string
-            account: this._getIlpAddress(transactionObject.payee), // ilp address
-            data: ilpData // base64url encoded attached data
-        };
-
+    getResponseIlp(transactionObject, packetInput) {
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
         let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
@@ -68,7 +61,7 @@ class Ilp {
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
     getQuoteResponseIlp(quoteRequest, quoteResponse) {
-        return this.getResponseIlp({
+        const transactionObject = {
             transactionId: quoteRequest.transactionId,
             quoteId: quoteRequest.quoteId,
             payee: quoteRequest.payee,
@@ -76,8 +69,51 @@ class Ilp {
             amount: quoteResponse.transferAmount,
             transactionType: quoteRequest.transactionType,
             note: quoteResponse.note
+        };
+        const packetInput = this.makeQuotePacketInput(transactionObject);
+
+        return this.getResponseIlp(transactionObject, packetInput);
+    }
+
+
+    /**
+     * Generates the required fulfilment, ilpPacket and condition for a fxQuote response
+     *
+     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     */
+    getFxQuoteResponseIlp(fxQuoteRequest, beFxQuoteResponse) {
+        const { conversionRequestId } = fxQuoteRequest;
+        const { conversionTerms } = beFxQuoteResponse;
+        const transactionObject = {
+            conversionRequestId,
+            conversionTerms
+        };
+        const packetInput = this.makeFxQuotePacketInput(transactionObject);
+
+        return this.getResponseIlp(transactionObject, packetInput);
+    }
+
+    makeQuotePacketInput(transactionObject) {
+        return Object.freeze({
+            data: this.makeIlpData(transactionObject), // base64url encoded attached data
+            amount: this._getIlpCurrencyAmount(transactionObject.amount), // unsigned 64bit integer as a string
+            account: this._getIlpAddress(transactionObject.payee) // ilp address
         });
     }
+
+    makeFxQuotePacketInput(transactionObject) {
+        return Object.freeze({
+            data: this.makeIlpData(transactionObject),
+            account: this._getFxIlpAddress(transactionObject.conversionTerms), // ilp address
+            amount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount)
+            // todo: discuss what amount we should use for FX: sourceAmount or targetAmount
+        });
+    }
+
+    makeIlpData(transactionObject) {
+        return Buffer.from(base64url(JSON.stringify(transactionObject)));
+    }
+
 
     /**
      * Returns an ILP compatible amount as an unsigned 64bit integer as a string given a mojaloop
@@ -138,6 +174,10 @@ class Ilp {
             + (partySubIdOrType ? `.${partySubIdOrType.toLowerCase()}` : '');
     }
 
+    _getFxIlpAddress(conversionTerms) {
+        const { counterPartyFsp, sourceAmount, targetAmount } = conversionTerms;
+        return `g.${counterPartyFsp.toLowerCase()}.${sourceAmount.currency.toLowerCase()}.${targetAmount.currency.toLowerCase()}`;
+    }
 
     /**
      * Validates a fulfilment against a condition
@@ -205,7 +245,7 @@ class Ilp {
         const jsonPacket = ilpPacket.deserializeIlpPayment(binaryPacket);
         return jsonPacket;
     }
-    
+
     /**
      * Get the transaction object in the data field of an Ilp packet
      *
@@ -216,7 +256,7 @@ class Ilp {
         const decodedData = base64url.decode(jsonPacket.data.toString());
         return JSON.parse(decodedData);
     }
-    
+
     /**
      * Validate the transfer request against the decoded Ilp packet in it
      *
