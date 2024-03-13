@@ -11,7 +11,7 @@
 'use strict';
 
 
-const util = require('util');
+const safeStringify = require('fast-safe-stringify');
 
 
 /** See section 7.6 of "API Definition v1.0.docx". Note that some of the these
@@ -207,7 +207,7 @@ class MojaloopFSPIOPError extends Error {
             replyTo: this.replyTo,
             apiErrorCode: this.apiErrorCode,
             extensions: this.extensions,
-            cause: this.cause ? this.cause.stack || util.inspect(this.cause) : undefined
+            cause: this.cause ? this.cause.stack || safeStringify(this.cause) : undefined
         };
     }
 
@@ -218,7 +218,7 @@ class MojaloopFSPIOPError extends Error {
      * @returns {string}
      */
     toString() {
-        return `${util.inspect(this.toFullErrorObject())}`;
+        return `${safeStringify(this.toFullErrorObject())}`;
     }
 }
 

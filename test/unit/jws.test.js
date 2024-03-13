@@ -28,7 +28,7 @@ describe('JWS', () => {
     beforeEach(() => {
         signer = new Signer({
             signingKey: signingKey,
-            logger: mockLogger({ app: 'jws-test' })
+            logger: mockLogger({ app: 'jws-test' }, undefined)
         });
         body = { test: 123 };
         // An request-promise-native style request uses the `.uri` and `.body` properties instead of the `.url` and `.data` properties.
@@ -66,7 +66,7 @@ describe('JWS', () => {
                 validationKeys: {
                     'mojaloop-sdk': validationKey
                 },
-                logger: mockLogger({ app: 'validate-test' })
+                logger: mockLogger({ app: 'validate-test' }, undefined)
             });
             validator.validate(request);
         };
@@ -89,7 +89,7 @@ describe('JWS', () => {
                 validationKeys: {
                     'mojaloop-sdk': validationKey
                 },
-                logger: mockLogger({ app: 'validate-test' })
+                logger: mockLogger({ app: 'validate-test' }, undefined)
             });
             validator.validate(request);
         };
