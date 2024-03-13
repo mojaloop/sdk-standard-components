@@ -10,10 +10,9 @@
 
 'use strict';
 
-
-const BaseRequests = require('./baseRequests');
-
+const { RESOURCES } = require('../constants');
 const { ResponseType } = require('./common');
+const BaseRequests = require('./baseRequests');
 
 /**
  * @class MojaloopRequests
@@ -185,6 +184,60 @@ class MojaloopRequests extends BaseRequests {
      */
     async putTransfersError(transferId, error, destFspId) {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
+    }
+
+    /**
+   * Executes a POST /fxQuotes request for the specified fxQuote request
+   *
+   * @returns {object} - JSON response body if one was received
+   */
+    async postFxQuotes(quotePayload, destFspId) {
+        return this._post('fxQuotes', RESOURCES.fxQuotes, quotePayload, destFspId);
+    }
+
+    /**
+   * Executes a PUT /fxQuotes/{ID} request for the specified fxQuote
+   *
+   * @returns {object} - JSON response body if one was received
+   */
+    async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId) {
+        return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId);
+    }
+
+    /**
+   * Executes a PUT /fxQuotes/{ID}/error request for the specified error
+   *
+   * @returns {object} - JSON response body if one was received
+   */
+    async putFxQuotesError(conversionRequestId, error, destFspId) {
+        return this._put(`fxQuotes/${conversionRequestId}/error`, RESOURCES.fxQuotes, error, destFspId);
+    }
+
+    /**
+     * Executes a POST /fxTransfers request for the specified fxTransfer prepare
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async postFxTransfers(preparePayload, destFspId) {
+        return this._post('fxTransfers', RESOURCES.fxTransfers, preparePayload, destFspId);
+    }
+
+    /**
+     * Executes a PUT /fxTransfers/{ID} request for the specified fxTransfer fulfilment
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putFxTransfers(commitRequestId, fulfilmentPayload, destFspId) {
+        return this._put(`fxTransfers/${commitRequestId}`, RESOURCES.fxTransfers, fulfilmentPayload, destFspId);
+    }
+
+    /**
+     * Executes a PUT /fxTransfers/{ID}/error request for the specified error
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async putFxTransfersError(commitRequestId, error, destFspId) {
+        return this._put(`fxTransfers/${commitRequestId}/error`, RESOURCES.fxTransfers, error, destFspId);
     }
 
     /**
