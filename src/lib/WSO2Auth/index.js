@@ -73,7 +73,7 @@ class WSO2Auth extends EventEmitter {
                 .toString('base64');
             this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
+            this._logger.isDebugEnabled && this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
             this._token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
@@ -126,7 +126,7 @@ class WSO2Auth extends EventEmitter {
                 `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this._logger.isDebugEnabled && this._logger.debug(`Error performing WSO2 token refresh: ${error.message}. `
+            this._logger.isErrorEnabled && this._logger.error(`Error performing WSO2 token refresh: ${error.message}. `
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
