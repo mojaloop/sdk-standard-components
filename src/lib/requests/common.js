@@ -10,8 +10,8 @@
 
 'use strict';
 
-const util = require('util');
 const respErrSym = Symbol('ResponseErrorDataSym');
+const safeStringify = require('fast-safe-stringify');
 
 
 /**
@@ -28,7 +28,7 @@ class HTTPResponseError extends Error {
     }
 
     toString() {
-        return util.inspect(this[respErrSym]);
+        return safeStringify(this[respErrSym]);
     }
 
     toJSON() {

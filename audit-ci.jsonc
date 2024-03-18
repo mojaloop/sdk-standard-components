@@ -7,6 +7,7 @@
       // Currently no fixes available for the following
       "GHSA-h452-7996-h45h",
       "GHSA-c2qf-rxjj-qqgw",
-      "GHSA-78xj-cgh5-2h22" // https://github.com/advisories/GHSA-78xj-cgh5-2h22
+      // (https://github.com/advisories/GHSA-78xj-cgh5-2h22) - npm SSRF attacks
+      "GHSA-78xj-cgh5-2h22"
     ]
   }
