@@ -10,6 +10,7 @@
 
 'use strict';
 
+const http = require('http');
 const https = require('https');
 const qs = require('querystring');
 const EventEmitter = require('events');
@@ -63,7 +64,9 @@ class WSO2Auth extends EventEmitter {
         if (opts.tlsCreds) {
             this._reqOpts.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
         } else {
-            this._reqOpts.agent = new https.Agent();
+            this._reqOpts.agent = opts.tokenEndpoint?.startsWith('http:')
+                ? new http.Agent()
+                : new https.Agent();
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
