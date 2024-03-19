@@ -65,6 +65,7 @@ const request = async ({
             }
             const data = [];
             res.on('data', (chunk) => data.push(chunk));
+
             res.on('end', () => {
                 let result = Buffer.concat(data);
                 if (responseType === ResponseType.Text || !result.length) {
@@ -75,10 +76,12 @@ const request = async ({
                         let err = new Error('Invalid content-type. ' +
                             `Expected application/json but received ${contentType}: ${result.toString()}`);
                         err.originalRequest = originalRequest;
+                        err.statusCode = res.statusCode;
                         return reject(err);
                     }
                     result = JSON.parse(result);
                 }
+
                 resolve({
                     statusCode: res.statusCode,
                     headers: res.headers,

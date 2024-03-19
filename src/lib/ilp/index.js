@@ -10,9 +10,9 @@
 
 'use strict';
 
-const util = require('util');
 const Crypto = require('crypto');
 const base64url = require('base64url');
+const safeStringify = require('fast-safe-stringify');
 
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet');
@@ -56,7 +56,7 @@ class Ilp {
             condition: generatedCondition
         };
 
-        this.logger.log(`Generated ILP: transaction object: ${util.inspect(transactionObject)}\nPacket input: ${util.inspect(packetInput)}\nOutput: ${util.inspect(ret)}`);
+        this.logger.isDebugEnabled && this.logger.debug(`Generated ILP: transaction object: ${safeStringify(transactionObject)}\nPacket input: ${safeStringify(packetInput)}\nOutput: ${safeStringify(ret)}`);
 
         return ret;
     }
@@ -205,7 +205,7 @@ class Ilp {
         const jsonPacket = ilpPacket.deserializeIlpPayment(binaryPacket);
         return jsonPacket;
     }
-    
+
     /**
      * Get the transaction object in the data field of an Ilp packet
      *
@@ -216,7 +216,7 @@ class Ilp {
         const decodedData = base64url.decode(jsonPacket.data.toString());
         return JSON.parse(decodedData);
     }
-    
+
     /**
      * Validate the transfer request against the decoded Ilp packet in it
      *

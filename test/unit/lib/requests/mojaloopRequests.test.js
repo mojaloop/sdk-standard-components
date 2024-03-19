@@ -25,7 +25,7 @@ describe('PUT /parties', () => {
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'put-parties-test' }),
+            logger: mockLogger({ app: 'put-parties-test' }, undefined),
             peerEndpoint: '127.0.0.1',
             tls: {
                 mutualTLS: {
@@ -98,7 +98,7 @@ describe('PUT /quotes', () => {
         // Everything is false by default
         const conf = {
             // Disable logging in tests
-            logger: mockLogger({ app: 'put-quotes-test' }),
+            logger: mockLogger({ app: 'put-quotes-test' }, undefined),
             tls: {
                 mutualTLS: {
                     enabled: false
@@ -157,7 +157,7 @@ describe('PUT /quotes', () => {
     test(
         'signs put parties when jwsSign is true and jwsSignPutParties is not supplied',
         async () => {
-            await testPutQuotes(true, undefined, false);
+            await testPutQuotes(true, undefined);
         }
     );
 
@@ -171,9 +171,9 @@ describe('PUT /quotes', () => {
 });
 
 describe('postAuthorizations', () => {
-    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) });
+    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }, undefined) });
     const conf = {
-        logger: mockLogger({ app: 'postAuthorizations-test' }),
+        logger: mockLogger({ app: 'postAuthorizations-test' }, undefined),
         peerEndpoint: '127.0.0.1',
         tls: {
             mutualTLS: {
@@ -217,9 +217,9 @@ describe('postAuthorizations', () => {
 });
 
 describe('patchTransfers', () => {
-    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) });
+    const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: 'post-authorizations-test' }) }, undefined);
     const conf = {
-        logger: mockLogger({ app: 'postAuthorizations-test' }),
+        logger: mockLogger({ app: 'postAuthorizations-test' }, undefined),
         peerEndpoint: '127.0.0.1',
         tls: {
             mutualTLS: {
