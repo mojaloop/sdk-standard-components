@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [18.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.0.1...v18.1.0) (2024-03-19)
+
+
+### Features
+
+* **iprod-93:** added original statusCode to request error ([#189](https://github.com/mojaloop/sdk-standard-components/issues/189)) ([78e53f8](https://github.com/mojaloop/sdk-standard-components/commit/78e53f89dab5fb7bb19e3d4e72cb2bd9d27c1a44))
+
 ### [18.0.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.0.0...v18.0.1) (2024-03-18)
 
 
