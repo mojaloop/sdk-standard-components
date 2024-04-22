@@ -13,8 +13,8 @@
 const http = require('http');
 const https = require('https');
 const qs = require('querystring');
-const request = require('../request');
 const EventEmitter = require('events');
+const request = require('../request');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -61,11 +61,12 @@ class WSO2Auth extends EventEmitter {
             }),
         };
 
-        if(opts.tlsCreds) {
+        if (opts.tlsCreds) {
             this._reqOpts.agent = new https.Agent({ ...opts.tlsCreds, keepAlive: true });
-        }
-        else {
-            this._reqOpts.agent = http.globalAgent;
+        } else {
+            this._reqOpts.agent = opts.tokenEndpoint?.startsWith('http:')
+                ? new http.Agent()
+                : new https.Agent();
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
@@ -73,7 +74,7 @@ class WSO2Auth extends EventEmitter {
                 .toString('base64');
             this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
-            this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
+            this._logger.isDebugEnabled && this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
             this._token = opts.staticToken;
         } else {
             // throw new Error('WSO2 auth error: neither token API data nor static token is set');
@@ -126,7 +127,7 @@ class WSO2Auth extends EventEmitter {
                 `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this._logger.isDebugEnabled && this._logger.debug(`Error performing WSO2 token refresh: ${error.message}. `
+            this._logger.isErrorEnabled && this._logger.error(`Error performing WSO2 token refresh: ${error.message}. `
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
