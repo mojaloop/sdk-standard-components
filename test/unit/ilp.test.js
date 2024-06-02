@@ -10,9 +10,10 @@
 
 'use strict';
 
-const Ilp = require('../../src/lib/ilp');
 const IlpPacket = require('ilp-packet');
+const Ilp = require('../../src/lib/ilp');
 
+const dto = require('../../src/lib/dto');
 const quoteRequest = require('./data/quoteRequest');
 const partialResponse = require('./data/partialResponse');
 const mockLogger = require('../__mocks__/mockLogger');
@@ -79,6 +80,14 @@ describe('ILP', () => {
         expect(valid).toBeTruthy();
         // We just test that the JSON parsed correctly here - we don't test the format here
         expect(dataElement).toBeDefined();
+    });
+
+    test('should generate fulfilment, ilpPacket and condition using shared method "getResponseIlp"', () => {
+        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+        const { fulfilment, ilpPacket, condition } = ilp.getResponseIlp(transactionObj);
+        expect(fulfilment).toBeTruthy();
+        expect(ilpPacket).toBeTruthy();
+        expect(condition).toBeTruthy();
     });
 });
 

@@ -16,6 +16,7 @@ const safeStringify = require('fast-safe-stringify');
 
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet');
+const dto = require('../dto');
 
 // currency decimal place data
 const currencyDecimals = require('./currency.json');
@@ -35,7 +36,7 @@ class Ilp {
      *
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
-    getResponseIlp(transactionObject, packetInput) {
+    getResponseIlp(transactionObject, packetInput = this.makeQuotePacketInput(transactionObject)) {
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
         let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
@@ -61,18 +62,8 @@ class Ilp {
      * @returns {object} - object containing the fulfilment, ilp packet and condition values
      */
     getQuoteResponseIlp(quoteRequest, quoteResponse) {
-        const transactionObject = {
-            transactionId: quoteRequest.transactionId,
-            quoteId: quoteRequest.quoteId,
-            payee: quoteRequest.payee,
-            payer: quoteRequest.payer,
-            amount: quoteResponse.transferAmount,
-            transactionType: quoteRequest.transactionType,
-            note: quoteResponse.note
-        };
-        const packetInput = this.makeQuotePacketInput(transactionObject);
-
-        return this.getResponseIlp(transactionObject, packetInput);
+        const transactionObject = dto.transactionObjectDto(quoteRequest, quoteResponse);
+        return this.getResponseIlp(transactionObject);
     }
 
 
@@ -84,13 +75,13 @@ class Ilp {
     getFxQuoteResponseIlp(fxQuoteRequest, beFxQuoteResponse) {
         const { conversionRequestId } = fxQuoteRequest;
         const { conversionTerms } = beFxQuoteResponse;
-        const transactionObject = {
+        const fxTransactionObject = {
             conversionRequestId,
             conversionTerms
         };
-        const packetInput = this.makeFxQuotePacketInput(transactionObject);
+        const packetInput = this.makeFxQuotePacketInput(fxTransactionObject);
 
-        return this.getResponseIlp(transactionObject, packetInput);
+        return this.getResponseIlp(fxTransactionObject, packetInput);
     }
 
     makeQuotePacketInput(transactionObject) {
