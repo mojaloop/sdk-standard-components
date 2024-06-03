@@ -116,7 +116,6 @@ describe('ILP', () => {
             const fxQuote = fixtures.fxQuotesPayload();
             const packetInput = ilp.makeFxQuotePacketInput(fxQuote);
             const packet = serialize(packetInput);
-            expect(packet).toBeTruthy();
             expect(Buffer.isBuffer(packet)).toBe(true);
         });
     });
