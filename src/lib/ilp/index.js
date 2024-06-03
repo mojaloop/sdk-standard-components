@@ -17,6 +17,7 @@ const safeStringify = require('fast-safe-stringify');
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet');
 const dto = require('../dto');
+const { ILP_AMOUNT_FOR_FX } = require('../constants');
 
 // currency decimal place data
 const currencyDecimals = require('./currency.json');
@@ -96,8 +97,7 @@ class Ilp {
         return Object.freeze({
             data: this.makeIlpData(transactionObject),
             account: this._getFxIlpAddress(transactionObject.conversionTerms), // ilp address
-            amount: this._getIlpCurrencyAmount(transactionObject.conversionTerms.sourceAmount)
-            // todo: discuss what amount we should use for FX: sourceAmount or targetAmount
+            amount: ILP_AMOUNT_FOR_FX,
         });
     }
 
@@ -116,7 +116,7 @@ class Ilp {
     _getIlpCurrencyAmount(mojaloopAmount) {
         const { currency, amount } = mojaloopAmount;
 
-        if(typeof(currencyDecimals[currency]) === 'undefined') {
+        if (typeof(currencyDecimals[currency]) === 'undefined') {
             throw new Error(`No decimal place data available for currency ${currency}`);
         }
 
@@ -195,12 +195,12 @@ class Ilp {
      * @returns {string} - string containing base64 encoded fulfilment
      */
     calculateFulfil(base64EncodedPacket) {
-        var encodedSecret = Buffer.from(this.secret).toString('base64');
+        const encodedSecret = Buffer.from(this.secret).toString('base64');
 
-        var hmacsignature = Crypto.createHmac('sha256', new Buffer(encodedSecret, 'ascii'))
+        const hmacsignature = Crypto.createHmac('sha256', new Buffer(encodedSecret, 'ascii'))
             .update(new Buffer(base64EncodedPacket, 'ascii'));
 
-        var generatedFulfilment = hmacsignature.digest('base64');
+        const generatedFulfilment = hmacsignature.digest('base64');
 
         return base64url.fromBase64(generatedFulfilment);
     }
@@ -212,13 +212,13 @@ class Ilp {
      * @returns {string} - base64 encoded condition calculated from supplied fulfilment
      */
     calculateConditionFromFulfil (fulfilment) {
-        var preimage = base64url.toBuffer(fulfilment);
+        const preimage = base64url.toBuffer(fulfilment);
 
         if (preimage.length !== 32) {
             throw new Error('Interledger preimages must be exactly 32 bytes.');
         }
 
-        var calculatedConditionDigest = this._sha256(preimage);
+        const calculatedConditionDigest = this._sha256(preimage);
         return base64url.fromBase64(calculatedConditionDigest);
     }
 
