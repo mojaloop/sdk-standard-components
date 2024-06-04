@@ -224,8 +224,8 @@ class MojaloopFSPIOPError extends Error {
 
 
 module.exports = {
-    MojaloopApiErrorCodes: MojaloopApiErrorCodes,
+    MojaloopApiErrorCodes,
     MojaloopApiErrorObjectFromCode,
-    MojaloopFSPIOPError: MojaloopFSPIOPError,
-    MojaloopApiErrorCodeFromCode: MojaloopApiErrorCodeFromCode
+    MojaloopFSPIOPError,
+    MojaloopApiErrorCodeFromCode
 };

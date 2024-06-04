@@ -1,7 +1,8 @@
 import http from 'http'
 import { KeyObject } from 'tls'
 import {
-    v1_1 as fspiopAPI,
+    //This needs reconsidering if and when more changes are included in fspiop v2.0, currently they're non-breaking as far as any existing fields are replaced, but when such changes come in, this needs to be reviewed.
+    v2_0 as fspiopAPI,
     thirdparty as tpAPI
 } from '@mojaloop/api-snippets'
 declare namespace SDKStandardComponents {
@@ -49,6 +50,8 @@ declare namespace SDKStandardComponents {
         quotesEndpoint?: string;
         bulkQuotesEndpoint?: string;
         transfersEndpoint?: string;
+        fxQuotesEndpoint?: string;
+        fxTransfersEndpoint?: string;
         bulkTransfersEndpoint?: string;
         servicesEndpoint?: string;
         transactionRequestsEndpoint?: string;

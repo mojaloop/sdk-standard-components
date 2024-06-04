@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "18.1.0",
+  "version": "18.1.0-snapshot.0",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -47,21 +47,21 @@
     "jws": "4.0.0"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^17.4.0",
+    "@mojaloop/api-snippets": "^17.5.1",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.29",
-    "audit-ci": "^6.6.1",
-    "eslint": "^8.57.0",
+    "@types/node": "^20.14.1",
+    "audit-ci": "^7.0.1",
+    "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.29.1",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "nock": "^13.5.4",
-    "npm-check-updates": "^16.14.17",
+    "npm-check-updates": "^16.14.20",
     "pre-commit": "^1.2.2",
     "replace": "^1.2.2",
     "standard-version": "^9.5.0",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
   },
   "standard-version": {
     "scripts": {
