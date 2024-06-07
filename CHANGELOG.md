@@ -1,4 +1,22 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [18.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.1.0...v18.2.0) (2024-06-07)
+
+
+### Features
+
+* fx-impl ([#198](https://github.com/mojaloop/sdk-standard-components/issues/198)) ([12a36d5](https://github.com/mojaloop/sdk-standard-components/commit/12a36d5d0d33d7ad5ec1852f66aedd0f5447a385)), closes [mojaloop/#3618](https://github.com/mojaloop/project/issues/3618)
+
+
+### Bug Fixes
+
+* build ([#204](https://github.com/mojaloop/sdk-standard-components/issues/204)) ([5766f79](https://github.com/mojaloop/sdk-standard-components/commit/5766f79f9f0e1e87dce42e1e9d71635d969e0712))
+
+
+### Chore
+
+* **deps-dev:** bump ip from 2.0.0 to 2.0.1 ([#202](https://github.com/mojaloop/sdk-standard-components/issues/202)) ([12ec428](https://github.com/mojaloop/sdk-standard-components/commit/12ec428441d6ce1455d12320aac3aee9be6bbe2d))
+* **deps-dev:** bump undici from 5.28.3 to 5.28.4 ([#201](https://github.com/mojaloop/sdk-standard-components/issues/201)) ([0a7df96](https://github.com/mojaloop/sdk-standard-components/commit/0a7df96f89c1e3819e308312e865b75103f398d7))
+
 ## [18.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.0.1...v18.1.0) (2024-03-19)
 
 
