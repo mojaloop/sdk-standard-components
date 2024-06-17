@@ -13,10 +13,6 @@
 const jws = require('jws');
 const safeStringify = require('fast-safe-stringify');
 
-// the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
-const SIGNATURE_ALGORITHM = 'RS256';
-
-// a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
 const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(\/.*)*)$/;
 
 
@@ -31,6 +27,9 @@ class JwsSigner {
             throw new Error('Signing key must be supplied as config argument');
         }
 
+        // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
+        this.alg = config.signingKey.includes('BEGIN EC ') ? 'ES256' : 'RS256';
+
         this.signingKey = config.signingKey;
     }
 
@@ -42,7 +41,7 @@ class JwsSigner {
      *   (see https://github.com/request/request-promise-native)
      *   (see https://github.com/axios/axios)
      */
-    sign(requestOptions) {
+    sign(requestOptions, alg) {
         this.logger.isDebugEnabled && this.logger.debug(`JWS Signing request: ${safeStringify(requestOptions)}`);
         const payload = requestOptions.body || requestOptions.data;
         const uri = requestOptions.uri || requestOptions.url;
@@ -61,7 +60,7 @@ class JwsSigner {
         requestOptions.headers['fspiop-uri'] = uriMatches[1];
 
         // get the signature and add it to the header
-        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions);
+        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions, alg);
 
         if(requestOptions.body && typeof(requestOptions.body) !== 'string') {
             requestOptions.body = JSON.stringify(requestOptions.body);
@@ -99,7 +98,7 @@ class JwsSigner {
         // Note: Property names are case sensitive in the protected header object even though they are
         // not case sensitive in the actual HTTP headers
         const protectedHeaderObject = {
-            alg: SIGNATURE_ALGORITHM,
+            alg: this.alg,
             'FSPIOP-URI': requestOptions.headers['fspiop-uri'],
             'FSPIOP-HTTP-Method': requestOptions.method.toUpperCase(),
             'FSPIOP-Source': requestOptions.headers['fspiop-source']
