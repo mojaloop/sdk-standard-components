@@ -1,0 +1,29 @@
+/**
+ * Creates an immutable transaction object.
+ *
+ * @param {Object} quoteRequest - The request object containing quote payload.
+ * @property {string} quoteId - Common ID between the FSPs for the quote object.
+ * @property {string} transactionId - Common ID (decided by the Payer FSP) between the FSPs for the future transaction object.
+ * @property {TransactionType} transactionType - Type of transaction for which the quote is requested.
+ * @property {Party} payee - Information about the Payee.
+ * @property {Party} payer - Information about the Payer.
+ *
+ * @param {Object} quoteResponse - The response object containing additional transaction details.
+ * @property {Money} transferAmount - The amount of Money that the Payer FSP should transfer to the Payee FSP.
+ * @property {string} note - note // no such param in API spec
+ *
+ * @returns {Object} The immutable transaction object.
+ */
+const transactionObjectDto = (quoteRequest, quoteResponse) => Object.freeze({
+    quoteId: quoteRequest.quoteId,
+    transactionId: quoteRequest.transactionId,
+    transactionType: quoteRequest.transactionType,
+    payee: quoteRequest.payee,
+    payer: quoteRequest.payer,
+    amount: quoteResponse.transferAmount,
+    note: quoteResponse.note, // todo: clarify what this is for (no such param in API spec)
+});
+
+module.exports = {
+    transactionObjectDto,
+};

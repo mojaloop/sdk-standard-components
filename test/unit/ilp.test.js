@@ -10,12 +10,15 @@
 
 'use strict';
 
-const Ilp = require('../../src/lib/ilp');
 const IlpPacket = require('ilp-packet');
+const Ilp = require('../../src/lib/ilp');
+const dto = require('../../src/lib/dto');
+const { ILP_AMOUNT_FOR_FX } = require('../../src/lib/constants');
 
+const mockLogger = require('../__mocks__/mockLogger');
+const fixtures = require('../fixtures');
 const quoteRequest = require('./data/quoteRequest');
 const partialResponse = require('./data/partialResponse');
-const mockLogger = require('../__mocks__/mockLogger');
 
 describe('ILP', () => {
     let ilp;
@@ -79,6 +82,42 @@ describe('ILP', () => {
         expect(valid).toBeTruthy();
         // We just test that the JSON parsed correctly here - we don't test the format here
         expect(dataElement).toBeDefined();
+    });
+
+    test('should generate fulfilment, ilpPacket and condition using shared method "getResponseIlp"', () => {
+        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+        const { fulfilment, ilpPacket, condition } = ilp.getResponseIlp(transactionObj);
+        expect(fulfilment).toBeTruthy();
+        expect(ilpPacket).toBeTruthy();
+        expect(condition).toBeTruthy();
+    });
+
+    describe('Ilp Packet Serialize tests -->', () => {
+        const createIlpJson = (amount) => ({
+            data: Buffer.from('data'),
+            account: 'g.dfsp.eur.eur',
+            amount
+        });
+        const serialize = json => IlpPacket.serializeIlpPayment(json);
+
+        test('should throw error if amount as empty string in ilp packet', () => {
+            const amount = '';
+            expect(() => serialize(createIlpJson(amount)))
+                .toThrow();
+        });
+
+        test('should be able to use ILP_AMOUNT_FOR_FX ("0") as amount in ilp packet', () => {
+            const amount = ILP_AMOUNT_FOR_FX;
+            const packet = serialize(createIlpJson(amount));
+            expect(Buffer.isBuffer(packet)).toBe(true);
+        });
+
+        test('should create ilp packet for fxQuote', () => {
+            const fxQuote = fixtures.fxQuotesPayload();
+            const packetInput = ilp.makeFxQuotePacketInput(fxQuote);
+            const packet = serialize(packetInput);
+            expect(Buffer.isBuffer(packet)).toBe(true);
+        });
     });
 });
 
