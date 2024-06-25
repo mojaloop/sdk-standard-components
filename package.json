@@ -18,6 +18,8 @@
     "test:xunit": "JEST_JUNIT_OUTPUT_FILE=./test/results/junit.xml npm run test:unit -- --reporters=jest-junit",
     "test:coverage": "jest --coverage --coverageThreshold='{}'",
     "test:coverage-check": "jest --coverage",
+    "test:functional": "true",
+    "test:integration": "true",
     "audit:fix": "npm audit fix",
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "dep:check": "ncu -e 2",
