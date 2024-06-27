@@ -104,7 +104,7 @@ declare namespace SDKStandardComponents {
          */
         putConsentsError(
             consentId: string,
-            consentBody: fspiopAPI.Schemas.ErrorInformationObject,
+            consentBody: fspiopAPI.Types.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -167,7 +167,7 @@ declare namespace SDKStandardComponents {
          */
         putConsentRequestsError(
             consentRequestId: string,
-            consentRequestBody: fspiopAPI.Schemas.ErrorInformationObject,
+            consentRequestBody: fspiopAPI.Types.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -237,7 +237,7 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsTransactionsError(
-            thirdpartyRequestsTransactionsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            thirdpartyRequestsTransactionsBody: fspiopAPI.Types.ErrorInformationObject,
             transactionRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
@@ -318,7 +318,7 @@ declare namespace SDKStandardComponents {
          */
         putAccountsError (
             userId: string,
-            accountsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            accountsBody: fspiopAPI.Types.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -353,7 +353,7 @@ declare namespace SDKStandardComponents {
          */
          putServicesError (
             serviceType: string,
-            servicesBody: fspiopAPI.Schemas.ErrorInformationObject,
+            servicesBody: fspiopAPI.Types.ErrorInformationObject,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -395,7 +395,7 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         putThirdpartyRequestsVerificationsError(
-            thirdpartyRequestsVerificationsBody: fspiopAPI.Schemas.ErrorInformationObject,
+            thirdpartyRequestsVerificationsBody: fspiopAPI.Types.ErrorInformationObject,
             verificationsRequestId: string,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
@@ -431,7 +431,7 @@ declare namespace SDKStandardComponents {
             idType: string,
             idValue: string,
             idSubValue: string | undefined,
-            body: fspiopAPI.Schemas.Party,
+            body: fspiopAPI.Types.Party,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -449,7 +449,7 @@ declare namespace SDKStandardComponents {
             idType: string,
             idValue: string,
             idSubValue: string | undefined,
-            error: fspiopAPI.Schemas.ErrorInformationObject,
+            error: fspiopAPI.Types.ErrorInformationObject,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -462,7 +462,7 @@ declare namespace SDKStandardComponents {
          * @returns {Promise<object>} JSON response body if one was received
          */
         postQuotes(
-            quoteRequest: fspiopAPI.Schemas.QuotesPostRequest,
+            quoteRequest: fspiopAPI.Types.QuotesPostRequest,
             destParticipantId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
 
@@ -476,7 +476,7 @@ declare namespace SDKStandardComponents {
          */
         putAuthorizations(
             transactionRequestId: string,
-            authorizationResponse: fspiopAPI.Schemas.AuthorizationsIDPutResponse,
+            authorizationResponse: fspiopAPI.Types.AuthorizationsIDPutResponse,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
@@ -490,7 +490,7 @@ declare namespace SDKStandardComponents {
          */
         putAuthorizationsError(
             transactionRequestId: string,
-            error: fspiopAPI.Schemas.ErrorInformationObject,
+            error: fspiopAPI.Types.ErrorInformationObject,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
 
@@ -502,7 +502,7 @@ declare namespace SDKStandardComponents {
          * @param {string} destFspId The id of the destination participant
          */
         postParticipants(
-            participantRequest: fspiopAPI.Schemas.ParticipantsPostRequest,
+            participantRequest: fspiopAPI.Types.ParticipantsPostRequest,
             destFspId: string
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
     }
