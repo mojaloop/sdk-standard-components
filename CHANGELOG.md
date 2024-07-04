@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [18.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.1...v18.3.0) (2024-07-04)
+
+
+### Features
+
+* enable elliptic curve es256 for JWS ([#205](https://github.com/mojaloop/sdk-standard-components/issues/205)) ([ee5036d](https://github.com/mojaloop/sdk-standard-components/commit/ee5036dbe587cf998113208ece57b769123eba22))
+
 ### [18.2.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.0...v18.2.1) (2024-06-27)
 
 
