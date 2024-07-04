@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [18.2.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.0...v18.2.1) (2024-06-27)
+
+
+### Chore
+
+* update types for fspiop 2.0 ([#207](https://github.com/mojaloop/sdk-standard-components/issues/207)) ([8eea656](https://github.com/mojaloop/sdk-standard-components/commit/8eea6565a0a33d8981e9a65238c376c4813a6372))
+
 ## [18.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.1.0...v18.2.0) (2024-06-07)
 
 
