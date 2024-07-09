@@ -92,6 +92,7 @@ const MojaloopApiErrorCodes = {
     PAYEE_REJECTED_TXN:               { code: '5104', message: 'Payee rejected transaction' },
     PAYEE_FSP_REJECTED_TXN:           { code: '5105', message: 'Payee FSP rejected transaction' },
     PAYEE_UNSUPPORTED_CURRENCY:       { code: '5106', message: 'Payee unsupported currency' },
+    PAYEE_IDENTIFIER_NOT_VALID:       { code: '5107', message: 'Payee identifier no-longer valid' },
     PAYEE_LIMIT_ERROR:                { code: '5200', message: 'Payee limit error' },
     PAYEE_PERMISSION_ERROR:           { code: '5300', message: 'Payee permission error' },
     GENERIC_PAYEE_BLOCKED_ERROR:      { code: '5400', message: 'Generic Payee blocked error' },
