@@ -735,6 +735,7 @@ declare namespace SDKStandardComponents {
             PAYEE_REJECTED_TXN:               MojaloopApiErrorCode
             PAYEE_FSP_REJECTED_TXN:           MojaloopApiErrorCode
             PAYEE_UNSUPPORTED_CURRENCY:       MojaloopApiErrorCode
+            PAYEE_IDENTIFIER_NOT_VALID:       MojaloopApiErrorCode
             PAYEE_LIMIT_ERROR:                MojaloopApiErrorCode
             PAYEE_PERMISSION_ERROR:           MojaloopApiErrorCode
             GENERIC_PAYEE_BLOCKED_ERROR:      MojaloopApiErrorCode
