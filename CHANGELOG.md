@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [18.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.3.0...v18.4.0) (2024-08-06)
+
+
+### Features
+
+* **csi-16:** added PAYEE_IDENTIFIER_NOT_VALID error ([#208](https://github.com/mojaloop/sdk-standard-components/issues/208)) ([bd4a397](https://github.com/mojaloop/sdk-standard-components/commit/bd4a3972c241781bb14537ddb0abdbd7a40e321f))
+
 ## [18.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.1...v18.3.0) (2024-07-04)
 
 
