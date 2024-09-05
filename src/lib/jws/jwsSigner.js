@@ -62,11 +62,11 @@ class JwsSigner {
         // get the signature and add it to the header
         requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions, alg);
 
-        if(requestOptions.body && typeof(requestOptions.body) !== 'string') {
-            requestOptions.body = JSON.stringify(requestOptions.body);
+        if(requestOptions.body && typeof requestOptions.body !== 'string') {
+            requestOptions.body = safeStringify(requestOptions.body);
         }
-        if(requestOptions.data && typeof(requestOptions.data) !== 'string') {
-            requestOptions.data = JSON.stringify(requestOptions.data);
+        if(requestOptions.data && typeof requestOptions.data !== 'string') {
+            requestOptions.data = safeStringify(requestOptions.data);
         }
     }
 
@@ -129,7 +129,7 @@ class JwsSigner {
             protectedHeader: protectedHeaderBase64.replace('"', '')
         };
 
-        return JSON.stringify(signatureObject);
+        return safeStringify(signatureObject);
     }
 }
 

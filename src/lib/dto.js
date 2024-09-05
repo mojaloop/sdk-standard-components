@@ -7,6 +7,7 @@
  * @property {TransactionType} transactionType - Type of transaction for which the quote is requested.
  * @property {Party} payee - Information about the Payee.
  * @property {Party} payer - Information about the Payer.
+ * @property {string} expiration - Expiration date and time of the quote (Date string).
  *
  * @param {Object} quoteResponse - The response object containing additional transaction details.
  * @property {Money} transferAmount - The amount of Money that the Payer FSP should transfer to the Payee FSP.
@@ -14,15 +15,20 @@
  *
  * @returns {Object} The immutable transaction object.
  */
-const transactionObjectDto = (quoteRequest, quoteResponse) => Object.freeze({
-    quoteId: quoteRequest.quoteId,
-    transactionId: quoteRequest.transactionId,
-    transactionType: quoteRequest.transactionType,
-    payee: quoteRequest.payee,
-    payer: quoteRequest.payer,
-    amount: quoteResponse.transferAmount,
-    note: quoteResponse.note, // todo: clarify what this is for (no such param in API spec)
-});
+const transactionObjectDto = (quoteRequest, quoteResponse) => {
+    const { quoteId, transactionId, transactionType, payee, payer, expiration } = quoteRequest;
+    const { transferAmount, note } = quoteResponse;
+    return Object.freeze({
+        quoteId,
+        transactionId,
+        transactionType,
+        payee,
+        payer,
+        expiration,
+        amount: transferAmount,
+        ...(note && { note }), // todo: clarify what this is for (no such param in API spec)
+    });
+};
 
 module.exports = {
     transactionObjectDto,
