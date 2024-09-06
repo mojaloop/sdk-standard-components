@@ -176,8 +176,7 @@ class Ilp {
         const base64EncodedTransaction = Buffer.from(safeStringify(transactionObject)).toString('base64');
         const encodedSecret = Buffer.from(this.secret).toString('base64');
 
-        return crypto
-            .createHmac(HASH_ALGORITHM, Buffer.from(encodedSecret, 'ascii'))
+        return crypto.createHmac(HASH_ALGORITHM, Buffer.from(encodedSecret, 'ascii'))
             .update(Buffer.from(base64EncodedTransaction, 'ascii'))
             .digest(DIGEST_ENCODING);
     }
@@ -250,8 +249,7 @@ class Ilp {
     }
 
     _sha256 (preimage) {
-        return crypto
-            .createHash(HASH_ALGORITHM)
+        return crypto.createHash(HASH_ALGORITHM)
             .update(preimage)
             .digest(DIGEST_ENCODING);
     }

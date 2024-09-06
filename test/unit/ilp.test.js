@@ -46,7 +46,7 @@ describe('ILP Tests -->', () => {
     test('deserializes the ILP packet into a valid transaction object', () => {
         // Arrange
         const { ilpPacket } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
-        const transaction= dto.transactionObjectDto(quoteRequest, partialResponse);
+        const transaction = dto.transactionObjectDto(quoteRequest, partialResponse);
 
         // Act
         const binaryPacket = Buffer.from(ilpPacket, 'base64');
