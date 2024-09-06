@@ -74,6 +74,13 @@ describe('ILP Tests -->', () => {
         expect(dataElement).toBeDefined();
     });
 
+    test('should calculate ilp packet from transaction object and condition', () => {
+        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+        const condition = ilp._sha256('preimage');
+        const ilpPacket = ilp.calculateIlpPacket(transactionObj, condition);
+        expect(ilpPacket).toBeTruthy();
+    });
+
     test('should generate fulfilment, condition and ilpPacket (prepare) using shared method "getResponseIlp"', () => {
         const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
         const { fulfilment, condition, ilpPacket } = ilp.getResponseIlp(transactionObj);

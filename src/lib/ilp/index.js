@@ -43,21 +43,14 @@ class Ilp {
     getResponseIlp(transactionObject) {
         const fulfilment = this.calculateFulfil(transactionObject);
         const condition = this.calculateConditionFromFulfil(fulfilment);
-
-        const packetInput = this.makeQuotePacketInput(transactionObject, condition);
-        const packet = ilpPacket.serializeIlpPrepare(packetInput);
+        const ilpPacket = this.calculateIlpPacket(transactionObject, condition);
 
         const result = {
             fulfilment,
             condition,
-            ilpPacket: base64url.fromBase64(packet.toString('base64'))
+            ilpPacket
         };
-
-        this.logger.isDebugEnabled && this.logger.push({
-            transactionObject,
-            packetInput: { ...packetInput, data: '[Buffer]...', executionCondition: '[Buffer]...' },
-            result,
-        }).debug('Generated ILP response');
+        this.logger.isDebugEnabled && this.logger.push({ transactionObject, result }).debug('Generated ILP response');
 
         return result;
     }
@@ -104,16 +97,19 @@ class Ilp {
         const amount = isFx
             ? ILP_AMOUNT_FOR_FX
             : this._getIlpCurrencyAmount(transactionObject.amount);
-        const expiration = isFx
-            ? transactionObject.conversionTerms.expiration
-            : transactionObject.expiration;
+        const expiresAt = isFx
+            ? new Date(transactionObject.conversionTerms.expiration)
+            : new Date(transactionObject.expiration);
+        const destination = this._getIlpAddress();
+
+        this.logger.isDebugEnabled && this.logger.push({ amount, expiresAt, destination }).debug('ILP packet input details');
 
         return Object.freeze({
             amount, // unsigned 64bit integer as a string
-            data: this.makeIlpData(transactionObject), // base64url encoded attached data
-            destination: this._getIlpAddress(), // ilp address
-            expiresAt: new Date(expiration),
-            executionCondition: Buffer.from(condition, 'base64')
+            destination, // ilp address
+            expiresAt,
+            executionCondition: Buffer.from(condition, 'base64'),
+            data: this.makeIlpData(transactionObject) // base64url encoded attached data
         });
     }
 
@@ -200,6 +196,13 @@ class Ilp {
         }
 
         return this._sha256(preimage);
+    }
+
+    calculateIlpPacket (transactionObject, condition) {
+        const packetInput = this.makeQuotePacketInput(transactionObject, condition);
+        const packet = ilpPacket.serializeIlpPrepare(packetInput);
+
+        return base64url.fromBase64(packet.toString('base64'));
     }
 
     /**
