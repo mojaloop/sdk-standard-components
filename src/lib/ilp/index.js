@@ -10,8 +10,8 @@
 
 'use strict';
 
-const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const crypto = require('node:crypto');
 const base64url = require('base64url');
 const safeStringify = require('fast-safe-stringify');
 const ilpPacket = require('ilp-packet');
@@ -21,6 +21,9 @@ const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX } = require('../constants');
 
 // currency decimal place data
 const currencyDecimals = require('./currency.json');
+
+const HASH_ALGORITHM = 'sha256';
+const DIGEST_ENCODING = 'base64url';
 
 
 /**
@@ -130,7 +133,7 @@ class Ilp {
     _getIlpCurrencyAmount(mojaloopAmount) {
         const { currency, amount } = mojaloopAmount;
 
-        if (typeof(currencyDecimals[currency]) === 'undefined') {
+        if (typeof currencyDecimals[currency] === 'undefined') {
             throw new Error(`No decimal place data available for currency ${currency}`);
         }
 
@@ -157,14 +160,12 @@ class Ilp {
      * @returns {boolean} - true is the fulfilment is valid, otherwise false
      */
     validateFulfil(fulfilment, condition) {
-        let preimage = base64url.toBuffer(fulfilment);
+        const preimage = base64url.toBuffer(fulfilment);
 
         if (preimage.length !== 32) {
             return false;
         }
-
-        let calculatedConditionDigest = this._sha256(preimage);
-        let calculatedConditionUrlEncoded = base64url.fromBase64(calculatedConditionDigest);
+        const calculatedConditionUrlEncoded = this._sha256(preimage);
 
         return (calculatedConditionUrlEncoded === condition);
     }
@@ -176,15 +177,13 @@ class Ilp {
      * @returns {string} - string containing base64 encoded fulfilment
      */
     calculateFulfil(transactionObject) {
-        const encodedSecret = Buffer.from(this.secret).toString('base64');
         const base64EncodedTransaction = Buffer.from(safeStringify(transactionObject)).toString('base64');
+        const encodedSecret = Buffer.from(this.secret).toString('base64');
 
-        const generatedFulfilment = crypto
-            .createHmac('sha256', Buffer.from(encodedSecret, 'ascii'))
+        return crypto
+            .createHmac(HASH_ALGORITHM, Buffer.from(encodedSecret, 'ascii'))
             .update(Buffer.from(base64EncodedTransaction, 'ascii'))
-            .digest('base64');
-
-        return base64url.fromBase64(generatedFulfilment);
+            .digest(DIGEST_ENCODING);
     }
 
 
@@ -200,8 +199,7 @@ class Ilp {
             throw new Error('Interledger preimages must be exactly 32 bytes.');
         }
 
-        const calculatedConditionDigest = this._sha256(preimage);
-        return base64url.fromBase64(calculatedConditionDigest);
+        return this._sha256(preimage);
     }
 
     /**
@@ -250,9 +248,9 @@ class Ilp {
 
     _sha256 (preimage) {
         return crypto
-            .createHash('sha256')
+            .createHash(HASH_ALGORITHM)
             .update(preimage)
-            .digest('base64');
+            .digest(DIGEST_ENCODING);
     }
 }
 

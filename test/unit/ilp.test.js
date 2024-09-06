@@ -74,12 +74,15 @@ describe('ILP Tests -->', () => {
         expect(dataElement).toBeDefined();
     });
 
-    test('should generate fulfilment, ilpPacket and condition using shared method "getResponseIlp"', () => {
+    test('should generate fulfilment, condition and ilpPacket (prepare) using shared method "getResponseIlp"', () => {
         const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
-        const { fulfilment, ilpPacket, condition } = ilp.getResponseIlp(transactionObj);
+        const { fulfilment, condition, ilpPacket } = ilp.getResponseIlp(transactionObj);
         expect(fulfilment).toBeTruthy();
-        expect(ilpPacket).toBeTruthy();
         expect(condition).toBeTruthy();
+        expect(ilpPacket).toBeTruthy();
+
+        const json =  IlpPacket.deserializeIlpPrepare(Buffer.from(ilpPacket, 'base64'));
+        expect(json).toBeTruthy();
     });
 
     describe('Ilp Packet Serialize tests -->', () => {
