@@ -17,7 +17,7 @@ const safeStringify = require('fast-safe-stringify');
 const ilpPacket = require('ilp-packet');
 
 const dto = require('../dto');
-const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX } = require('../constants');
+const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ERROR_MESSAGES } = require('../constants');
 
 // currency decimal place data
 const currencyDecimals = require('./currency.json');
@@ -94,15 +94,18 @@ class Ilp {
     makeQuotePacketInput(transactionObject, condition) {
         const isFx = !!transactionObject.conversionTerms;
 
-        const amount = isFx
-            ? ILP_AMOUNT_FOR_FX
-            : this._getIlpCurrencyAmount(transactionObject.amount);
         const expiresAt = isFx
             ? new Date(transactionObject.conversionTerms.expiration)
             : new Date(transactionObject.expiration);
+        if (isNaN(expiresAt.getTime())){
+            throw new TypeError(ERROR_MESSAGES.invalidIlpExpirationDate);
+        }
+        const amount = isFx
+            ? ILP_AMOUNT_FOR_FX
+            : this._getIlpCurrencyAmount(transactionObject.amount);
         const destination = this._getIlpAddress();
 
-        this.logger.isDebugEnabled && this.logger.push({ amount, expiresAt, destination }).debug('ILP packet input details');
+        this.logger.isDebugEnabled && this.logger.push({ transactionObject, amount, expiresAt, destination }).debug('ILP packet input details');
 
         return Object.freeze({
             amount, // unsigned 64bit integer as a string

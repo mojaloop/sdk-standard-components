@@ -13,7 +13,7 @@
 const IlpPacket = require('ilp-packet');
 const Ilp = require('../../src/lib/ilp');
 const dto = require('../../src/lib/dto');
-const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX } = require('../../src/lib/constants');
+const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ERROR_MESSAGES } = require('../../src/lib/constants');
 
 const mockLogger = require('../__mocks__/mockLogger');
 const fixtures = require('../fixtures');
@@ -79,6 +79,16 @@ describe('ILP Tests -->', () => {
         const condition = ilp._sha256('preimage');
         const ilpPacket = ilp.calculateIlpPacket(transactionObj, condition);
         expect(ilpPacket).toBeTruthy();
+    });
+
+    test('should throw error if expiration in transactionObject is undefined', () => {
+        const transactionObj = {
+            expiration: undefined,
+            amount: fixtures.moneyPayload(),
+        };
+        const condition = ilp._sha256('preimage');
+        expect(() => ilp.calculateIlpPacket(transactionObj, condition))
+            .toThrow(ERROR_MESSAGES.invalidIlpExpirationDate);
     });
 
     test('should generate fulfilment, condition and ilpPacket (prepare) using shared method "getResponseIlp"', () => {
