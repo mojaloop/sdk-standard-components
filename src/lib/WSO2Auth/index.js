@@ -96,11 +96,13 @@ class WSO2Auth extends EventEmitter {
         clearTimeout(this._refreshTimer);
         this._refreshTimer = null;
         this._token = null;
+        this._stop = true;
     }
 
     async refreshToken() {
         // Prevent the timeout from expiring and triggering an extraneous refresh
         this.stop();
+        this._stop = false;
 
         this._logger.isDebugEnabled && this._logger.debug('WSO2 token refresh initiated');
         const reqOpts = {
@@ -131,7 +133,9 @@ class WSO2Auth extends EventEmitter {
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
-        this._refreshTimer = setTimeout(this.refreshToken.bind(this), refreshSeconds * 1000);
+        if (!this._stop) { // Don't schedule the next refresh if stop() was called meanwhile
+            this._refreshTimer = setTimeout(this.refreshToken.bind(this), refreshSeconds * 1000);
+        }
         return this.getToken();
     }
 }
