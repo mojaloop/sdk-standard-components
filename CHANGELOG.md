@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [18.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.0...v18.4.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* properly stop token refresh ([#210](https://github.com/mojaloop/sdk-standard-components/issues/210)) ([d1aef53](https://github.com/mojaloop/sdk-standard-components/commit/d1aef53b0822283995c8ab34c5980392728f0dbe))
+
 ## [18.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.3.0...v18.4.0) (2024-08-06)
 
 
