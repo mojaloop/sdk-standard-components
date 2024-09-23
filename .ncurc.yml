@@ -1,3 +1,5 @@
 reject:
+  # ILP-Packet <= v2.2.0 is required to support the ILP-Packet version 1 used by the Mojaloop Specification v1.x.
+  - "ilp-packet-v1"
   # eslint-config-airbnb-base relies on eslint < 9.0.0
   - "eslint"
