@@ -11,7 +11,7 @@
  *
  * @param {Object} quoteResponse - The response object containing additional transaction details.
  * @property {Money} transferAmount - The amount of Money that the Payer FSP should transfer to the Payee FSP.
- * @property {string} note - note // no such param in API spec
+ * @property {string} [note] - note // no such param in API spec
  *
  * @returns {Object} The immutable transaction object.
  */
@@ -26,7 +26,7 @@ const transactionObjectDto = (quoteRequest, quoteResponse) => {
         payer,
         expiration,
         amount: transferAmount,
-        ...(note && { note }), // todo: clarify what this is for (no such param in API spec)
+        ...(note && { note }),
     });
 };
 

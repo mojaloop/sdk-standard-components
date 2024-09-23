@@ -4,7 +4,14 @@ const RESOURCES = Object.freeze({
 });
 
 const ERROR_MESSAGES = Object.freeze({
-    invalidIlpExpirationDate: 'Invalid ILP expiration date'
+    invalidIlpExpirationDate: 'Invalid ILP expiration date',
+    unsupportedIlpVersion: 'Unsupported ILP version',
+    noIlpOptionsProvided: 'No ILP options provided'
+});
+
+const ILP_VERSIONS = Object.freeze({
+    v1: 'v1',
+    v4: 'v4'
 });
 
 const ILP_ADDRESS = 'g.mojaloop';
@@ -14,6 +21,7 @@ const ILP_AMOUNT_FOR_FX = '0';
 module.exports = {
     RESOURCES,
     ERROR_MESSAGES,
+    ILP_VERSIONS,
     ILP_ADDRESS,
     ILP_AMOUNT_FOR_FX
 };
