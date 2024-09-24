@@ -11,15 +11,15 @@
 'use strict';
 
 const IlpPacket = require('ilp-packet-v1');
-const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp/index.js');
+const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp/index');
 const { ILP_AMOUNT_FOR_FX } = require('#src/lib/constants');
 const dto = require('#src/lib/dto');
 
 const mockLogger = require('#test/__mocks__/mockLogger');
 const fixtures = require('#test/fixtures');
-const quoteRequest = require('#test/unit/data/quoteRequest');
-const partialResponse = require('#test/unit/data/partialResponse');
-const transferRequest = require('#test/unit/data/transferRequest');
+const quoteRequest = require('../../../unit/data/quoteRequest');
+const partialResponse = require('../../../unit/data/partialResponse');
+const transferRequest = require('../../../unit/data/transferRequest');
 
 describe('IlpV1 Tests -->', () => {
     let ilp;
@@ -31,12 +31,27 @@ describe('IlpV1 Tests -->', () => {
         });
     });
 
-    test('Should generate ILP components for a quote response given a quote request and partial response', () => {
+    test('Should generate ILP v1 components for a quote response given a quote request and partial response', () => {
         const {
             fulfilment,
             ilpPacket,
             condition
         } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+
+        expect(fulfilment).toBeTruthy();
+        expect(ilpPacket).toBeTruthy();
+        expect(condition).toBeTruthy();
+    });
+
+    test('should generate ILP v1 components for fxQuote request and partial response', () => {
+        const fxQuotesRequest = fixtures.fxQuotesPayload();
+        const beResponse = fixtures.fxQuotesBeResponse(fxQuotesRequest);
+
+        const {
+            fulfilment,
+            ilpPacket,
+            condition
+        } = ilp.getFxQuoteResponseIlp(fxQuotesRequest, beResponse);
 
         expect(fulfilment).toBeTruthy();
         expect(ilpPacket).toBeTruthy();
@@ -104,7 +119,7 @@ describe('IlpV1 Tests -->', () => {
 
         test('should create ilp packet for fxQuote', () => {
             const fxQuote = fixtures.fxQuotesPayload();
-            const packetInput = ilp.makeFxQuotePacketInput(fxQuote);
+            const packetInput = ilp.makeQuotePacketInput(fxQuote);
             const packet = serialize(packetInput);
             expect(Buffer.isBuffer(packet)).toBe(true);
         });
@@ -142,14 +157,12 @@ describe('IlpV1 Tests -->', () => {
 
         test('Should validate the transfer request against the decoded Ilp packet', () => {
             const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
-
             expect(validation).toBe(true);
         });
 
         test('Should fail the validation if the data in transfer request is changed', () => {
             transferRequest.amount.amount = '200';
             const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
-
             expect(validation).toBe(false);
         });
 

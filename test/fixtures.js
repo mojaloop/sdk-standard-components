@@ -21,7 +21,17 @@ const fxQuotesPayload = ({
     }
 });
 
+const fxQuotesBeResponse = (fxQuotesPayload) => {
+    // eslint-disable-next-line no-unused-vars
+    const { conversionRequestId, conversionTerms } = fxQuotesPayload;
+    return Object.freeze({
+        homeTransactionId: `${Date.now()}`,
+        conversionTerms,
+    });
+};
+
 module.exports = {
     fxQuotesPayload,
+    fxQuotesBeResponse,
     moneyPayload,
 };

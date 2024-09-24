@@ -10,42 +10,32 @@
 
 'use strict';
 
-const Crypto = require('crypto');
 const base64url = require('base64url');
 const safeStringify = require('fast-safe-stringify');
 
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet-v1');
-const dto = require('../dto');
 const { ILP_AMOUNT_FOR_FX } = require('../constants');
-// const IlpBase = require('./IlpBase');
-
-// currency decimal place data
-const currencyDecimals = require('./currency.json');
-
-
+const IlpBase = require('./IlpBase');
 
 /**
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
-class IlpV1 {
-    constructor(config) {
-        this.secret = config.secret;
-        this.logger = config.logger || console;
-    }
+class IlpV1 extends IlpBase {
 
     /**
-     * Generates the required fulfilment, ilpPacket and condition
+     * Generates the required fulfilment, condition, and ilpPacket
      *
-     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     * @returns {IlpResponse} - object containing the fulfilment, condition and ilp packet (v1)
      */
-    getResponseIlp(transactionObject, packetInput = this.makeQuotePacketInput(transactionObject)) {
+    getResponseIlp(transactionObject) {
+        const packetInput = this.makeQuotePacketInput(transactionObject);
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
         let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
 
         let generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
-        let generatedCondition = this.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
+        let generatedCondition = super.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
         const ret = {
             fulfilment: generatedFulfilment,
@@ -60,72 +50,35 @@ class IlpV1 {
 
 
     /**
-     * Generates the required fulfilment, ilpPacket and condition for a quote response
+     * @typedef {Object} IlpInputV1
      *
-     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     * @property {String} amount - Transfer amount.
+     * @property {String} account - ILP Address of the receiver.
+     * @property {Buffer} data - transactionObject data.
      */
-    getQuoteResponseIlp(quoteRequest, quoteResponse) {
-        const transactionObject = dto.transactionObjectDto(quoteRequest, quoteResponse);
-        return this.getResponseIlp(transactionObject);
-    }
-
-
     /**
-     * Generates the required fulfilment, ilpPacket and condition for a fxQuote response
+     * Generates a JSON payload for ILPv1 (IlpPayment)
      *
-     * @returns {object} - object containing the fulfilment, ilp packet and condition values
+     * @param {Object} transactionObject The body of the consent object
+     *
+     * @returns {IlpInputV1} ILPv1 JSON payload
      */
-    getFxQuoteResponseIlp(fxQuoteRequest, beFxQuoteResponse) {
-        const { conversionRequestId } = fxQuoteRequest;
-        const { conversionTerms } = beFxQuoteResponse;
-        const fxTransactionObject = {
-            conversionRequestId,
-            conversionTerms
-        };
-        const packetInput = this.makeFxQuotePacketInput(fxTransactionObject);
-
-        return this.getResponseIlp(fxTransactionObject, packetInput);
-    }
-
     makeQuotePacketInput(transactionObject) {
+        const isFx = !!transactionObject.conversionTerms;
+
+        const amount = isFx
+            ? ILP_AMOUNT_FOR_FX
+            : super._getIlpCurrencyAmount(transactionObject.amount);
+        const account = isFx
+            ? this._getFxIlpAddress(transactionObject.conversionTerms) // ilp address
+            : this._getIlpAddress(transactionObject.payee);
+
         return Object.freeze({
-            data: this.makeIlpData(transactionObject), // base64url encoded attached data
-            amount: this._getIlpCurrencyAmount(transactionObject.amount), // unsigned 64bit integer as a string
-            account: this._getIlpAddress(transactionObject.payee) // ilp address
+            data: super.makeIlpData(transactionObject), // base64url encoded attached data
+            amount, // unsigned 64bit integer as a string
+            account // ilp address
         });
     }
-
-    makeFxQuotePacketInput(transactionObject) {
-        return Object.freeze({
-            data: this.makeIlpData(transactionObject),
-            account: this._getFxIlpAddress(transactionObject.conversionTerms), // ilp address
-            amount: ILP_AMOUNT_FOR_FX,
-        });
-    }
-
-    makeIlpData(transactionObject) {
-        return Buffer.from(base64url(safeStringify(transactionObject)));
-    }
-
-
-    /**
-     * Returns an ILP compatible amount as an unsigned 64bit integer as a string given a mojaloop
-     * API spec amount object. Note that this is achieved by multiplying the amount by 10 ^ number
-     * of decimal places.
-     *
-     * @returns {string} - unsigned 64bit integer as string
-     */
-    _getIlpCurrencyAmount(mojaloopAmount) {
-        const { currency, amount } = mojaloopAmount;
-
-        if (typeof(currencyDecimals[currency]) === 'undefined') {
-            throw new Error(`No decimal place data available for currency ${currency}`);
-        }
-
-        const decimalPlaces = currencyDecimals[currency];
-        return `${Number(amount) * Math.pow(10, decimalPlaces)}`;
-    }
-
 
     /**
      * Returns an ILP compatible address string given a mojaloop API spec party object.
@@ -172,24 +125,6 @@ class IlpV1 {
         return `g.${counterPartyFsp.toLowerCase()}.${sourceAmount.currency.toLowerCase()}.${targetAmount.currency.toLowerCase()}`;
     }
 
-    /**
-     * Validates a fulfilment against a condition
-     *
-     * @returns {boolean} - true is the fulfilment is valid, otherwise false
-     */
-    validateFulfil(fulfilment, condition) {
-        let preimage = base64url.toBuffer(fulfilment);
-
-        if (preimage.length !== 32) {
-            return false;
-        }
-
-        let calculatedConditionDigest = this._sha256(preimage);
-        let calculatedConditionUrlEncoded = base64url.fromBase64(calculatedConditionDigest);
-
-        return (calculatedConditionUrlEncoded === condition);
-    }
-
 
     /**
      * Calculates a fulfilment given a base64 encoded ilp packet and a secret
@@ -198,34 +133,7 @@ class IlpV1 {
      */
     calculateFulfil(base64EncodedPacket) {
         const encodedSecret = Buffer.from(this.secret).toString('base64');
-
-        const hmacsignature = Crypto.createHmac('sha256', new Buffer(encodedSecret, 'ascii'))
-            .update(new Buffer(base64EncodedPacket, 'ascii'));
-
-        const generatedFulfilment = hmacsignature.digest('base64');
-
-        return base64url.fromBase64(generatedFulfilment);
-    }
-
-
-    /**
-     * Calculates a condition from a fulfilment
-     *
-     * @returns {string} - base64 encoded condition calculated from supplied fulfilment
-     */
-    calculateConditionFromFulfil (fulfilment) {
-        const preimage = base64url.toBuffer(fulfilment);
-
-        if (preimage.length !== 32) {
-            throw new Error('Interledger preimages must be exactly 32 bytes.');
-        }
-
-        const calculatedConditionDigest = this._sha256(preimage);
-        return base64url.fromBase64(calculatedConditionDigest);
-    }
-
-    _sha256 (preimage) {
-        return Crypto.createHash('sha256').update(preimage).digest('base64');
+        return super._createHmac(base64EncodedPacket, encodedSecret);
     }
 
     /**
@@ -238,43 +146,6 @@ class IlpV1 {
         const jsonPacket = ilpPacket.deserializeIlpPayment(binaryPacket);
         return jsonPacket;
     }
-
-    /**
-     * Get the transaction object in the data field of an Ilp packet
-     *
-     * @returns {object} - Transaction Object
-     */
-    getTransactionObject (inputIlpPacket) {
-        const jsonPacket = this.decodeIlpPacket(inputIlpPacket);
-        const decodedData = base64url.decode(jsonPacket.data.toString());
-        return JSON.parse(decodedData);
-    }
-
-    /**
-     * Validate the transfer request against the decoded Ilp packet in it
-     *
-     * @returns {boolean} - True if the content in the transaction request is valid for Ilp packet
-     */
-    validateIlpAgainstTransferRequest (transferRequestBody) {
-        const transactionObject = this.getTransactionObject(transferRequestBody.ilpPacket);
-
-        if (transferRequestBody.payerFsp !== transactionObject.payer.partyIdInfo.fspId) {
-            return false;
-        }
-        if (transferRequestBody.payeeFsp !== transactionObject.payee.partyIdInfo.fspId) {
-            return false;
-        }
-        if (transferRequestBody.amount.currency !== transactionObject.amount.currency) {
-            return false;
-        }
-        if (transferRequestBody.amount.amount !== transactionObject.amount.amount) {
-            return false;
-        }
-        return true;
-    }
-
 }
-
-
 
 module.exports = IlpV1;

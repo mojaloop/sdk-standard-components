@@ -65,8 +65,8 @@
     "typescript": "^5.6.2"
   },
   "imports": {
-    "#src/*": "./src/*",
-    "#test/*": "./test/*"
+    "#src/*": "./src/*.js",
+    "#test/*": "./test/*.js"
   },
   "standard-version": {
     "scripts": {

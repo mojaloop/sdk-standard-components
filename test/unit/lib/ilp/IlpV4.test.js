@@ -24,15 +24,15 @@
  **********/
 
 const IlpPacket = require('ilp-packet');
-const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp');
+const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp/index');
 const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ERROR_MESSAGES } = require('#src/lib/constants');
 const dto = require('#src/lib/dto');
 
 const mockLogger = require('#test/__mocks__/mockLogger');
 const fixtures = require('#test/fixtures');
-const quoteRequest = require('#test/unit/data/quoteRequest');
-const partialResponse = require('#test/unit/data/partialResponse');
-const transferRequest = require('#test/unit/data/transferRequest');
+const quoteRequest = require('../../../unit/data/quoteRequest');
+const partialResponse = require('../../../unit/data/partialResponse');
+const transferRequest = require('../../../unit/data/transferRequest');
 
 describe('IlpV4 Tests -->', () => {
     let ilp;
@@ -44,12 +44,27 @@ describe('IlpV4 Tests -->', () => {
         });
     });
 
-    test('Should generate ILP components for a quote response given a quote request and partial response', () => {
+    test('should generate ILP components for a quote response given a quote request and partial response', () => {
         const {
             fulfilment,
             ilpPacket,
             condition
         } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
+
+        expect(fulfilment).toBeTruthy();
+        expect(ilpPacket).toBeTruthy();
+        expect(condition).toBeTruthy();
+    });
+
+    test('should generate ILP v4 components for fxQuote request and partial response', () => {
+        const fxQuotesRequest = fixtures.fxQuotesPayload();
+        const beResponse = fixtures.fxQuotesBeResponse(fxQuotesRequest);
+
+        const {
+            fulfilment,
+            ilpPacket,
+            condition
+        } = ilp.getFxQuoteResponseIlp(fxQuotesRequest, beResponse);
 
         expect(fulfilment).toBeTruthy();
         expect(ilpPacket).toBeTruthy();
