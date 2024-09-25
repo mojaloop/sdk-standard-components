@@ -15,13 +15,14 @@ const safeStringify = require('fast-safe-stringify');
 
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet-v1');
-const { ILP_AMOUNT_FOR_FX } = require('../constants');
+const { ILP_AMOUNT_FOR_FX, ILP_VERSIONS } = require('../constants');
 const IlpBase = require('./IlpBase');
 
 /**
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
 class IlpV1 extends IlpBase {
+    get version() { return ILP_VERSIONS.v1; }
 
     /**
      * Generates the required fulfilment, condition, and ilpPacket

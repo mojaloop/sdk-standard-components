@@ -28,13 +28,14 @@ const base64url = require('base64url');
 const ilpPacket = require('ilp-packet');
 const safeStringify = require('fast-safe-stringify');
 
-const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ERROR_MESSAGES } = require('../constants');
+const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ILP_VERSIONS, ERROR_MESSAGES } = require('../constants');
 const IlpBase = require('./IlpBase');
 
 /**
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
 class IlpV4 extends IlpBase {
+    get version() { return ILP_VERSIONS.v4; }
 
     /**
      * Generates the required fulfilment, condition, and ilpPacket

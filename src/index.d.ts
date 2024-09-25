@@ -870,8 +870,9 @@ declare namespace SDKStandardComponents {
         var signer: typeof JwsSigner
     }
 
-    interface ILP {
-        new (options: IlpOptions): ILP;
+    interface IlpProcessor {
+        new (options: IlpOptions): IlpProcessor;
+        version: keyof typeof Ilp.ILP_VERSIONS;
         calculateConditionFromFulfil(fulfilment: string): string;
         calculateFulfil(transactionObject: ilp.TransactionObject | string): string
         decodeIlpPacket(ilpPacket: string): ilp.IlpInputV1 | ilp.IlpInputV4;
@@ -888,7 +889,7 @@ declare namespace SDKStandardComponents {
     }
 
     namespace Ilp {
-        const ilpFactory: (version: keyof typeof ILP_VERSIONS, options: IlpOptions) => ILP;
+        const ilpFactory: (version: keyof typeof ILP_VERSIONS, options: IlpOptions) => IlpProcessor;
 
         const ILP_VERSIONS: Readonly<{
             v1: 'v1';

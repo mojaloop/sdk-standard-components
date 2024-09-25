@@ -31,6 +31,10 @@ describe('IlpV1 Tests -->', () => {
         });
     });
 
+    test('should have getter "version" (v1)', () => {
+        expect(ilp.version).toBe(ILP_VERSIONS.v1);
+    });
+
     test('Should generate ILP v1 components for a quote response given a quote request and partial response', () => {
         const {
             fulfilment,

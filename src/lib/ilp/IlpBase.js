@@ -46,6 +46,10 @@ class IlpBase {
         this.logger = config.logger;
     }
 
+    get version() {
+        throw new Error('Getter "version" should be overridden');
+    }
+
     /**
      * @typedef {Object} IlpResponse
      * @property {string} fulfilment - fulfilment.

@@ -44,6 +44,10 @@ describe('IlpV4 Tests -->', () => {
         });
     });
 
+    test('should have getter "version" (v4)', () => {
+        expect(ilp.version).toBe(ILP_VERSIONS.v4);
+    });
+
     test('should generate ILP components for a quote response given a quote request and partial response', () => {
         const {
             fulfilment,
