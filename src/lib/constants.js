@@ -6,7 +6,7 @@ const RESOURCES = Object.freeze({
 const ERROR_MESSAGES = Object.freeze({
     invalidIlpExpirationDate: 'Invalid ILP expiration date',
     unsupportedIlpVersion: 'Unsupported ILP version',
-    noIlpOptionsProvided: 'No ILP options provided'
+    invalidIlpOptions: 'Invalid ILP options'
 });
 
 const ILP_VERSIONS = Object.freeze({

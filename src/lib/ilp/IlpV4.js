@@ -58,12 +58,11 @@ class IlpV4 extends IlpBase {
 
     /**
      * @typedef {Object} IlpInputV4
-     *
-     * @property {String} amount - Transfer amount.
-     * @property {String} destination - ILP Address of the receiver.
-     * @property {Date} expiresAt - Date and time when the packet expires.
-     * @property {String} executionCondition - SHA-256 hash digest of the fulfillment.
-     * @property {Buffer} data - transactionObject data.
+     * @prop {String} amount - Transfer amount.
+     * @prop {String} destination - ILP Address of the receiver.
+     * @prop {Date} expiresAt - Date and time when the packet expires.
+     * @prop {String} executionCondition - SHA-256 hash digest of the fulfillment.
+     * @prop {Buffer} data - transactionObject data.
      */
     /**
      * Generates a JSON payload for ILPv4 (IlpPrepare)

@@ -5,6 +5,9 @@ import {
     v2_0 as fspiopAPI,
     thirdparty as tpAPI
 } from '@mojaloop/api-snippets'
+
+import * as ilp from './ilp'
+
 declare namespace SDKStandardComponents {
 
     /* hashmap of versions of various resources */
@@ -865,6 +868,32 @@ declare namespace SDKStandardComponents {
 
         var validator: typeof JwsValidator
         var signer: typeof JwsSigner
+    }
+
+    interface ILP {
+        new (options: IlpOptions): ILP;
+        calculateConditionFromFulfil(fulfilment: string): string;
+        calculateFulfil(transactionObject: ilp.TransactionObject | string): string
+        decodeIlpPacket(ilpPacket: string): ilp.IlpInputV1 | ilp.IlpInputV4;
+        getFxQuoteResponseIlp(fxQuoteRequest: ilp.FxQuoteRequest, fxQuoteBeResponse: ilp.FxQuoteBeResponse): ilp.IlpResponse;
+        getIlpResponse(transactionObject: ilp.TransactionObject): ilp.IlpResponse;
+        getTransactionObject(ilpPacket: string): ilp.TransactionObject;
+        validateFulfil(fulfilment: string, condition: string): boolean
+        // todo: add other public methods and define needed types
+    }
+
+    type IlpOptions = {
+        secret: string;
+        logger: Logger.Logger;
+    }
+
+    namespace Ilp {
+        const ilpFactory: (version: keyof typeof ILP_VERSIONS, options: IlpOptions) => ILP;
+
+        const ILP_VERSIONS: Readonly<{
+            v1: 'v1';
+            v4: 'v4';
+        }>;
     }
 }
 
