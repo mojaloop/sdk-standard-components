@@ -877,10 +877,10 @@ declare namespace SDKStandardComponents {
         calculateFulfil(transactionObject: ilp.TransactionObject | string): string
         decodeIlpPacket(ilpPacket: string): ilp.IlpInputV1 | ilp.IlpInputV4;
         getFxQuoteResponseIlp(fxQuoteRequest: ilp.FxQuoteRequest, fxQuoteBeResponse: ilp.FxQuoteBeResponse): ilp.IlpResponse;
-        getIlpResponse(transactionObject: ilp.TransactionObject): ilp.IlpResponse;
+        getResponseIlp(transactionObject: ilp.TransactionObject): ilp.IlpResponse;
         getTransactionObject(ilpPacket: string): ilp.TransactionObject;
         validateFulfil(fulfilment: string, condition: string): boolean
-        // todo: add other public methods and define needed types
+        // add other public methods and define needed types
     }
 
     type IlpOptions = {
