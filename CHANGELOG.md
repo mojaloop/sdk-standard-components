@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.0.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.1...v19.0.0) (2024-10-02)
+
+
+### Features
+
+* **csi-194:** add support for both ilp versions: v1 and v4 ([#209](https://github.com/mojaloop/sdk-standard-components/issues/209)) ([0028fda](https://github.com/mojaloop/sdk-standard-components/commit/0028fda54b6e4c8dcfdb33e07000f8f7dacae681))
+
 ### [18.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.0...v18.4.1) (2024-09-13)
 
 
