@@ -8,6 +8,7 @@
       "GHSA-h452-7996-h45h",
       "GHSA-c2qf-rxjj-qqgw",
       // (https://github.com/advisories/GHSA-78xj-cgh5-2h22) - npm SSRF attacks
-      "GHSA-78xj-cgh5-2h22"
+      "GHSA-78xj-cgh5-2h22",
+      "GHSA-952p-6rrq-rcjv" // https://github.com/advisories/GHSA-952p-6rrq-rcjv
     ]
   }

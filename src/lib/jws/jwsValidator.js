@@ -67,7 +67,7 @@ class JwsValidator {
             const signatureHeader = JSON.parse(headers['fspiop-signature']);
             const { protectedHeader, signature } = signatureHeader;
 
-            const token = `${protectedHeader}.${base64url(JSON.stringify(payload))}.${signature}`;
+            const token = `${protectedHeader}.${base64url(safeStringify(payload))}.${signature}`;
 
             // validate signature
             const result = jwt.verify(token, pubKey, {

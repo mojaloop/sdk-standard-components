@@ -32,7 +32,7 @@ class HTTPResponseError extends Error {
     }
 
     toJSON() {
-        return JSON.stringify(this[respErrSym]);
+        return safeStringify(this[respErrSym]);
     }
 }
 
@@ -60,7 +60,7 @@ const throwOrJson = async (res) => {
 
     // do this first - fail fast if we KNOW the request got an error response back
     // note that 404 will throw. This is correct  behavior for the mojaloop api.
-    if(res.statusCode < 200 || res.statusCode >= 300) {
+    if (res.statusCode < 200 || res.statusCode >= 300) {
         // not a successful request
         throw new HTTPResponseError({ msg: `Request returned non-success status code ${res.statusCode}`,
             res
@@ -75,7 +75,7 @@ const throwOrJson = async (res) => {
     }
 
     //if res has an "originalRequest" property then return a simple object containing that
-    if(typeof(res.originalRequest) !== 'undefined') {
+    if (typeof(res.originalRequest) !== 'undefined') {
         return {
             originalRequest: res.originalRequest,
         };
@@ -90,7 +90,7 @@ const bodyStringifier = (obj) => {
         return obj;
     if (typeof obj === 'number')
         return obj.toString();
-    return JSON.stringify(obj);
+    return safeStringify(obj);
 };
 
 const ResponseType = Object.freeze({

@@ -41,7 +41,7 @@ class JwsSigner {
      *   (see https://github.com/request/request-promise-native)
      *   (see https://github.com/axios/axios)
      */
-    sign(requestOptions, alg) {
+    sign(requestOptions) {
         this.logger.isDebugEnabled && this.logger.debug(`JWS Signing request: ${safeStringify(requestOptions)}`);
         const payload = requestOptions.body || requestOptions.data;
         const uri = requestOptions.uri || requestOptions.url;
@@ -60,13 +60,13 @@ class JwsSigner {
         requestOptions.headers['fspiop-uri'] = uriMatches[1];
 
         // get the signature and add it to the header
-        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions, alg);
+        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions);
 
-        if(requestOptions.body && typeof(requestOptions.body) !== 'string') {
-            requestOptions.body = JSON.stringify(requestOptions.body);
+        if (requestOptions.body && typeof requestOptions.body !== 'string') {
+            requestOptions.body = safeStringify(requestOptions.body);
         }
-        if(requestOptions.data && typeof(requestOptions.data) !== 'string') {
-            requestOptions.data = JSON.stringify(requestOptions.data);
+        if (requestOptions.data && typeof requestOptions.data !== 'string') {
+            requestOptions.data = safeStringify(requestOptions.data);
         }
     }
 
@@ -119,7 +119,8 @@ class JwsSigner {
             header: protectedHeaderObject,
             payload,
             secret: this.signingKey,
-            encoding: 'utf8'});
+            encoding: 'utf8'
+        });
 
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
         const [ protectedHeaderBase64, , signature ] = token.split('.');
@@ -129,7 +130,7 @@ class JwsSigner {
             protectedHeader: protectedHeaderBase64.replace('"', '')
         };
 
-        return JSON.stringify(signatureObject);
+        return safeStringify(signatureObject);
     }
 }
 

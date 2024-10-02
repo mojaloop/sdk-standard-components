@@ -10,7 +10,7 @@
 
 const { Logger } = require('../../src/lib/logger');
 
-function mockLogger(context, opts={levels: ['silent']}) {
+function mockLogger(context, opts) {
     return new Logger({ context, opts });
 }
 
