@@ -15,8 +15,7 @@ const jwt = require('jsonwebtoken');
 const safeStringify = require('fast-safe-stringify');
 
 // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
-const SIGNATURE_ALGORITHM = 'RS256';
-
+const SIGNATURE_ALGORITHMS = ['RS256', 'ES256'];
 
 /**
  * Provides methods for Mojaloop compliant JWS signing and signature verification
@@ -68,12 +67,12 @@ class JwsValidator {
             const signatureHeader = JSON.parse(headers['fspiop-signature']);
             const { protectedHeader, signature } = signatureHeader;
 
-            const token = `${protectedHeader}.${base64url(JSON.stringify(payload))}.${signature}`;
+            const token = `${protectedHeader}.${base64url(safeStringify(payload))}.${signature}`;
 
             // validate signature
             const result = jwt.verify(token, pubKey, {
                 complete: true,
-                algorithms: [ SIGNATURE_ALGORITHM ]  //only allow our SIGNATURE_ALGORITHM
+                algorithms: SIGNATURE_ALGORITHMS  //only allow our SIGNATURE_ALGORITHM
             });
 
             // check protected header has all required fields and matches actual incoming headers
@@ -101,8 +100,8 @@ class JwsValidator {
         if(!decodedProtectedHeader['alg']) {
             throw new Error(`Decoded protected header does not contain required alg element: ${safeStringify(decodedProtectedHeader)}`);
         }
-        if(decodedProtectedHeader.alg !== SIGNATURE_ALGORITHM) {
-            throw new Error(`Invalid protected header alg '${decodedProtectedHeader.alg}' should be '${SIGNATURE_ALGORITHM}'`);
+        if(!SIGNATURE_ALGORITHMS.includes(decodedProtectedHeader.alg)) {
+            throw new Error(`Invalid protected header alg '${decodedProtectedHeader.alg}' should be '${SIGNATURE_ALGORITHMS.join(' or ')}'`);
         }
 
         // check FSPIOP-URI is present and matches

@@ -1,4 +1,39 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.0.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.1...v19.0.0) (2024-10-02)
+
+
+### Features
+
+* **csi-194:** add support for both ilp versions: v1 and v4 ([#209](https://github.com/mojaloop/sdk-standard-components/issues/209)) ([0028fda](https://github.com/mojaloop/sdk-standard-components/commit/0028fda54b6e4c8dcfdb33e07000f8f7dacae681))
+
+### [18.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.0...v18.4.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* properly stop token refresh ([#210](https://github.com/mojaloop/sdk-standard-components/issues/210)) ([d1aef53](https://github.com/mojaloop/sdk-standard-components/commit/d1aef53b0822283995c8ab34c5980392728f0dbe))
+
+## [18.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.3.0...v18.4.0) (2024-08-06)
+
+
+### Features
+
+* **csi-16:** added PAYEE_IDENTIFIER_NOT_VALID error ([#208](https://github.com/mojaloop/sdk-standard-components/issues/208)) ([bd4a397](https://github.com/mojaloop/sdk-standard-components/commit/bd4a3972c241781bb14537ddb0abdbd7a40e321f))
+
+## [18.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.1...v18.3.0) (2024-07-04)
+
+
+### Features
+
+* enable elliptic curve es256 for JWS ([#205](https://github.com/mojaloop/sdk-standard-components/issues/205)) ([ee5036d](https://github.com/mojaloop/sdk-standard-components/commit/ee5036dbe587cf998113208ece57b769123eba22))
+
+### [18.2.1](https://github.com/mojaloop/sdk-standard-components/compare/v18.2.0...v18.2.1) (2024-06-27)
+
+
+### Chore
+
+* update types for fspiop 2.0 ([#207](https://github.com/mojaloop/sdk-standard-components/issues/207)) ([8eea656](https://github.com/mojaloop/sdk-standard-components/commit/8eea6565a0a33d8981e9a65238c376c4813a6372))
+
 ## [18.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.1.0...v18.2.0) (2024-06-07)
 
 

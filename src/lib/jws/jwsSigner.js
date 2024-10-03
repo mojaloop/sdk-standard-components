@@ -13,10 +13,6 @@
 const jws = require('jws');
 const safeStringify = require('fast-safe-stringify');
 
-// the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
-const SIGNATURE_ALGORITHM = 'RS256';
-
-// a regular expression to extract the Mojaloop API spec compliant HTTP-URI header value
 const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(\/.*)*)$/;
 
 
@@ -30,6 +26,9 @@ class JwsSigner {
         if(!config.signingKey) {
             throw new Error('Signing key must be supplied as config argument');
         }
+
+        // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
+        this.alg = config.signingKey.includes('BEGIN EC ') ? 'ES256' : 'RS256';
 
         this.signingKey = config.signingKey;
     }
@@ -63,11 +62,11 @@ class JwsSigner {
         // get the signature and add it to the header
         requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions);
 
-        if(requestOptions.body && typeof(requestOptions.body) !== 'string') {
-            requestOptions.body = JSON.stringify(requestOptions.body);
+        if (requestOptions.body && typeof requestOptions.body !== 'string') {
+            requestOptions.body = safeStringify(requestOptions.body);
         }
-        if(requestOptions.data && typeof(requestOptions.data) !== 'string') {
-            requestOptions.data = JSON.stringify(requestOptions.data);
+        if (requestOptions.data && typeof requestOptions.data !== 'string') {
+            requestOptions.data = safeStringify(requestOptions.data);
         }
     }
 
@@ -99,7 +98,7 @@ class JwsSigner {
         // Note: Property names are case sensitive in the protected header object even though they are
         // not case sensitive in the actual HTTP headers
         const protectedHeaderObject = {
-            alg: SIGNATURE_ALGORITHM,
+            alg: this.alg,
             'FSPIOP-URI': requestOptions.headers['fspiop-uri'],
             'FSPIOP-HTTP-Method': requestOptions.method.toUpperCase(),
             'FSPIOP-Source': requestOptions.headers['fspiop-source']
@@ -120,7 +119,8 @@ class JwsSigner {
             header: protectedHeaderObject,
             payload,
             secret: this.signingKey,
-            encoding: 'utf8'});
+            encoding: 'utf8'
+        });
 
         // now set the signature header as JSON encoding of the signature and protected header as per mojaloop spec
         const [ protectedHeaderBase64, , signature ] = token.split('.');
@@ -130,7 +130,7 @@ class JwsSigner {
             protectedHeader: protectedHeaderBase64.replace('"', '')
         };
 
-        return JSON.stringify(signatureObject);
+        return safeStringify(signatureObject);
     }
 }
 
