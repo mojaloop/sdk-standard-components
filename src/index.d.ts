@@ -60,6 +60,7 @@ declare namespace SDKStandardComponents {
         transactionRequestsEndpoint?: string;
         thirdpartyRequestsEndpoint?: string;
         resourceVersions?: ResourceVersions;
+        apiType?: string;
     }
 
     class BaseRequests {
