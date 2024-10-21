@@ -44,7 +44,7 @@ class MojaloopRequests extends BaseRequests {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
         return this._put(url, 'parties', body, destFspId, headers, undefined,
-            undefined, { Type: idType, ID: idValue });
+            undefined, { Type: idType, ID: idValue, SubId: idSubValue });
     }
 
     /**
@@ -55,7 +55,7 @@ class MojaloopRequests extends BaseRequests {
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
         return this._put(url, 'parties', error, destFspId, undefined,undefined,
-            undefined, { Type: idType, ID: idValue, isError: true });
+            undefined, { Type: idType, ID: idValue, SubId: idSubValue, isError: true });
     }
 
     /**
@@ -73,7 +73,8 @@ class MojaloopRequests extends BaseRequests {
     async putParticipants(idType, idValue, idSubValue, body, destFspId) {
         const url = `participants/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._put(url, 'participants', body, destFspId);
+        return this._put(url, 'participants', body, destFspId, undefined, undefined,
+            undefined, { Type: idType, ID: idValue, SubId: idSubValue});
     }
 
     /**
@@ -83,7 +84,8 @@ class MojaloopRequests extends BaseRequests {
         const url = `participants/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
-        return this._put(url, 'participants', error, destFspId);
+        return this._put(url, 'participants', error, destFspId, undefined, undefined,
+            undefined, { Type: idType, ID: idValue, SubId: idSubValue, isError: true });
     }
 
     /**
@@ -99,7 +101,8 @@ class MojaloopRequests extends BaseRequests {
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
     async putQuotes(quoteId, quoteResponse, destFspId,  headers) {
-        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers);
+        return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers,
+            undefined, undefined, { ID: quoteId });
     }
 
 
@@ -107,7 +110,8 @@ class MojaloopRequests extends BaseRequests {
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
     async putQuotesError(quoteId, error, destFspId) {
-        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId);
+        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId, undefined,
+            undefined, undefined, { ID: quoteId, isError: true });
     }
 
     /**
@@ -184,7 +188,8 @@ class MojaloopRequests extends BaseRequests {
      * @returns {object} - JSON response body if one was received
      */
     async putTransfersError(transferId, error, destFspId) {
-        return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId);
+        return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId,
+            undefined, undefined, undefined, { isError: true });
     }
 
     /**

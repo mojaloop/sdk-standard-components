@@ -21,6 +21,12 @@ const { ApiType} = require('../../../../src/lib/requests/apiTransformer');
 const putPartiesBody = require('../../data/putPartiesBody.json');
 const putErrorBody = require('../../data/putErrorBody.json');
 const postParticipantsBody = require('../../data/postParticipantsBody.json');
+const putParticipantsBody = require('../../data/putParticipantsBody.json');
+const postQuotesBody = require('../../data/quoteRequest.json');
+const putQuotesBody = require('../../data/putQuotesBody.json');
+const postTransfersBody = require('../../data/transferRequest.json');
+const putTransfersBody = require('../../data/putTransfersBody.json');
+const patchTransfersBody = require('../../data/patchTransfersBody.json');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -351,7 +357,7 @@ describe('MojaloopRequests', () => {
         // values.
         expect(reqBody.Assgnmt).not.toBeUndefined();
         expect(reqBody.Rpt).not.toBeUndefined();
-        expect(reqBody.Rpt.OrgnlId).toEqual(`${putPartiesBody.party.partyIdInfo.partyIdType}/${putPartiesBody.party.partyIdInfo.partyIdentifier}`);
+        expect(reqBody.Rpt.OrgnlId).toEqual(`${putPartiesBody.party.partyIdInfo.partyIdType}/${putPartiesBody.party.partyIdInfo.partyIdentifier}/${putPartiesBody.party.partyIdInfo.partySubIdOrType}`);
     });
 
     it('Sends FSPIOP PUT /parties bodies when ApiType is fspiop', async () => {
@@ -500,4 +506,502 @@ describe('MojaloopRequests', () => {
         // check the body was NOT converted to ISO20022
         expect(reqBody).toEqual(postParticipantsBody);
     });
+
+    it('Sends FSPIOP PUT /participants bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putParticipants('MSISDN', '01234567890', undefined, putParticipantsBody,
+            'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent.
+        // Note that even though no body transformation happens for participants we do expect the header to be for ISO20022
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.participants+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putParticipantsBody);
+    });
+
+    it('Sends FSPIOP PUT /participants bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putParticipants('MSISDN', '01234567890', undefined, putParticipantsBody,
+            'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.participants+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putParticipantsBody);
+    });
+
+    it('Sends FSPIOP PUT /participants error bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putParticipantsError('MSISDN', '01234567890', undefined, putErrorBody,
+            'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent.
+        // Note that even though no body transformation happens for participants we do expect the header to be for ISO20022
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.participants+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putErrorBody);
+    });
+
+    it('Sends FSPIOP PUT /participants error bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putParticipantsError('MSISDN', '01234567890', undefined, putErrorBody,
+            'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.participants+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putErrorBody);
+    });
+
+    it('Sends ISO20022 POST /quotes bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.postQuotes(postQuotesBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.quotes+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.CdtTrfTxInf).not.toBeUndefined();
+    });
+
+    it('Sends FSPIOP POST /quotes bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.postQuotes(postQuotesBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.quotes+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(postQuotesBody);
+    });
+
+    it('Sends ISO20022 PUT /quotes bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.quotes+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.CdtTrfTxInf).not.toBeUndefined();
+    });
+
+    it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.quotes+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putQuotesBody);
+    });
+
+
+    it('Sends ISO20022 PUT /quotes error bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putQuotesError(postQuotesBody.quoteId, putErrorBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.quotes+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Cd).toEqual(putErrorBody.errorInformation.errorCode);
+    });
+
+    it('Sends FSPIOP PUT /quotes error bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putQuotesError(postQuotesBody.quoteId, putErrorBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.quotes+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putErrorBody);
+    });
+
+    it('Sends ISO20022 POST /transfers bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.transfers+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.CdtTrfTxInf).not.toBeUndefined();
+        expect(reqBody.CdtTrfTxInf.PmtId).not.toBeUndefined();
+        expect(reqBody.CdtTrfTxInf.PmtId.TxId).toEqual(postTransfersBody.transferId);
+    });
+
+    it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.transfers+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(postTransfersBody);
+    });
+
+    it('Sends ISO20022 PUT /transfers bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putTransfers(postTransfersBody.transferId, putTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.transfers+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.ExctnConf).toEqual(putTransfersBody.fulfilment);
+    });
+
+    it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putTransfers(postTransfersBody.transferId, putTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.transfers+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putTransfersBody);
+    });
+
+    it('Sends ISO20022 PATCH /transfers bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.patchTransfers(postTransfersBody.transferId, patchTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.transfers+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.TxSts).toEqual('COMM');
+    });
+
+    it('Sends FSPIOP PATCH /transfers bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.patchTransfers(postTransfersBody.transferId, patchTransfersBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.transfers+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(patchTransfersBody);
+    });
+
+    it('Sends ISO20022 PUT /transfers error bodies when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putTransfersError(postTransfersBody.transferId, putErrorBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.transfers+json;version=1.0');
+
+        // check the body was converted to ISO20022
+        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
+        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
+        // values.
+        const util=require('util');
+        console.log(`${util.inspect(reqBody, {depth: null})}`);
+        expect(reqBody.GrpHdr).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts).not.toBeUndefined();
+        expect(reqBody.TxInfAndSts.TxSts).toEqual('COMM');
+    });
+
+    it('Sends FSPIOP PUT /transfers error bodies when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+
+        const res = await testMr.putTransfersError(postTransfersBody.transferId, putErrorBody, 'somefsp');
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.transfers+json;version=1.0');
+
+        // check the body was NOT converted to ISO20022
+        expect(reqBody).toEqual(putErrorBody);
+    });
+
+    //const util=require('util');
+    //console.log(`${util.inspect(reqBody, {depth: null})}`);
 });
