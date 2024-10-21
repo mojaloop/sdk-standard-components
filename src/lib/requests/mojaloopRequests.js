@@ -41,10 +41,10 @@ class MojaloopRequests extends BaseRequests {
      * Executes a PUT /parties request for the specified identifier type and indentifier
      */
     async putParties(idType, idValue, idSubValue, body, destFspId, headers) {
-
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._put(url, 'parties', body, destFspId, headers);
+        return this._put(url, 'parties', body, destFspId, headers, undefined,
+            undefined, { Type: idType, ID: idValue });
     }
 
     /**
@@ -54,7 +54,8 @@ class MojaloopRequests extends BaseRequests {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
-        return this._put(url, 'parties', error, destFspId);
+        return this._put(url, 'parties', error, destFspId, undefined,undefined,
+            undefined, { Type: idType, ID: idValue, isError: true });
     }
 
     /**

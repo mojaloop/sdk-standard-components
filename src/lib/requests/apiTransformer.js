@@ -34,9 +34,10 @@ class ApiTransformer {
         }
     }
 
-    async transformOutboundRequest(resourceType, method, { body, headers, params }){
-        // we only need to translate the body if we are not in FSPIOP mode
-        if(this._apiType === ApiType.FSPIOP) {
+    async transformOutboundRequest(resourceType, method, { body, headers, params, isError }){
+        // we only need to translate the body if we are not in FSPIOP mode...
+        // and there is a translation available for the specific resource type
+        if(this._apiType === ApiType.FSPIOP || !TransformFacades.FSPIOP[resourceType]) {
             return { body, headers, params };
         }
 
@@ -48,7 +49,10 @@ class ApiTransformer {
         };
 
         // seems a bit backwards to call the facade for transforming to ISO "FSPIOP" but here we are.
-        return TransformFacades.FSPIOP[resourceType][method.toLowerCase()](transformOpts);
+        // Note that the {method}Error way of calling the right transform method is a convention and as such somewhat
+        // flaky in the long run. Further work should be done on the transformer lib to eliminate the need to use string
+        // matching by the caller; e.g. by passing the entire request context to be transformed rather than just the body
+        return TransformFacades.FSPIOP[resourceType][method.toLowerCase() + (isError ? 'Error' : '')](transformOpts);
     }
 }
 
