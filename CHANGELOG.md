@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.0.0...v19.1.0) (2024-10-22)
+
+
+### Features
+
+* (CSI-110) Add capability to transform outbound mojaloop http requests from FSPIOP to ISO20022 ([#211](https://github.com/mojaloop/sdk-standard-components/issues/211)) ([1d389cd](https://github.com/mojaloop/sdk-standard-components/commit/1d389cdc187e54179cda2d8818c17445c719b55f))
+
 ## [19.0.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.1...v19.0.0) (2024-10-02)
 
 
