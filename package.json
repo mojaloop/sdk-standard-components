@@ -48,6 +48,18 @@
     "jsonwebtoken": "9.0.2",
     "jws": "4.0.0"
   },
+  "overrides": {
+    "shins": {
+      "ajv": "6.12.3",
+      "ejs": "3.1.10",
+      "sanitize-html": "2.12.1",
+      "markdown-it": "12.3.2"
+    },
+    "widdershins": {
+      "swagger2openapi": "7.0.8",
+      "markdown-it": "12.3.2"
+    }
+  },
   "devDependencies": {
     "@mojaloop/api-snippets": "^17.7.2",
     "@types/jest": "^29.5.13",
