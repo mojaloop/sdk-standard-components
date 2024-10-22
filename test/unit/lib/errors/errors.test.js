@@ -48,6 +48,13 @@ describe('Mojaloop errors', () => {
         expect(mec.errorInformation.errorDescription).not.toBeUndefined();
     });
 
+    it('returns undefined given an invalid mojaloop error code', async () => {
+        const c = 'abcd';
+        const ec = MojaloopApiErrorCodeFromCode(c);
+
+        expect(ec).toBeUndefined();
+    });
+
     it('constructs a MojaloopFSPIOPError object correctly', async () => {
         const replyToFsp = 'replyfsp';
         const msg = 'test message';
