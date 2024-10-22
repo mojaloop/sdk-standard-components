@@ -1,0 +1,32 @@
+{
+  "condition": "GRzLaTP7DJ9t4P-a_BA0WA9wzzlsugf00-Tn6kESAfM",
+  "conversionTerms": {
+    "conversionId": "a8817162-d8db-4a62-8bb5-1b5ce3627f17",
+    "determiningTransferId": "c127cb69-cf30-4ed8-b1c6-cd7a9e2119eb",
+    "initiatingFsp": "ttkfxpayer",
+    "counterPartyFsp": "ttkfxp1",
+    "amountType": "SEND",
+    "sourceAmount": {
+      "currency": "XXX",
+      "amount": "10"
+    },
+    "targetAmount": {
+      "currency": "XTS",
+      "amount": "500"
+    },
+    "charges": [
+      {
+        "chargeType": "string",
+        "sourceAmount": {
+          "currency": "XXX",
+          "amount": "33"
+        },
+        "targetAmount": {
+          "currency": "XTS",
+          "amount": "6000"
+        }
+      }
+    ],
+    "expiration": "2025-12-25T14:17:09.663+01:00"
+  }
+}

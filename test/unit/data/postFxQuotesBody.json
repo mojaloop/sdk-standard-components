@@ -1,0 +1,18 @@
+{
+  "conversionRequestId": "e321f502-5949-4f0d-943a-a7a2bf00acea",
+  "conversionTerms": {
+    "conversionId": "a8817162-d8db-4a62-8bb5-1b5ce3627f17",
+    "determiningTransferId": "c127cb69-cf30-4ed8-b1c6-cd7a9e2119eb",
+    "initiatingFsp": "ttkfxpayer",
+    "counterPartyFsp": "ttkfxp1",
+    "amountType": "SEND",
+    "sourceAmount": {
+      "currency": "XXX",
+      "amount": "10"
+    },
+    "targetAmount": {
+      "currency": "XTS"
+    },
+    "expiration": "2024-08-22T12:33:23.819Z"
+  }
+}

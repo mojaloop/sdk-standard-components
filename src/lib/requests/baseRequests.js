@@ -14,7 +14,9 @@ const {
 } = require('./common');
 
 const request = require('../request');
+const { ApiType, ApiTransformer } = require('./apiTransformer');
 const JwsSigner = require('../jws').signer;
+
 
 /**
  *
@@ -46,6 +48,18 @@ class BaseRequests {
 
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
+
+        // make sure we always have an api type set (default to FSPIOP)
+        this.apiType = config.apiType || ApiType.FSPIOP;
+
+        // MojaloopRequests will always have a request transformer.
+        // We will use this transformer to reform requests from FSPIOP bodies/headers to alternatives
+        // if config.apiType is not 'fspiop' e.g. 'iso20022' will translate requests to mojaloop ISO formats.
+        // note that this is extensible for other future API flavours
+        this._apiTransformer = new ApiTransformer({
+            logger: this.logger,
+            apiType: this.apiType,
+        });
 
         if (config.tls.enabled) {
             this.agent = new https.Agent({
@@ -234,12 +248,15 @@ class BaseRequests {
      *
      * @param {string} url - The url of the resource
      * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param {Object} body
      * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
      * @param {Object} headers - Optional additional headers
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
+     * @param {Object} transformParams
      */
-    async _put(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+    async _put(url, resourceType, body, dest, headers = {}, query = {},
+        responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -251,6 +268,12 @@ class BaseRequests {
             qs: query,
             agent: this.agent,
         };
+
+        // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
+            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, isError: transformParams.isError });
+        reqOpts.body = transformed.body;
+        reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
         if (responseType === ResponseType.Stream) {
             reqOpts.responseType = request.responseType.Stream;
@@ -273,12 +296,15 @@ class BaseRequests {
      *
      * @param {string} url - The url of the resource
      * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
+     * @param body
      * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown (e.g. `GET /parties`)
      * @param {Object} headers - Optional additional headers
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
+     * @param {Object} transformParams
      */
-    async _patch(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+    async _patch(url, resourceType, body, dest, headers = {}, query = {},
+        responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'PATCH',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -291,6 +317,11 @@ class BaseRequests {
             agent: this.agent,
         };
 
+        // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
+            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams });
+        reqOpts.body = transformed.body;
+        reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
         if ((responseType === ResponseType.Mojaloop) && this.jwsSign) {
             this.jwsSigner.sign(reqOpts);
@@ -314,8 +345,10 @@ class BaseRequests {
      * @param {*} headers - Optional additional headers
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
+     * @param {Object} transformParams
      */
-    async _post(url, resourceType, body, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+    async _post(url, resourceType, body, dest, headers = {}, query = {},
+        responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
@@ -327,6 +360,12 @@ class BaseRequests {
             qs: query,
             agent: this.agent,
         };
+
+        // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
+            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams });
+        reqOpts.body = transformed.body;
+        reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
         if (responseType === ResponseType.Stream) {
             reqOpts.responseType = request.responseType.Stream;
@@ -353,8 +392,13 @@ class BaseRequests {
      * @returns {*} headers object for use in requests to mojaloop api endpoints
      */
     _buildHeaders(method, resourceType, dest) {
+        let isoInsert = '';
+        if(this.apiType === ApiType.ISO20022) {
+            isoInsert = '.iso20022';
+        }
+
         let headers = {
-            'content-type': `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
+            'content-type': `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
             'date': new Date().toUTCString(),
         };
 
@@ -376,7 +420,8 @@ class BaseRequests {
 
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
-            headers['accept'] = `application/vnd.interoperability.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
+            // if we are sending ISO we should "accept" it also
+            headers['accept'] = `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
         }
 
         return headers;
