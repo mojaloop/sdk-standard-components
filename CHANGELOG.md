@@ -1,4 +1,13 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.1.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.1...v19.1.2) (2024-10-23)
+
+### [19.1.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.0...v19.1.1) (2024-10-23)
+
+
+### Chore
+
+* bump dependencies to avoid circular ref ([#214](https://github.com/mojaloop/sdk-standard-components/issues/214)) ([e2649c7](https://github.com/mojaloop/sdk-standard-components/commit/e2649c76df832865d785a4576bf5aa3a35abe7d3))
+
 ## [19.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.0.0...v19.1.0) (2024-10-22)
 
 
