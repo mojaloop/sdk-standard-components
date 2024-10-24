@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.1.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.2...v19.1.3) (2024-10-24)
+
+
+### Chore
+
+* update deps to remove circular ref ([#216](https://github.com/mojaloop/sdk-standard-components/issues/216)) ([ee5f547](https://github.com/mojaloop/sdk-standard-components/commit/ee5f547e12ac80b7019969e2495b4f25a2d9f513))
+
 ### [19.1.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.1...v19.1.2) (2024-10-23)
 
 ### [19.1.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.0...v19.1.1) (2024-10-23)
