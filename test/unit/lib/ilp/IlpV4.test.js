@@ -134,6 +134,14 @@ describe('IlpV4 Tests -->', () => {
         expect(json).toBeTruthy();
     });
 
+    test('should calculate fulfilment based on ilpPacket sting', () => {
+        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+        const ilpCombo = ilp.getResponseIlp(transactionObj);
+
+        const fulfilment = ilp.calculateFulfil(ilpCombo.ilpPacket);
+        expect(fulfilment).toBe(ilpCombo.fulfilment);
+    });
+
     describe('Ilp Packet Serialize tests -->', () => {
         const createIlpJson = (amount) => ({
             amount,
@@ -197,7 +205,7 @@ describe('IlpV4 Tests -->', () => {
             expect(transaction.amount).toEqual(partialResponse.transferAmount);
         });
 
-        test('Should validate the transfer request against the decoded Ilp packet', () => {
+        test('should validate the transfer request against the decoded Ilp packet', () => {
             const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
             expect(validation).toBe(true);
         });
