@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.3...v19.2.0) (2024-10-24)
+
+
+### Features
+
+* **csi-785:** unified ILP interface ([#217](https://github.com/mojaloop/sdk-standard-components/issues/217)) ([00a78e9](https://github.com/mojaloop/sdk-standard-components/commit/00a78e9df2a5b1ce42f25e49ce482873ba85f92b))
+
 ### [19.1.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.2...v19.1.3) (2024-10-24)
 
 
