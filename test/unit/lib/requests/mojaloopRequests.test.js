@@ -329,8 +329,6 @@ describe('MojaloopRequests', () => {
         wso2Auth,
         dfspId: 'testdfsp',
     };
-    TransformFacades.FSPIOP.configure({ logger: mockLogger, isTesting: true});
-    TransformFacades.FSPIOPISO20022.configure({ logger: mockLogger, isTesting: true});
 
     it('Sends ISO20022 PUT /parties bodies when ApiType is iso20022', async () => {
         const conf = {
@@ -716,7 +714,6 @@ describe('MojaloopRequests', () => {
         });
 
         const testMr = new mr(conf);
-        TransformFacades.FSPIOP.configure({ logger: mockLogger, isTesting: false});
         const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
         const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: isoPostQuoteContext.body});
 
@@ -728,7 +725,6 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
         expect(reqBody.CdtTrfTxInf.CdtrAgt).toBeDefined();
         expect(reqBody.CdtTrfTxInf.DbtrAgt).toBeDefined();
-        TransformFacades.FSPIOP.configure({ logger: mockLogger, isTesting: true});
     });
 
     it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
@@ -859,7 +855,6 @@ describe('MojaloopRequests', () => {
         });
 
         const testMr = new mr(conf);
-        TransformFacades.FSPIOP.configure({ logger: mockLogger, isTesting: false});
         const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
         const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: isoPostQuoteContext.body});
 
@@ -869,7 +864,6 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf.ChrgBr).toEqual('DEBT');
         expect(reqBody.CdtTrfTxInf.Cdtr).toBeDefined();
         expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
-        TransformFacades.FSPIOP.configure({ logger: mockLogger, isTesting: true});
     });
 
     it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {
