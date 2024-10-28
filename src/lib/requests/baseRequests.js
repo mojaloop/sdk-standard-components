@@ -271,7 +271,9 @@ class BaseRequests {
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
         const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
-            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, isError: transformParams.isError });
+            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, isError: transformParams.isError,
+                $context: transformParams.$context
+            });
         reqOpts.body = transformed.body;
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
@@ -363,7 +365,7 @@ class BaseRequests {
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
         const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
-            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams });
+            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, $context: transformParams.$context });
         reqOpts.body = transformed.body;
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 

@@ -31,6 +31,7 @@ const postFxQuotesBody = require('../../data/postFxQuotesBody.json');
 const putFxQuotesBody = require('../../data/putFxQuotesBody.json');
 const postFxTransfersBody = require('../../data/postFxTransfersBody.json');
 const putFxTransfersBody = require('../../data/putFxTransfersBody.json');
+const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -685,7 +686,7 @@ describe('MojaloopRequests', () => {
 
         const testMr = new mr(conf);
 
-        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp');
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: {}});
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
@@ -698,6 +699,32 @@ describe('MojaloopRequests', () => {
         // values.
         expect(reqBody.GrpHdr).not.toBeUndefined();
         expect(reqBody.CdtTrfTxInf).not.toBeUndefined();
+    });
+
+    it('Sends ISO20022 PUT /quotes bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+        const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: isoPostQuoteContext.body});
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // Test fields that transformed when given previous iso quote as context
+        expect(reqBody.CdtTrfTxInf.ChrgBr).toEqual('DEBT');
+        expect(reqBody.CdtTrfTxInf.Cdtr).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.CdtrAgt).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.DbtrAgt).toBeDefined();
     });
 
     it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
@@ -797,7 +824,8 @@ describe('MojaloopRequests', () => {
 
         const testMr = new mr(conf);
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp');
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: {}});
+
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
@@ -812,6 +840,30 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf).not.toBeUndefined();
         expect(reqBody.CdtTrfTxInf.PmtId).not.toBeUndefined();
         expect(reqBody.CdtTrfTxInf.PmtId.TxId).toEqual(postTransfersBody.transferId);
+    });
+
+    it('Sends ISO20022 POST /transfers bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+
+        // mock the http request method so we can see the sent body
+        // yeah, this is more complicated than it should be.
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+
+        const testMr = new mr(conf);
+        const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: isoPostQuoteContext.body});
+
+        const reqBody = JSON.parse(res.originalRequest.body);
+
+        // Test fields that transformed when given previous iso quote as context
+        expect(reqBody.CdtTrfTxInf.ChrgBr).toEqual('DEBT');
+        expect(reqBody.CdtTrfTxInf.Cdtr).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
     });
 
     it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {

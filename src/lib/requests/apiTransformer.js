@@ -34,7 +34,7 @@ class ApiTransformer {
         }
     }
 
-    async transformOutboundRequest(resourceType, method, { body, headers, params, isError }){
+    async transformOutboundRequest(resourceType, method, { body, headers, params, isError, $context }){
         // we only need to translate the body if we are not in FSPIOP mode...
         // and there is a translation available for the specific resource type
         if(this._apiType === ApiType.FSPIOP || !TransformFacades.FSPIOP[resourceType]) {
@@ -46,6 +46,7 @@ class ApiTransformer {
             headers: headers,
             body: body,
             params: params,
+            $context
         };
 
         // seems a bit backwards to call the facade for transforming to ISO "FSPIOP" but here we are.
