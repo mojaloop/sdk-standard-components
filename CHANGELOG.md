@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.2.0...v19.3.0) (2024-10-28)
+
+
+### Features
+
+* add way to add prior post quotes context to iso req ([#218](https://github.com/mojaloop/sdk-standard-components/issues/218)) ([90415ee](https://github.com/mojaloop/sdk-standard-components/commit/90415ee30fa3638e92754353641d9f7356368492))
+
 ## [19.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.3...v19.2.0) (2024-10-24)
 
 
