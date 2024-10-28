@@ -688,7 +688,7 @@ describe('MojaloopRequests', () => {
 
         const testMr = new mr(conf);
 
-        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp');
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: {}});
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
@@ -828,7 +828,8 @@ describe('MojaloopRequests', () => {
 
         const testMr = new mr(conf);
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp');
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: {}});
+
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
