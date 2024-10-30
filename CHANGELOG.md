@@ -1,4 +1,41 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.2.0...v19.3.0) (2024-10-28)
+
+
+### Features
+
+* add way to add prior post quotes context to iso req ([#218](https://github.com/mojaloop/sdk-standard-components/issues/218)) ([90415ee](https://github.com/mojaloop/sdk-standard-components/commit/90415ee30fa3638e92754353641d9f7356368492))
+
+## [19.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.3...v19.2.0) (2024-10-24)
+
+
+### Features
+
+* **csi-785:** unified ILP interface ([#217](https://github.com/mojaloop/sdk-standard-components/issues/217)) ([00a78e9](https://github.com/mojaloop/sdk-standard-components/commit/00a78e9df2a5b1ce42f25e49ce482873ba85f92b))
+
+### [19.1.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.2...v19.1.3) (2024-10-24)
+
+
+### Chore
+
+* update deps to remove circular ref ([#216](https://github.com/mojaloop/sdk-standard-components/issues/216)) ([ee5f547](https://github.com/mojaloop/sdk-standard-components/commit/ee5f547e12ac80b7019969e2495b4f25a2d9f513))
+
+### [19.1.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.1...v19.1.2) (2024-10-23)
+
+### [19.1.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.0...v19.1.1) (2024-10-23)
+
+
+### Chore
+
+* bump dependencies to avoid circular ref ([#214](https://github.com/mojaloop/sdk-standard-components/issues/214)) ([e2649c7](https://github.com/mojaloop/sdk-standard-components/commit/e2649c76df832865d785a4576bf5aa3a35abe7d3))
+
+## [19.1.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.0.0...v19.1.0) (2024-10-22)
+
+
+### Features
+
+* (CSI-110) Add capability to transform outbound mojaloop http requests from FSPIOP to ISO20022 ([#211](https://github.com/mojaloop/sdk-standard-components/issues/211)) ([1d389cd](https://github.com/mojaloop/sdk-standard-components/commit/1d389cdc187e54179cda2d8818c17445c719b55f))
+
 ## [19.0.0](https://github.com/mojaloop/sdk-standard-components/compare/v18.4.1...v19.0.0) (2024-10-02)
 
 

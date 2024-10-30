@@ -1,0 +1,17 @@
+{
+  "commitRequestId": "a8817162-d8db-4a62-8bb5-1b5ce3627f17",
+  "determiningTransferId": "c127cb69-cf30-4ed8-b1c6-cd7a9e2119eb",
+  "initiatingFsp": "ttkfxpayer",
+  "counterPartyFsp": "ttkfxp1",
+  "amountType": "SEND",
+  "sourceAmount": {
+    "amount": "10",
+    "currency": "XXX"
+  },
+  "targetAmount": {
+    "amount": "500",
+    "currency": "XTS"
+  },
+  "condition": "GRzLaTP7DJ9t4P-a_BA0WA9wzzlsugf00-Tn6kESAfM",
+  "expiration": "2024-09-21T08:49:34.828Z"
+}

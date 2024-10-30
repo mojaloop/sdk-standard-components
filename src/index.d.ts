@@ -60,6 +60,7 @@ declare namespace SDKStandardComponents {
         transactionRequestsEndpoint?: string;
         thirdpartyRequestsEndpoint?: string;
         resourceVersions?: ResourceVersions;
+        apiType?: string;
     }
 
     class BaseRequests {
@@ -874,13 +875,14 @@ declare namespace SDKStandardComponents {
         new (options: IlpOptions): IlpProcessor;
         version: keyof typeof Ilp.ILP_VERSIONS;
         calculateConditionFromFulfil(fulfilment: string): string;
-        calculateFulfil(transactionObject: ilp.TransactionObject | string): string
+        calculateFulfil(ilpPacket: string): string
         decodeIlpPacket(ilpPacket: string): ilp.IlpInputV1 | ilp.IlpInputV4;
         getFxQuoteResponseIlp(fxQuoteRequest: ilp.FxQuoteRequest, fxQuoteBeResponse: ilp.FxQuoteBeResponse): ilp.IlpResponse;
+        getQuoteResponseIlp(quoteRequest: ilp.QuoteRequest, quoteResponse: ilp.QuoteResponse): ilp.IlpResponse;
         getResponseIlp(transactionObject: ilp.TransactionObject): ilp.IlpResponse;
         getTransactionObject(ilpPacket: string): ilp.TransactionObject;
-        validateFulfil(fulfilment: string, condition: string): boolean
-        // add other public methods and define needed types
+        validateFulfil(fulfilment: string, condition: string): boolean;
+        validateIlpAgainstTransferRequest(transactionObject: ilp.TransactionObject): boolean;
     }
 
     type IlpOptions = {
