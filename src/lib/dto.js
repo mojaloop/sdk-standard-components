@@ -16,7 +16,7 @@
  * @returns {Object} The immutable transaction object.
  */
 const transactionObjectDto = (quoteRequest, quoteResponse) => {
-    const { quoteId, transactionId, transactionType, payee, payer, expiration } = quoteRequest;
+    const { quoteId, transactionId, transactionType, payee, payer } = quoteRequest;
     const { transferAmount, note } = quoteResponse;
     return Object.freeze({
         quoteId,
@@ -24,7 +24,7 @@ const transactionObjectDto = (quoteRequest, quoteResponse) => {
         transactionType,
         payee,
         payer,
-        expiration,
+        expiration: quoteRequest.expiration || quoteResponse.expiration,
         amount: transferAmount,
         ...(note && { note }),
     });
