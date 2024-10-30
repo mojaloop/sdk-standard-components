@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.3.4](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.3...v19.3.4) (2024-10-30)
+
+
+### Chore
+
+* extended codeowners list ([#222](https://github.com/mojaloop/sdk-standard-components/issues/222)) ([f05ead6](https://github.com/mojaloop/sdk-standard-components/commit/f05ead6b781d37e1e259b29d2aeba290435fce1e))
+
 ### [19.3.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.2...v19.3.3) (2024-10-30)
 
 
