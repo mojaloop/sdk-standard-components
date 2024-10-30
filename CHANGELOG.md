@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.3.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.0...v19.3.1) (2024-10-30)
+
+
+### Chore
+
+* support sdk added expiration ([#219](https://github.com/mojaloop/sdk-standard-components/issues/219)) ([3663832](https://github.com/mojaloop/sdk-standard-components/commit/366383278a3dd79cd1d0137469a9e1ba653fdbb7))
+
 ## [19.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.2.0...v19.3.0) (2024-10-28)
 
 
