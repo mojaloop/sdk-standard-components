@@ -725,6 +725,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
         expect(reqBody.CdtTrfTxInf.CdtrAgt).toBeDefined();
         expect(reqBody.CdtTrfTxInf.DbtrAgt).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.ChrgsInf.Agt).toBeDefined();
     });
 
     it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
