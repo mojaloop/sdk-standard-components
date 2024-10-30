@@ -856,8 +856,9 @@ describe('MojaloopRequests', () => {
         });
 
         const testMr = new mr(conf);
-        const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: isoPostQuoteContext.body});
+        const isoPostQuote = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
+        const isoPutQuoteContext = await TransformFacades.FSPIOP.quotes.put({params: {ID: '1234'}, body: putQuotesBody, $context: {isoPostQuote: isoPostQuote.body}});
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuoteResponse: isoPutQuoteContext.body});
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
