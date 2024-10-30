@@ -843,7 +843,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf.PmtId.TxId).toEqual(postTransfersBody.transferId);
     });
 
-    it.only('Sends ISO20022 POST /transfers bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
+    it('Sends ISO20022 POST /transfers bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
         const conf = {
             ...defaultConf,
             apiType: ApiType.ISO20022,
