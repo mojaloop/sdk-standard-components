@@ -203,6 +203,7 @@ describe('IlpV4 Tests -->', () => {
             expect(transaction.payee).toEqual(quoteRequest.payee);
             expect(transaction.payer).toEqual(quoteRequest.payer);
             expect(transaction.amount).toEqual(partialResponse.transferAmount);
+            expect(transaction.expiration).toEqual(partialResponse.expiration);
         });
 
         test('should validate the transfer request against the decoded Ilp packet', () => {
