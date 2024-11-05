@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.0...v19.4.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* used FSPIOP header for PUT transactionRequests callback ([#225](https://github.com/mojaloop/sdk-standard-components/issues/225)) ([a12fef8](https://github.com/mojaloop/sdk-standard-components/commit/a12fef8db1eba18ee9a1f082bf56763db649bfff))
+
 ## [19.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.5...v19.4.0) (2024-11-05)
 
 
