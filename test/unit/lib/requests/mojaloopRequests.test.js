@@ -8,14 +8,15 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const fs = require('fs');
 jest.mock('http');
 const http = require('http');
+const fs = require('fs');
 
+const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const { ApiType, ISO_20022_HEADER_PART} = require('../../../../src/lib/constants');
 const mockLogger = require('../../../__mocks__/mockLogger');
-const { ApiType} = require('../../../../src/lib/requests/apiTransformer');
 
 // dummy request bodies
 const putPartiesBody = require('../../data/putPartiesBody.json');
@@ -31,7 +32,6 @@ const postFxQuotesBody = require('../../data/postFxQuotesBody.json');
 const putFxQuotesBody = require('../../data/putFxQuotesBody.json');
 const postFxTransfersBody = require('../../data/postFxTransfersBody.json');
 const putFxTransfersBody = require('../../data/putFxTransfersBody.json');
-const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -1392,5 +1392,19 @@ describe('MojaloopRequests', () => {
 
         // check the body was NOT converted to ISO20022
         expect(reqBody).toEqual(putErrorBody);
+    });
+
+    it('should set FSPIOP headers for putTransactionRequests', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+        const testMr = new mr(conf);
+        const res = await testMr.putTransactionRequests('txnReqId', {}, 'fspId');
+
+        expect(res.originalRequest.headers['content-type']).not.toContain(ISO_20022_HEADER_PART);
     });
 });
