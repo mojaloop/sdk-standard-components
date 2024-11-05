@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.5...v19.4.0) (2024-11-05)
+
+
+### Features
+
+* increased scale for test currencies ([#224](https://github.com/mojaloop/sdk-standard-components/issues/224)) ([2bb792f](https://github.com/mojaloop/sdk-standard-components/commit/2bb792f3259cb84233198ed75a6f3b2b749a426f))
+
 ### [19.3.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.4...v19.3.5) (2024-10-30)
 
 
