@@ -12,11 +12,7 @@
  *************************************************************************/
 
 const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
-
-const ApiType = {
-    FSPIOP: 'fspiop',
-    ISO20022: 'iso20022',
-};
+const { ApiType } = require('../constants');
 
 /*
   Performs translation between message body formats on request bodies IF NEEDED.
@@ -29,7 +25,7 @@ class ApiTransformer {
         this._logger = conf.logger;
         this._apiType = conf.apiType;
 
-        if(!['fspiop', 'iso20022'].includes(this._apiType)) {
+        if(!Object.values(ApiType).includes(this._apiType)) {
             throw new Error(`Unsupported apiType: ${this._apiType}`);
         }
     }
