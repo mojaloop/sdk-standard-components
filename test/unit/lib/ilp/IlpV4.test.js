@@ -27,6 +27,7 @@ const IlpPacket = require('ilp-packet');
 const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp/index');
 const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ERROR_MESSAGES } = require('#src/lib/constants');
 const dto = require('#src/lib/dto');
+const currencyJson = require('../../../../src/lib/ilp/currency');
 
 const mockLogger = require('#test/__mocks__/mockLogger');
 const fixtures = require('#test/fixtures');
@@ -106,13 +107,6 @@ describe('IlpV4 Tests -->', () => {
         expect(dataElement).toBeDefined();
     });
 
-    test('should calculate ilp packet from transaction object and condition', () => {
-        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
-        const condition = ilp._sha256('preimage');
-        const ilpPacket = ilp.calculateIlpPacket(transactionObj, condition);
-        expect(ilpPacket).toBeTruthy();
-    });
-
     test('should throw error if expiration in transactionObject is undefined', () => {
         const transactionObj = {
             expiration: undefined,
@@ -142,7 +136,51 @@ describe('IlpV4 Tests -->', () => {
         expect(fulfilment).toBe(ilpCombo.fulfilment);
     });
 
-    describe('Ilp Packet Serialize tests -->', () => {
+    describe('calculateIlpPacket Method Tests', () => {
+        const currency = 'XXX';
+        const scale = currencyJson[currency];
+
+        test('should calculate ilp packet from transaction object and condition', () => {
+            const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+            const condition = ilp._sha256('preimage');
+            const ilpPacket = ilp.calculateIlpPacket(transactionObj, condition);
+            expect(ilpPacket).toBeTruthy();
+        });
+
+        test('should have scale for test currency', () => {
+            expect(scale).toBeDefined();
+        });
+
+        test('should calculate ilp packet with amount with up to 4 decimals for test currency', () => {
+            const amount = fixtures.moneyPayload({
+                amount: `1000.${'1'.repeat(scale)}`,
+                currency
+            });
+            const transactionObj = {
+                ...dto.transactionObjectDto(quoteRequest, partialResponse),
+                amount
+            };
+            const condition = ilp._sha256('preimage');
+            const ilpPacket = ilp.calculateIlpPacket(transactionObj, condition);
+            expect(ilpPacket).toBeTruthy();
+        });
+
+        test('should throw error on amount with more than defined scale decimals for test currency', () => {
+            const amount = fixtures.moneyPayload({
+                amount: `2000.${'2'.repeat(scale + 1)}`,
+                currency
+            });
+            const transactionObj = {
+                ...dto.transactionObjectDto(quoteRequest, partialResponse),
+                amount
+            };
+            const condition = ilp._sha256('preimage');
+            expect(() => ilp.calculateIlpPacket(transactionObj, condition))
+                .toThrow(TypeError(ERROR_MESSAGES.invalidAdjustedAmount));
+        });
+    });
+
+    describe('Ilp Packet Serialize Tests -->', () => {
         const createIlpJson = (amount) => ({
             amount,
             data: Buffer.from('data'),
