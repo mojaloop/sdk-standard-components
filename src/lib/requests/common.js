@@ -50,6 +50,7 @@ const buildUrl = (...args) => {
 };
 
 
+// todo: think, if it's better to use validateStatus option of axios instead
 const throwOrJson = async (res) => {
     // Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec.
     // This needs to be un-commented once the corresponding bug in the backend is fixed

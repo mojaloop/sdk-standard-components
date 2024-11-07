@@ -8,19 +8,25 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-const fs = require('fs');
+const { mockAxios } = require('#test/unit/utils');
+
+const { Readable } = require('node:stream');
+const fs = require('node:fs');
+const crypto = require('node:crypto');
 const querystring = require('querystring');
-const crypto = require('crypto');
-const nock = require('nock');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
-
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
+const logger = mockLogger({ app: 'request-test' });
 
-describe('request', () => {
+describe('mojaloopRequests Tests', () => {
+    beforeEach(() => {
+        mockAxios.reset();
+    });
+
     function streamToBuffer(stream) {
         const chunks = [];
         return new Promise((resolve, reject) => {
@@ -30,17 +36,26 @@ describe('request', () => {
         });
     }
 
+    const toStream = data => Readable.from( data instanceof Buffer
+        ? data
+        : Buffer.from(JSON.stringify(data))
+    );
+
     async function testRequest(request, expectedResponse, responseType) {
         const qs = querystring.encode(request.query);
-        nock(`${request.protocol}://${request.host}`)
-            .post(request.uri + (qs ? `?${qs}` : ''), request.body)
-            .reply(expectedResponse.statusCode, expectedResponse.data, expectedResponse.headers);
+        mockAxios
+            .onPost(request.uri + (qs ? `?${qs}` : ''), request.body)
+            .reply(
+                expectedResponse.statusCode,
+                responseType.stream ? toStream(expectedResponse.data) : expectedResponse.data,
+                expectedResponse.headers
+            );
 
-        const wso2Auth = new WSO2Auth({logger: console});
+        const wso2Auth = new WSO2Auth({ logger });
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-test' }, undefined),
+            logger,
             peerEndpoint: request.host,
             tls: {
                 mutualTLS: {
@@ -63,9 +78,9 @@ describe('request', () => {
             }
         }
 
-        expect(resp.originalRequest.body).toEqual(request.body);
-        expect(resp.originalRequest.headers).not.toBeUndefined();
-        expect(resp.originalRequest.path).not.toBeUndefined();
+        expect(resp.originalRequest.data).toEqual(request.body);
+        expect(resp.originalRequest.headers).toBeDefined();
+        expect(resp.originalRequest.url).toBeDefined();
 
         if(!expectedResponse.originalRequest) {
             // ignore the originalRequest prop on resp.

@@ -10,15 +10,14 @@
 
 'use strict';
 
-
 const Errors = require('./lib/errors');
 const Ilp = require('./lib/ilp');
 const Jws = require('./lib/jws');
 const Logger = require('./lib/logger');
 const requests = require('./lib/requests');
-const request = require('./lib/request');
 const WSO2Auth = require('./lib/WSO2Auth');
 const randomPhrase = require('./lib/randomphrase');
+const { request } = require('./lib/httpRequester');
 
 const { MojaloopRequests, ThirdpartyRequests, common } = requests;
 

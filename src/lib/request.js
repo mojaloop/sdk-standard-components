@@ -20,13 +20,14 @@ const ResponseType = Object.freeze({
     Stream: Symbol('stream'),
 });
 
+// todo:  remove this functionality before merging
 const request = async ({
     uri,
-    qs = null,
-    responseType = ResponseType.JSON,
-    body = null,
     method,
     headers,
+    qs = null,
+    body = null,
+    responseType = ResponseType.JSON,
     agent,
 }) => {
     const qsEnc = querystring.encode(qs);
