@@ -142,8 +142,8 @@ describe('Logger', () => {
         }));
     });
 
-    test('key clashes in context should throw an error', () => {
-        const l = new Logger();
+    test('key clashes in context should throw an error!!!', () => {
+        const l = new Logger({ opts: { allowContextOverwrite: false } });
         const ctx = { test: 'data' };
         expect(() => l.push(ctx).push(ctx)).toThrow('Key already exists in logger');
     });

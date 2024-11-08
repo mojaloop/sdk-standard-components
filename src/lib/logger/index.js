@@ -162,9 +162,7 @@ class Logger {
         // Check none of the new context replaces any of the old context
         const arrayIntersection = (a1, a2) => a1.filter(v => a2.includes(v));
         const objKeysIntersection = (o1, o2) => arrayIntersection(Object.keys(o1), Object.keys(o2));
-        if (!this.allowContextOverwrite &&
-            objKeysIntersection(context, this[contextSym]).length > 0
-        ) {
+        if (!this.opts.allowContextOverwrite && objKeysIntersection(context, this[contextSym]).length > 0) {
             throw new Error('Key already exists in logger');
         }
         return new Logger({
