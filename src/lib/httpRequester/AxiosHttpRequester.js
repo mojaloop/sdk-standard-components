@@ -4,11 +4,13 @@ const safeStringify = require('fast-safe-stringify');
 const axios = require('axios');
 const { ResponseType } = require('./constants');
 
+axios.defaults.headers.common = {}; // do not use default axios headers
+
 /**
  * @typedef {Object} AxiosHttpRequestDeps
  * @prop {Logger} logger - Logger instance.
  * @prop {Object} httpClient - HTTP client to be used to send requests.
- * @prop {Object} config - Configuration new axios instance.
+ * @prop {Object} httpConfig - Default configuration for axios instance.
  */
 
 class AxiosHttpRequester {
@@ -21,6 +23,7 @@ class AxiosHttpRequester {
      * @returns {AxiosHttpRequester}
      */
     constructor(deps) {
+        this.deps = deps;
         this.logger = deps.logger.push({ component: AxiosHttpRequester.name });
         this.#httpClient = this.#createAxiosClient(deps);
     }
@@ -34,7 +37,7 @@ class AxiosHttpRequester {
     async sendRequest(httpOpts) {
         let originalRequest = null; // todo: think, if we need
         try {
-            const axiosOpts = this.#convertToAxiosOptions(httpOpts);
+            const axiosOpts = this.convertToAxiosOptions(httpOpts);
             originalRequest = {
                 ...axiosOpts,
                 body: safeStringify(axiosOpts.data), // todo: think, if we need this (or use data JSON)
@@ -57,7 +60,7 @@ class AxiosHttpRequester {
 
     get responseType() { return ResponseType; }
 
-    #convertToAxiosOptions(httpOpts) {
+    convertToAxiosOptions(httpOpts) {
         const {
             uri,
             method,
@@ -66,23 +69,36 @@ class AxiosHttpRequester {
             body,
             responseType = ResponseType.JSON,
             agent,
-            // config = null,
+            ...restAxiosOpts
         } = httpOpts;
 
-        const qsEnc = querystring.encode(qs);
-        const completeUrl = new URL(uri + (qsEnc.length ? `?${qsEnc}` : ''));
+        const completeUrl = new URL(uri.startsWith('http') ? uri : `http://${uri}`);
 
         return {
             method,
-            baseURL: completeUrl.hostname,
-            url: completeUrl.pathname + completeUrl.search + completeUrl.hash,
+            baseURL: completeUrl.origin,
+            url: this.constructRoutePart(completeUrl, qs),
             data: body,
             headers,
             responseType,
             agent,
-            // todo: add timeout
+            ...this.deps.httpConfig,
+            ...restAxiosOpts, // to be able to override default axios options
         };
     }
+
+    constructRoutePart(completeUrl, qs) {
+        const qsEnc = querystring.encode(qs);
+
+        let search = completeUrl.search || '';
+        if (qsEnc.length) {
+            search += search.length ? '&' : '?';
+            search += qsEnc;
+        }
+
+        return completeUrl.pathname + search + completeUrl.hash;
+    }
+
 
     #makeResponse(axiosResponse, originalRequest) {
         const { data, status, headers } = axiosResponse;
@@ -111,9 +127,9 @@ class AxiosHttpRequester {
     #createAxiosClient(deps) {
         if (deps.httpClient) return deps.httpClient;
 
-        this.logger.push(deps.config).debug('createAxiosClient...');
-        const client = axios.create(deps.config);
-        client.defaults.headers.common = {}; // do not use default axios headers
+        this.logger.push(deps.httpConfig).debug('createAxiosClient...');
+        const client = axios.default; // todo: think, if we need to use axios.create
+        // const client = axios.create(deps.config);
 
         return client;
     }

@@ -8,22 +8,17 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const { mockAxios, jsonContentTypeHeader } = require('#test/unit/utils');
 const fs = require('node:fs');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const { defaultHttpConfig, createHttpRequester } = require('#src/lib/httpRequester/index');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 const logger = mockLogger({ app: 'request-errors-test' });
 
-// todo: fix these tests
-describe.skip('request error handling', () => {
-    beforeEach(() => {
-        mockAxios.reset();
-        mockAxios.onAny().reply(200, {}, jsonContentTypeHeader);
-    });
+describe('request error handling', () => {
 
     async function primRequestSerializationTest(mojaloopRequestMethodName) {
         let jwsSign = false;
@@ -93,13 +88,28 @@ describe.skip('request error handling', () => {
             expect(err.address).toBe('127.0.0.1');
             expect(err.port).toBe(9999);
 
-            expect(err.originalRequest).not.toBeUndefined();
-            expect(err.originalRequest.port).not.toBeUndefined();
-            expect(err.originalRequest.body).not.toBeUndefined();
-            expect(err.originalRequest.headers).not.toBeUndefined();
-            expect(err.originalRequest.host).not.toBeUndefined();
-            expect(err.originalRequest.method).not.toBeUndefined();
-            expect(err.originalRequest.path).not.toBeUndefined();
+            expect(err.originalRequest).toBeDefined();
+            expect(err.originalRequest.data).toBeDefined();
+            expect(err.originalRequest.headers).toBeDefined();
+            expect(err.originalRequest.baseURL).toBeDefined();
+            expect(err.originalRequest.url).toBeDefined();
+            expect(err.originalRequest.method).toBeDefined();
         }
+    });
+
+    describe('axios Timeout Test -->', () => {
+        test('should be able to set default timeout', async () => {
+            expect.hasAssertions();
+            const timeout = 1;
+            const httpConfig = { ...defaultHttpConfig, timeout };
+            const http = createHttpRequester({ httpConfig });
+            const uri = 'http://localhost:1234/timeout';
+
+            await http.sendRequest({ uri })
+                .catch(err => {
+                    expect(err.message).toBe(`timeout of ${timeout}ms exceeded`);
+                    expect(err.code).toBe('ECONNABORTED');
+                });
+        });
     });
 });

@@ -37,6 +37,8 @@ const putConsentRequestsRequestError = require('../../data/putConsentRequestsReq
 const postConsentRequestsRequest = require('../../data/postConsentRequestsRequest.json');
 const patchSuccessRequest = require('../../data/patchThirdpartyRequestTransaction.json');
 
+const withProtocol = (url) => `http://${url}`;
+
 describe('Thirdparty Requests Tests -->', () => {
     beforeEach(() => {
         mockAxios.reset();
@@ -62,7 +64,7 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    baseURL: config.thirdpartyRequestsEndpoint,
+                    baseURL: withProtocol(config.thirdpartyRequestsEndpoint),
                     method: 'put',
                     url: `/consents/${consentId}`,
                     headers: expect.objectContaining({
@@ -83,7 +85,7 @@ describe('Thirdparty Requests Tests -->', () => {
         const consentId = '123';
         const destFspId = 'dfspa';
         const expected = expect.objectContaining({
-            baseURL: config.thirdpartyRequestsEndpoint,
+            baseURL: withProtocol(config.thirdpartyRequestsEndpoint),
             method: 'patch',
             url: `/consents/${consentId}`,
             headers: expect.objectContaining({
@@ -127,7 +129,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const tpr = new ThirdpartyRequests(config);
             const consentBody = postConsentsRequest;
             const expected = expect.objectContaining({
-                baseURL: config.thirdpartyRequestsEndpoint,
+                baseURL: withProtocol(config.thirdpartyRequestsEndpoint),
                 method: 'post',
                 url: '/consents',
                 headers: expect.objectContaining({
@@ -156,7 +158,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const consentRequestsBody = patchConsentRequestsRequests;
             const consentRequestsId = '123';
             const expected = expect.objectContaining({
-                baseURL: config.thirdpartyRequestsEndpoint,
+                baseURL: withProtocol(config.thirdpartyRequestsEndpoint),
                 method: 'patch',
                 url: '/consentRequests/123',
                 headers: expect.objectContaining({
@@ -185,7 +187,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const consentRequestsBody = putConsentRequestsRequests;
             const consentRequestsId = '123';
             const expected = expect.objectContaining({
-                baseURL: 'thirdparty-api-adapter.local',
+                baseURL: withProtocol('thirdparty-api-adapter.local'),
                 method: 'put',
                 url: '/consentRequests/123',
                 headers: expect.objectContaining({
@@ -242,7 +244,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const tpr = new ThirdpartyRequests(config);
             const consentRequestBody = postConsentRequestsRequest;
             const expected = expect.objectContaining({
-                baseURL: 'thirdparty-api-adapter.local',
+                baseURL: withProtocol('thirdparty-api-adapter.local'),
                 method: 'post',
                 url: '/consentRequests',
                 headers: expect.objectContaining({
@@ -565,7 +567,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const calls = mockAxios.history.get;
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(expect.objectContaining({
-                baseURL: config.servicesEndpoint
+                baseURL: withProtocol(config.servicesEndpoint)
             }));
         });
 

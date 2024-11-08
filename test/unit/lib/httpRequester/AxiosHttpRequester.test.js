@@ -1,3 +1,4 @@
+const querystring = require('node:querystring');
 const AxiosHttpRequester = require('#src/lib/httpRequester/AxiosHttpRequester');
 const { createHttpRequester } = require('#src/lib/httpRequester/index');
 const { mockAxios, mockGetReply, jsonContentTypeHeader } = require('#test/unit/utils');
@@ -16,10 +17,10 @@ describe('AxiosHttpRequester Test -->', () => {
         expect(http).toBeInstanceOf(AxiosHttpRequester);
     });
 
-    test('should throw error on invalid uri', async () => {
-        const uri = 'invalid-uri';
-        await expect(() => http.sendRequest({ uri }))
-            .rejects.toThrow('Invalid URL');
+    test('should return object with statusCode 404, when uri is not registered in mockAxios', async () => {
+        const uri = 'arbitrary-uri';
+        const response = await http.sendRequest({ uri, responseType: 'text' });
+        expect(response.statusCode).toBe(404);
     });
 
     test('should send mock GET request', async () => {
@@ -90,6 +91,40 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(err.statusCode).toBe(statusCode);
             expect(err.contentType).toBe(headers['content-type']);
             expect(err.response).toBeUndefined();
+        });
+    });
+
+    describe('convertToAxiosOptions -->', () => {
+        test('should add http protocol, if no protocol in uri', () => {
+            const uri = '8.8.8.8:1234';
+            const converted = http.convertToAxiosOptions({ uri});
+            expect(converted.baseURL).toBe(`http://${uri}`);
+        });
+
+        test('should NOT add http protocol, if uri has it', () => {
+            const uri = 'http://8.8.8.8:1234';
+            const converted = http.convertToAxiosOptions({ uri});
+            expect(converted.baseURL).toBe(uri);
+        });
+
+        test('should add http protocol, and define root url', () => {
+            const uri = '127.0.0.2';
+            const converted = http.convertToAxiosOptions({ uri});
+            expect(converted.baseURL).toBe(`http://${uri}`);
+        });
+
+        test('should create routr url part with search and hash', () => {
+            const serverUrl = 'http://localhost:1234';
+            const route = '/route?x=33';
+            const hash = '#123';
+            const qs = { a: 1, b: 2 };
+            const httpOpts = {
+                uri: `${serverUrl}${route}${hash}`,
+                qs,
+            };
+            const converted = http.convertToAxiosOptions(httpOpts);
+            expect(converted.baseURL).toBe(serverUrl);
+            expect(converted.url).toBe(`${route}&${querystring.encode(qs)}${hash}`);
         });
     });
 });

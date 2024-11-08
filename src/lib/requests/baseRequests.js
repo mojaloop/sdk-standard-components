@@ -43,6 +43,7 @@ class BaseRequests {
      *   number indicating how many times to retry a request that fails authorization.
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
      */
+    // todo: add httpOptions to configure httpClient (axios)
     constructor(config) {
         this.logger = config.logger.push({ component: BaseRequests.name });
 
