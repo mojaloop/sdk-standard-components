@@ -23,6 +23,7 @@
 // while the mojaloop-sdk uses the logger defined here
 const util = require('util');
 const safeStringify = require('fast-safe-stringify');
+const { colorize } = require('./helpers');
 
 // Utility functions
 
@@ -68,13 +69,13 @@ const buildStringify = ({
     timestampFmt = (ts => ts.toISOString()),
     stringify = safeStringify,
     isJsonOutput = false,
-    space = isJsonOutput ? 2 :0,
+    space = isJsonOutput ? 2 : 0,
 } = {}) => {
     return ({ ctx, msg, level = undefined }) => {
         const ts = printTimestamp ? timestampFmt(new Date()) : undefined;
         return isJsonOutput
             ? stringify({ ts, level, msg, ctx, }, replaceOutput, space)
-            : `${ts} - ${level}: ${msg} - ${stringify(ctx, replaceOutput, space)}`;
+            : `${ts} - ${colorize(level)}: ${msg} - ${stringify(ctx, replaceOutput, space)}`;
     };
 };
 
