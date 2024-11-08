@@ -14,8 +14,10 @@ describe('Logger', () => {
     });
 
     test('should log correctly', () => {
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         const msg = 'test message';
-        const l = new Logger();
         l._write = jest.fn();
         l.log(msg);
         expect(l._write).toHaveBeenCalledTimes(1);
@@ -43,7 +45,12 @@ describe('Logger', () => {
             { level: 'whatever', message: 'yadda' },
             { level: 'any', message: 'something' },
         ];
-        const l = new Logger({ opts: { levels: data.map(d => d.level) } });
+        const l = new Logger({
+            opts: {
+                levels: data.map(d => d.level),
+                isJsonOutput: true
+            }
+        });
         l._write = jest.fn();
         data.forEach(({ level, message }) => {
             l[level](message);
@@ -96,7 +103,9 @@ describe('Logger', () => {
     });
 
     test('added context should be printed on the child', () => {
-        const l = new Logger();
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         l._write = jest.fn();
         const ctx = { test: 'data' };
         const k = l.push(ctx);
@@ -107,7 +116,9 @@ describe('Logger', () => {
     });
 
     test('added context should not mutate the logger, and should only be printed on the child', () => {
-        const l = new Logger();
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         l._write = jest.fn();
         l.log('hello');
         const k = l.push({ test: 'data' });
@@ -123,7 +134,9 @@ describe('Logger', () => {
     });
 
     test('context should propagate through descendants', () => {
-        const l = new Logger();
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         const ctxChild = { child: 'data' };
         const k = l.push(ctxChild);
         const ctxGrandchild = { grandchild: 'whatever' };
@@ -143,13 +156,17 @@ describe('Logger', () => {
     });
 
     test('key clashes in context should throw an error!!!', () => {
-        const l = new Logger({ opts: { allowContextOverwrite: false } });
+        const l = new Logger({
+            opts: { allowContextOverwrite: false, isJsonOutput: true }
+        });
         const ctx = { test: 'data' };
         expect(() => l.push(ctx).push(ctx)).toThrow('Key already exists in logger');
     });
 
     test('circular references should be handled correctly in context', () => {
-        const l = new Logger();
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         let ctx = {};
         ctx.ctx = ctx;
         const k = l.push(ctx);
@@ -167,7 +184,9 @@ describe('Logger', () => {
     });
 
     test('circular references should be handled correctly in log message', () => {
-        const l = new Logger();
+        const l = new Logger({
+            opts: { isJsonOutput: true }
+        });
         let ctx = {};
         ctx.ctx = ctx;
         l._write = jest.fn();

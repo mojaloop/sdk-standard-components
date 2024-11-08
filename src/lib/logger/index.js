@@ -64,14 +64,17 @@ const replaceOutput = (_, value) => {
 //   The function that will eventually perform the stringifying. Will be called with the same
 //   signature as JSON.stringify.
 const buildStringify = ({
-    space = 2,
     printTimestamp = true,
     timestampFmt = (ts => ts.toISOString()),
     stringify = safeStringify,
+    isJsonOutput = false,
+    space = isJsonOutput ? 2 :0,
 } = {}) => {
     return ({ ctx, msg, level = undefined }) => {
         const ts = printTimestamp ? timestampFmt(new Date()) : undefined;
-        return stringify({ ts, level, msg, ctx, }, replaceOutput, space);
+        return isJsonOutput
+            ? stringify({ ts, level, msg, ctx, }, replaceOutput, space)
+            : `${ts} - ${level}: ${msg} - ${stringify(ctx, replaceOutput, space)}`;
     };
 };
 
@@ -103,12 +106,13 @@ class Logger {
     //   { msg, ctx, level: 'verbose' }
     constructor({
         context = {},
-        stringify = buildStringify(),
         opts: {
             allowContextOverwrite = true,
             copy = o => o,
             levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal'],
+            isJsonOutput = false,
         } = {},
+        stringify = buildStringify({ isJsonOutput }),
     } = {}) {
         this[contextSym] = context;
         this.isVerboseEnabled = false;
@@ -124,6 +128,7 @@ class Logger {
                 allowContextOverwrite,
                 copy,
                 levels,
+                isJsonOutput,
             }
         });
     }

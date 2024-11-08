@@ -57,7 +57,6 @@ describe('request error handling', () => {
             try {
                 await primRequestSerializationTest('_post');
             } catch (err) {
-                console.log(err);
                 expect(err.code).toBe('ECONNREFUSED');
                 expect(err.address).toBe('127.0.0.1');
                 expect(err.port).toBe(9999);
