@@ -105,7 +105,7 @@ class Logger {
         context = {},
         stringify = buildStringify(),
         opts: {
-            allowContextOverwrite = false,
+            allowContextOverwrite = true,
             copy = o => o,
             levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal'],
         } = {},
