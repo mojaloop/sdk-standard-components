@@ -103,7 +103,7 @@ describe('request error handling', () => {
             const timeout = 1;
             const httpConfig = { ...defaultHttpConfig, timeout };
             const http = createHttpRequester({ httpConfig });
-            const uri = 'http://localhost:1234/timeout';
+            const uri = 'https://jsonplaceholder.typicode.com/todos';
 
             await http.sendRequest({ uri })
                 .catch(err => {
