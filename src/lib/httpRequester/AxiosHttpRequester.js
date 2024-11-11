@@ -1,4 +1,5 @@
 const { URL } = require('node:url');
+const https = require('node:https');
 const querystring = require('node:querystring');
 const safeStringify = require('fast-safe-stringify');
 const axios = require('axios');
@@ -81,7 +82,9 @@ class AxiosHttpRequester {
             data: body,
             headers,
             responseType,
-            agent,
+            ...(!agent ? null : {
+                [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
+            }),
             ...this.deps.httpConfig,
             ...restAxiosOpts, // to be able to override default axios options
         };

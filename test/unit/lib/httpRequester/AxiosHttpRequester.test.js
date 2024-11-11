@@ -1,3 +1,4 @@
+const https = require('node:https');
 const querystring = require('node:querystring');
 const AxiosHttpRequester = require('#src/lib/httpRequester/AxiosHttpRequester');
 const { createHttpRequester } = require('#src/lib/httpRequester/index');
@@ -113,7 +114,7 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(converted.baseURL).toBe(`http://${uri}`);
         });
 
-        test('should create routr url part with search and hash', () => {
+        test('should create route url part with search and hash', () => {
             const serverUrl = 'http://localhost:1234';
             const route = '/route?x=33';
             const hash = '#123';
@@ -125,6 +126,23 @@ describe('AxiosHttpRequester Test -->', () => {
             const converted = http.convertToAxiosOptions(httpOpts);
             expect(converted.baseURL).toBe(serverUrl);
             expect(converted.url).toBe(`${route}&${querystring.encode(qs)}${hash}`);
+        });
+
+        test('should set proper httpsAgent field', () => {
+            const httpOpts = {
+                uri: 'http://localhost:1234',
+                agent: new https.Agent(),
+            };
+            const converted = http.convertToAxiosOptions(httpOpts);
+            expect(converted.httpsAgent).toBeInstanceOf(https.Agent);
+        });
+
+        test('should not set agent field, if it is missed in httpOpts', () => {
+            const httpOpts = { uri: 'http://localhost:1234' };
+            const converted = http.convertToAxiosOptions(httpOpts);
+            expect(converted.httpsAgent).toBeUndefined();
+            expect(converted.httpAgent).toBeUndefined();
+            expect(converted.agent).toBeUndefined();
         });
     });
 });
