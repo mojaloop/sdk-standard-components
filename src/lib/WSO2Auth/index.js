@@ -70,8 +70,7 @@ class WSO2Auth extends EventEmitter {
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
-            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
-                .toString('base64');
+            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`).toString('base64');
             this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
             this._logger.isDebugEnabled && this._logger.debug('WSO2 auth config token API data not set, fallback to static token');

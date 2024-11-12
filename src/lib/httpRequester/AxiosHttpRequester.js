@@ -54,6 +54,13 @@ class AxiosHttpRequester {
             return response;
         } catch (err) {
             err.originalRequest = originalRequest;
+            if (err.config) {
+                err.config = {
+                    ...err.config,
+                    ...(err.config.httpAgent && { httpAgent: '[REDACTED]' }),
+                    ...(err.config.httpsAgent && { httpsAgent: '[REDACTED]' }),
+                };
+            }
             this.logger.push({ err }).warn('error in sending HTTP request');
             throw err;
             // todo: think, how to handle errors
