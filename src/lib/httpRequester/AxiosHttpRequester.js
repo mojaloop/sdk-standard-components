@@ -78,20 +78,20 @@ class AxiosHttpRequester {
             body,
             responseType, // = ResponseType.JSON
             agent,
-            ...restAxiosOpts
+            httpConfig = {},
         } = httpOpts;
 
         const completeUrl = new URL(uri.startsWith('http') ? uri : `http://${uri}`);
 
         return {
+            ...this.deps.httpConfig,
+            ...httpConfig, // to be able to override default axios options
             method,
             baseURL: completeUrl.origin,
             url: this.constructRoutePart(completeUrl, qs),
             data: body,
             headers,
             responseType,
-            ...this.deps.httpConfig,
-            ...restAxiosOpts, // to be able to override default axios options
             ...(!agent ? null : {
                 [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
             }),

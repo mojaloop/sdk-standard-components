@@ -80,6 +80,21 @@ describe('PUT /parties', () => {
             await testPutParties(false, true, true);
         }
     );
+
+    it('should be able to pass additional axios options', async () => {
+        const timeout = 123;
+        const maxRedirects = 12345;
+        const conf = {
+            ...mockConfigDto(),
+            httpConfig: { timeout, maxRedirects },
+        };
+        const testMr = new mr(conf);
+        await testMr.putParties('MSISDN', '123456', '', {});
+
+        expect(mockAxios.history.put.length).toBe(1);
+        expect(mockAxios.history.put[0].timeout).toBe(timeout);
+        expect(mockAxios.history.put[0].maxRedirects).toBe(maxRedirects);
+    });
 });
 
 describe('PUT /quotes', () => {

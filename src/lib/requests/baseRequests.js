@@ -42,8 +42,8 @@ class BaseRequests {
      * @param {Object | undefined} config.wso2 Optional. The wso2Auth object and
      *   number indicating how many times to retry a request that fails authorization.
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
+     * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
      */
-    // todo: add httpOptions to configure httpClient (axios)
     constructor(config) {
         this.logger = config.logger.push({ component: BaseRequests.name });
 
@@ -166,6 +166,7 @@ class BaseRequests {
         };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
+        this.httpConfig = config.httpConfig || null;
     }
 
     _request(opts, responseType) {
@@ -193,6 +194,8 @@ class BaseRequests {
 
         const { method, uri, headers } = opts;
         this.logger.isVerboseEnabled && this.logger.push({ method, uri, headers }).verbose(`Executing HTTP ${method}...`);
+
+        if (this.httpConfig) opts.httpConfig = this.httpConfig;
 
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
