@@ -8,8 +8,8 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-jest.mock('http');
-const http = require('http');
+const { mockAxios, jsonContentTypeHeader } = require('../unit/utils');
+
 const WSO2Auth = require('../../src/lib/WSO2Auth');
 const mockLogger = require('../__mocks__/mockLogger');
 
@@ -41,32 +41,27 @@ describe('WSO2Auth', () => {
         const now = Date.now();
         let tokenRefreshTime = now;
 
-        http.__request = jest.fn(() => {
-            tokenRefreshTime = Date.now();
-            return {
-                statusCode: 200,
-                data: {
-                    access_token: TOKEN,
-                    expires_in: tokenExpiresSeconds,
-                },
-            };
-        });
+        mockAxios.reset();
+        mockAxios.onPost().reply(200, {
+            access_token: TOKEN,
+            expires_in: tokenExpiresSeconds,
+        }, jsonContentTypeHeader);
 
         const auth = new WSO2Auth(opts);
         await auth.start();
         const token = auth.getToken();
-        expect(http.__request).toHaveBeenCalledTimes(1);
-        expect(http.__request.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+
+        expect(mockAxios.history.post.length).toBe(1);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
         expect(token).toBe(TOKEN);
         // Wait for token refresh
         await new Promise(resolve => {
             setTimeout(() => resolve(), actualRefreshMs + 100);
         });
-        expect(http.__request).toHaveBeenCalledTimes(2);
+        expect(mockAxios.history.post.length).toBe(2);
         const tokenRefreshInterval = tokenRefreshTime - now;
         expect(tokenRefreshInterval - actualRefreshMs).toBeLessThan(500);
         auth.stop();
-        http.__request.mockClear();
     }
 
     test('should return static token when static token was provided', async () => {
@@ -85,20 +80,16 @@ describe('WSO2Auth', () => {
     test('should return new token when token API info was provided', async () => {
         const TOKEN = 'new-token';
         const opts = mockOpts;
-        http.__request = jest.fn(() => ({
-            statusCode: 200,
-            data: {
-                access_token: TOKEN,
-            },
-        }));
+        mockAxios.reset();
+        mockAxios.onPost().reply(200, { access_token: TOKEN }, jsonContentTypeHeader);
+
         const auth = new WSO2Auth(opts);
         await auth.start();
         const token = auth.getToken();
-        expect(http.__request).toHaveBeenCalledTimes(1);
-        expect(http.__request.mock.calls[0][0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post.length).toBe(1);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
         expect(token).toBe(TOKEN);
         auth.stop();
-        http.__request.mockClear();
     });
 
     test(
@@ -123,16 +114,16 @@ describe('WSO2Auth', () => {
 
     test('should emit error when receiving a 401 from WSO2', async () => {
         const opts = mockOpts;
-        http.__request = jest.fn(() => ({ statusCode: 401, }));
+        mockAxios.reset();
+        mockAxios.onPost().reply(401, null, jsonContentTypeHeader);
+        // http.__request = jest.fn(() => ({ statusCode: 401, }));
         const auth = new WSO2Auth(opts);
         const errCallback = jest.fn();
         auth.on('error', errCallback);
         await auth.start();
-        expect(http.__request).toHaveBeenCalledTimes(1);
-        expect(http.__request.mock.calls[0][0].headers['Authorization'])
-            .toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post.length).toBe(1);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
         expect(errCallback).toHaveBeenCalledTimes(1);
         auth.stop();
-        http.__request.mockClear();
     });
 });

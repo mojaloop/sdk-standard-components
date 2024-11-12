@@ -42,7 +42,8 @@ class AxiosHttpRequester {
             originalRequest = {
                 ...axiosOpts,
                 body: safeStringify(axiosOpts.data), // todo: think, if we need this (or use data JSON)
-                agent: '[REDACTED]',
+                ...(axiosOpts.httpAgent && { httpAgent: '[REDACTED]' }),
+                ...(axiosOpts.httpsAgent && { httpAgents: '[REDACTED]' }),
             };
 
             this.logger.push({ originalRequest }).debug('sending HTTP request...');

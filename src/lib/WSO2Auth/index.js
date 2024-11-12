@@ -14,7 +14,7 @@ const http = require('http');
 const https = require('https');
 const qs = require('querystring');
 const EventEmitter = require('events');
-const request = require('../request');
+const { request } = require('../httpRequester');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -115,7 +115,7 @@ class WSO2Auth extends EventEmitter {
         let refreshSeconds;
         try {
             const response = await request(reqOpts);
-            this._logger.isDebugEnabled && this._logger.push({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }, response }).debug('Response received from WSO2');
+            this._logger.isVerboseEnabled && this._logger.verbose('Response received from WSO2');
             if (response.statusCode > 299) {
                 this.emit('error', 'Error retrieving WSO2 auth token');
                 throw new Error(`Unexpected response code ${response.statusCode} received from WSO2 token request`);
