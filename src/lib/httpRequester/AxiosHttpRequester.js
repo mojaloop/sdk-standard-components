@@ -41,9 +41,9 @@ class AxiosHttpRequester {
             const axiosOpts = this.convertToAxiosOptions(httpOpts);
             originalRequest = {
                 ...axiosOpts,
-                body: safeStringify(axiosOpts.data), // todo: think, if we need this (or use data JSON)
                 ...(axiosOpts.httpAgent && { httpAgent: '[REDACTED]' }),
-                ...(axiosOpts.httpsAgent && { httpAgents: '[REDACTED]' }),
+                ...(axiosOpts.httpsAgent && { httpsAgent: '[REDACTED]' }),
+                body: safeStringify(axiosOpts.data), // todo: think, if we need this (or use data JSON)
             };
 
             this.logger.push({ originalRequest }).debug('sending HTTP request...');
@@ -76,7 +76,7 @@ class AxiosHttpRequester {
             headers,
             qs,
             body,
-            responseType = ResponseType.JSON,
+            responseType, // = ResponseType.JSON
             agent,
             ...restAxiosOpts
         } = httpOpts;
@@ -90,11 +90,11 @@ class AxiosHttpRequester {
             data: body,
             headers,
             responseType,
+            ...this.deps.httpConfig,
+            ...restAxiosOpts, // to be able to override default axios options
             ...(!agent ? null : {
                 [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
             }),
-            ...this.deps.httpConfig,
-            ...restAxiosOpts, // to be able to override default axios options
         };
     }
 
@@ -114,7 +114,7 @@ class AxiosHttpRequester {
     #makeResponse(axiosResponse, originalRequest) {
         const { data, status, headers } = axiosResponse;
 
-        // todo: think, if we need to preserve this validation
+        // todo: think, if we need to preserve this validation - it does not work with FSPIOP interoperability headers
         if (originalRequest.responseType === ResponseType.JSON) {
             const contentType = headers['content-type'];
             if (!/^application\/json/.test(contentType)) {

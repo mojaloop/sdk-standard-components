@@ -2,6 +2,7 @@ const https = require('node:https');
 const querystring = require('node:querystring');
 const AxiosHttpRequester = require('#src/lib/httpRequester/AxiosHttpRequester');
 const { createHttpRequester } = require('#src/lib/httpRequester/index');
+const { ResponseType } = require('#src/lib/httpRequester/constants');
 const { mockAxios, mockGetReply, jsonContentTypeHeader } = require('#test/unit/utils');
 
 const makeMockUri = route => `http://localhost:1234${route}`;
@@ -76,7 +77,7 @@ describe('AxiosHttpRequester Test -->', () => {
     //     });
     // });
 
-    test('should have response content-type header validation', async () => {
+    test('should have response JSON content-type header validation', async () => {
         expect.hasAssertions();
         const route = '/content';
         const statusCode = 200;
@@ -84,6 +85,7 @@ describe('AxiosHttpRequester Test -->', () => {
         mockGetReply({ route, statusCode, headers });
 
         await http.sendRequest({
+            responseType: ResponseType.JSON,
             uri: makeMockUri(route),
             method: 'GET',
             headers: {},
