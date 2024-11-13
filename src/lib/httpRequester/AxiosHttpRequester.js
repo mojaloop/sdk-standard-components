@@ -1,8 +1,9 @@
 const { URL } = require('node:url');
 const https = require('node:https');
 const querystring = require('node:querystring');
-const safeStringify = require('fast-safe-stringify');
 const axios = require('axios');
+const axiosRetry = require('axios-retry').default;
+const safeStringify = require('fast-safe-stringify');
 const { ResponseType } = require('./constants');
 
 axios.defaults.headers.common = {}; // do not use default axios headers
@@ -10,8 +11,9 @@ axios.defaults.headers.common = {}; // do not use default axios headers
 /**
  * @typedef {Object} AxiosHttpRequestDeps
  * @prop {Logger} logger - Logger instance.
- * @prop {Object} httpClient - HTTP client to be used to send requests.
+ * @prop {Object} [httpClient] - HTTP client to be used to send requests.
  * @prop {Object} httpConfig - Default configuration for axios instance.
+ * @prop {Object} retryConfig - Default configuration for axiosRetry. (details: https://github.com/softonic/axios-retry?tab=readme-ov-file#options)
  */
 
 class AxiosHttpRequester {
@@ -25,7 +27,7 @@ class AxiosHttpRequester {
      */
     constructor(deps) {
         this.deps = deps;
-        this.logger = deps.logger.push({ component: AxiosHttpRequester.name });
+        this.logger = deps.logger;
         this.#httpClient = this.#createAxiosClient(deps);
     }
 
@@ -49,21 +51,13 @@ class AxiosHttpRequester {
             this.logger.push({ originalRequest }).debug('sending HTTP request...');
             const httpResponse = await this.#httpClient.request(axiosOpts);
 
-            const response = this.#makeResponse(httpResponse, originalRequest);
+            const response = this.#makeSuccessResponse(httpResponse, originalRequest);
             this.logger.push({ response }).debug('sending HTTP request is done');
             return response;
         } catch (err) {
             err.originalRequest = originalRequest;
-            if (err.config) {
-                err.config = {
-                    ...err.config,
-                    ...(err.config.httpAgent && { httpAgent: '[REDACTED]' }),
-                    ...(err.config.httpsAgent && { httpsAgent: '[REDACTED]' }),
-                };
-            }
-            this.logger.push({ err }).warn('error in sending HTTP request');
-            throw err;
-            // todo: think, how to handle errors
+            throw this.#makeErrorResponse(err);
+            // todo: think, how to handle errors: rethrow AxiosError ot create our own HttpError?
         }
     }
 
@@ -111,7 +105,7 @@ class AxiosHttpRequester {
     }
 
 
-    #makeResponse(axiosResponse, originalRequest) {
+    #makeSuccessResponse(axiosResponse, originalRequest) {
         const { data, status, headers } = axiosResponse;
 
         // todo: think, if we need to preserve this validation - it does not work with FSPIOP interoperability headers
@@ -121,7 +115,7 @@ class AxiosHttpRequester {
                 const err = new Error('Invalid content-type. ' +
                     `Expected application/json but received ${contentType}: ${data?.toString()}`);
                 err.originalRequest = originalRequest;
-                err.statusCode = status;
+                err.status = status;
                 err.contentType = contentType;
                 throw err;
             }
@@ -135,12 +129,31 @@ class AxiosHttpRequester {
         };
     }
 
+    #makeErrorResponse(err) {
+        err.statusCode = err.status || err.response?.status; // for backward compatibility
+        if (err.config) {
+            err.config = {
+                ...err.config,
+                ...(err.config.httpAgent && { httpAgent: '[REDACTED]' }),
+                ...(err.config.httpsAgent && { httpsAgent: '[REDACTED]' }),
+            };
+        }
+        this.logger.push({ err }).warn('error in sending HTTP request');
+        return err;
+    }
+
     #createAxiosClient(deps) {
         if (deps.httpClient) return deps.httpClient;
 
         this.logger.push(deps.httpConfig).debug('createAxiosClient...');
         const client = axios.default; // todo: think, if we need to use axios.create
         // const client = axios.create(deps.config);
+
+        if (deps.retryConfig) {
+            axiosRetry(client, deps.retryConfig);
+            this.logger.push(deps.retryConfig).debug('added retryConfig to http client');
+        }
+        // think, if we need request-specific retry configuration
 
         return client;
     }

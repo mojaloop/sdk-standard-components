@@ -48,6 +48,7 @@ describe('request error handling', () => {
         let dest = '42';
         let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
         await mojaloopRequestMethod(url, resourceType, body, dest);
+        await wso2Auth.stop();
     }
 
     test(

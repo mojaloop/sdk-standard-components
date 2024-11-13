@@ -35,17 +35,18 @@
  */
 
 const { Logger } = require('../logger');
+const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
-const defaultHttpConfig = require('./defaultHttpConfig');
 
 const createHttpRequester = ({
-    logger = new Logger(),
-    httpConfig = defaultHttpConfig,
-    httpClient = null
+    logger = new Logger({ context: { component: AxiosHttpRequester.name } }),
+    httpClient = null,
+    httpConfig = defaultConfig.createDefaultHttpConfig(),
+    retryConfig = defaultConfig.createDefaultRetryConfig(logger),
 } = {}) => {
     const deps = {
         logger,
-        ...(httpClient ? { httpClient } : { httpConfig })
+        ...(httpClient ? { httpClient } : { httpConfig, retryConfig })
     };
     return new AxiosHttpRequester(deps);
 };
@@ -63,5 +64,5 @@ request.responseType = httpRequester.responseType;
 module.exports = {
     request,
     createHttpRequester,
-    defaultHttpConfig,
+    defaultConfig,
 };

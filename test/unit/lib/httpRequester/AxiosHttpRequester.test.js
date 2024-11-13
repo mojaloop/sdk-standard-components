@@ -19,10 +19,13 @@ describe('AxiosHttpRequester Test -->', () => {
         expect(http).toBeInstanceOf(AxiosHttpRequester);
     });
 
-    test('should return object with statusCode 404, when uri is not registered in mockAxios', async () => {
+    test('should fail with statusCode 404, when uri is not registered in mockAxios', async () => {
+        expect.hasAssertions();
         const uri = 'arbitrary-uri';
-        const response = await http.sendRequest({ uri, responseType: 'text' });
-        expect(response.statusCode).toBe(404);
+        await http.sendRequest({ uri, responseType: 'text' })
+            .catch(err => {
+                expect(err.status).toBe(404);
+            });
     });
 
     test('should send mock GET request', async () => {
@@ -43,39 +46,19 @@ describe('AxiosHttpRequester Test -->', () => {
         expect(response.originalRequest.headers).toEqual({});
     });
 
-    test('should NOT throw error on any erroneous statusCode', async () => {
+    test('should throw error on any erroneous statusCode', async () => {
+        expect.hasAssertions();
         const route = '/error';
         const statusCode = 500;
         const data = { message: 'error' };
         mockGetReply({ route, statusCode, data });
 
-        const response = await http.sendRequest({ uri: makeMockUri(route) });
-        expect(response.statusCode).toBe(statusCode);
-        expect(response.data).toEqual(data);
+        await http.sendRequest({ uri: makeMockUri(route) })
+            .catch(err => {
+                expect(err.status).toBe(statusCode);
+                expect(err.response.data).toEqual(data);
+            });
     });
-
-    // test('should throw error on erroneous response statusCode', async () => {
-    //     expect.hasAssertions();
-    //     const route = '/error';
-    //     const statusCode = 500;
-    //     const data = { message: 'error' };
-    //     const headers = {
-    //         ...jsonContentTypeHeader,
-    //         'test': 'x'
-    //     };
-    //     mockGetReply({ route, statusCode, data, headers });
-    //
-    //     await http.sendRequest({
-    //         uri: makeMockUri(route),
-    //         method: 'GET',
-    //         headers: {},
-    //     }).catch(err => {
-    //         expect(err.message).toBe(`Request failed with status code ${statusCode}`);
-    //         expect(err.originalRequest).toBeDefined();
-    //         expect(err.response.data).toEqual(data);
-    //         expect(err.response.headers.toJSON()).toEqual(headers);
-    //     });
-    // });
 
     test('should have response JSON content-type header validation', async () => {
         expect.hasAssertions();
@@ -97,7 +80,7 @@ describe('AxiosHttpRequester Test -->', () => {
         });
     });
 
-    describe('convertToAxiosOptions -->', () => {
+    describe('convertToAxiosOptions Tests -->', () => {
         test('should add http protocol, if no protocol in uri', () => {
             const uri = '8.8.8.8:1234';
             const converted = http.convertToAxiosOptions({ uri});
@@ -145,6 +128,60 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(converted.httpsAgent).toBeUndefined();
             expect(converted.httpAgent).toBeUndefined();
             expect(converted.agent).toBeUndefined();
+        });
+    });
+
+    describe('retry Tests -->', () => {
+        beforeEach(() => {
+            mockAxios.reset();
+        });
+
+        test('should retry request on network error', async () => {
+            const route = '/error';
+            mockAxios
+                .onGet(route).networkErrorOnce()
+                .onGet(route).reply(200, {});
+            const response = await http.sendRequest({ uri: makeMockUri(route) });
+            expect(response.statusCode).toBe(200);
+        });
+
+        test('should fail with error on max retries exceed for an http request', async () => {
+            expect.hasAssertions();
+            const route = '/error';
+            mockAxios.onGet(route).networkError();
+
+            await http.sendRequest({ uri: makeMockUri(route) })
+                .catch(err => {
+                    expect(err.message).toBe('Network Error');
+                });
+        });
+
+        test('should retry on retryable server error (e.g. 503)', async () => {
+            const route = '/server';
+            mockAxios
+                .onGet(route).replyOnce(503)
+                .onGet(route).reply(200, {});
+            const response = await http.sendRequest({ uri: makeMockUri(route) });
+            expect(response.statusCode).toBe(200);
+        });
+
+        test('should NOT retry on badRequest error', async () => {
+            expect.hasAssertions();
+            const route = '/bad';
+            mockAxios.onGet(route).reply(400);
+            await http.sendRequest({ uri: makeMockUri(route) })
+                .catch(err => {
+                    expect(err.status).toBe(400);
+                });
+        });
+
+        test('should retry request on timeout', async () => {
+            const route = '/timeout';
+            mockAxios
+                .onGet(route).timeoutOnce()
+                .onGet(route).reply(200, {});
+            const response = await http.sendRequest({ uri: makeMockUri(route) });
+            expect(response.statusCode).toBe(200);
         });
     });
 });

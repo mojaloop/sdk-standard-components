@@ -43,6 +43,7 @@ class BaseRequests {
      *   number indicating how many times to retry a request that fails authorization.
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
      * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
+     * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
      */
     constructor(config) {
         this.logger = config.logger.push({ component: BaseRequests.name });
@@ -167,35 +168,37 @@ class BaseRequests {
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
         this.httpConfig = config.httpConfig || null;
+        this.retryConfig = config.retryConfig || null;
     }
 
     _request(opts, responseType) {
         const __request = async (opts, responseType, attempts) => request(opts)
-            .then((res) => {
-                const retry =
-                    res.statusCode === 401 &&
+            .catch((err) => {
+                const retryAuth = err.status === 401 &&
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
-                if (retry) {
+                if (retryAuth) {
                     this.logger.isDebugEnabled && this.logger.debug('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
                     } else {
                         const msg = 'Unable to retrieve WSO2 auth token';
-                        this.logger.isDebugEnabled && this.logger.push({ attempts, opts, res }).debug(msg);
+                        this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug(msg);
                         throw new Error(msg);
                     }
                     this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug('Retrying request with new WSO2 token.');
                     return __request(opts, responseType, attempts + 1);
+                } else {
+                    throw err;
                 }
-                return res;
             });
 
         const { method, uri, headers } = opts;
         this.logger.isVerboseEnabled && this.logger.push({ method, uri, headers }).verbose(`Executing HTTP ${method}...`);
 
         if (this.httpConfig) opts.httpConfig = this.httpConfig;
+        if (this.retryConfig) opts.retryConfig = this.retryConfig;
 
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)

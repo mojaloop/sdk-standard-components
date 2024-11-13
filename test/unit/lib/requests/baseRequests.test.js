@@ -39,6 +39,7 @@ describe('BaseRequests wso2 authorisation', () => {
     });
 
     it('should not retry requests when not configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -48,13 +49,16 @@ describe('BaseRequests wso2 authorisation', () => {
         };
 
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever' });
-
-        expect(mockAxios.history.get.length).toBe(1);
-        expect(wso2Auth.refreshToken).not.toHaveBeenCalled();
+        await br._request({ uri: 'http://what.ever' })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(1);
+                expect(wso2Auth.refreshToken).not.toHaveBeenCalled();
+            });
     });
 
     it('should retry requests once when configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -64,13 +68,16 @@ describe('BaseRequests wso2 authorisation', () => {
         };
 
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever', headers: {} });
-
-        expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-        expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+        await br._request({ uri: 'http://what.ever', headers: {} })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
+                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+            });
     });
 
     it('should retry requests multiple times when configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -80,10 +87,12 @@ describe('BaseRequests wso2 authorisation', () => {
         };
 
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever', headers: {} });
-
-        expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-        expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+        await br._request({ uri: 'http://what.ever', headers: {} })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
+                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+            });
     });
 });
 

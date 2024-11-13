@@ -10,8 +10,8 @@ describe('request Tests -->', () => {
     test('should throw error on wrong content-type, and pass original statusCode, when responseType = "json"', async () => {
         expect.hasAssertions();
         const route = '/xxx';
-        const statusCode = 401;
-        const data = 'Some error';
+        const statusCode = 200;
+        const data = 'Some data';
         const headers = { 'content-type': 'text/html' };
         mockGetReply({ route, statusCode, data, headers });
 

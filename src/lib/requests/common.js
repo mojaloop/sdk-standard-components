@@ -50,7 +50,6 @@ const buildUrl = (...args) => {
 };
 
 
-// todo: think, if it's better to use validateStatus option of axios instead
 const throwOrJson = async (res) => {
     // Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec.
     // This needs to be un-commented once the corresponding bug in the backend is fixed
@@ -58,16 +57,6 @@ const throwOrJson = async (res) => {
     //     // we should have got a valid mojaloop content-type in the response
     //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
     // }
-
-
-    // do this first - fail fast if we KNOW the request got an error response back
-    // note that 404 will throw. This is correct  behavior for the mojaloop api.
-    if (res.statusCode < 200 || res.statusCode >= 300) {
-        // not a successful request
-        throw new HTTPResponseError({ msg: `Request returned non-success status code ${res.statusCode}`,
-            res
-        });
-    }
 
     // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
     if ((res.headers['content-length']  && (res.headers['content-length'] !== '0' ) || (res.body && res.body.length > 0))) {

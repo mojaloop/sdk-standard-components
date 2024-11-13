@@ -41,7 +41,17 @@ describe('mojaloopRequests Tests', () => {
         : Buffer.from(JSON.stringify(data))
     );
 
-    async function testRequest(request, expectedResponse, responseType) {
+    const parseStreamData = async (data, expectedResponse, responseType) => {
+        if (!responseType.stream) return data;
+
+        let parsed = await streamToBuffer(data);
+        if (typeof expectedResponse.data === 'object' && responseType.json) {
+            parsed = JSON.parse(parsed);
+        }
+        return parsed;
+    };
+
+    const executeRequest = async (request, expectedResponse, responseType) => {
         const qs = querystring.encode(request.query);
         mockAxios
             .onPost(request.uri + (qs ? `?${qs}` : ''), request.body)
@@ -58,25 +68,24 @@ describe('mojaloopRequests Tests', () => {
             logger,
             peerEndpoint: request.host,
             tls: {
-                mutualTLS: {
-                    enabled: false
-                }
+                mutualTLS: { enabled: false }
             },
             jwsSign: true,
             jwsSignPutParties: true,
             jwsSigningKey: jwsSigningKey,
             wso2Auth,
         };
-
         const testMr = new mr(conf);
-        const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream);
-        let { data } = resp;
-        if (responseType.stream) {
-            data = await streamToBuffer(data);
-            if (typeof expectedResponse.data === 'object' && responseType.json) {
-                data = JSON.parse(data);
-            }
-        }
+        const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream)
+            .catch(err => err);
+
+        await wso2Auth.stop();
+
+        return resp;
+    };
+
+    async function testRequest(request, expectedResponse, responseType) {
+        const resp = await executeRequest(request, expectedResponse, responseType);
 
         expect(resp.originalRequest.data).toEqual(request.body);
         expect(resp.originalRequest.headers).toBeDefined();
@@ -86,6 +95,7 @@ describe('mojaloopRequests Tests', () => {
             // ignore the originalRequest prop on resp.
             delete resp.originalRequest;
         }
+        const data = await parseStreamData(resp.data, expectedResponse, responseType);
 
         expect({ ...resp, data }).toEqual(expectedResponse);
     }
@@ -175,7 +185,15 @@ describe('mojaloopRequests Tests', () => {
                 b: 'other param',
             },
         };
-        await testRequest(request, expectedResponse, { stream: true, json: true });
+        const responseType = { stream: true, json: true };
+        const resp = await executeRequest(request, expectedResponse, responseType);
+
+        expect(resp.originalRequest).toBeDefined();
+        expect(resp.response.status).toEqual(expectedResponse.statusCode);
+        expect(resp.response.headers.toJSON()).toEqual(expectedResponse.headers);
+
+        const data = await parseStreamData(resp.response.data, expectedResponse, responseType);
+        expect(data).toEqual(expectedResponse.data);
     });
 
     test('should receive 404 error', async () => {
@@ -197,6 +215,11 @@ describe('mojaloopRequests Tests', () => {
                 b: 'other param',
             },
         };
-        await testRequest(request, expectedResponse, { stream: false, json: true });
+
+        const resp = await executeRequest(request, expectedResponse, { stream: false, json: true });
+        expect(resp.originalRequest).toBeDefined();
+        expect(resp.response.data).toEqual(expectedResponse.data);
+        expect(resp.response.status).toEqual(expectedResponse.statusCode);
+        expect(resp.response.headers.toJSON()).toEqual(expectedResponse.headers);
     });
 });

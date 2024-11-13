@@ -116,7 +116,6 @@ describe('WSO2Auth', () => {
         const opts = mockOpts;
         mockAxios.reset();
         mockAxios.onPost().reply(401, null, jsonContentTypeHeader);
-        // http.__request = jest.fn(() => ({ statusCode: 401, }));
         const auth = new WSO2Auth(opts);
         const errCallback = jest.fn();
         auth.on('error', errCallback);
