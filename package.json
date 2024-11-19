@@ -6,8 +6,9 @@
   "types": "src/index.d.ts",
   "pre-commit": [
     "lint",
+    "test",
     "dep:check",
-    "test"
+    "audit:check"
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
