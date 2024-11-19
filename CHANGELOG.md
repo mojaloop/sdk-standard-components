@@ -1,4 +1,53 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.0...v19.4.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* used FSPIOP header for PUT transactionRequests callback ([#225](https://github.com/mojaloop/sdk-standard-components/issues/225)) ([a12fef8](https://github.com/mojaloop/sdk-standard-components/commit/a12fef8db1eba18ee9a1f082bf56763db649bfff))
+
+## [19.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.5...v19.4.0) (2024-11-05)
+
+
+### Features
+
+* increased scale for test currencies ([#224](https://github.com/mojaloop/sdk-standard-components/issues/224)) ([2bb792f](https://github.com/mojaloop/sdk-standard-components/commit/2bb792f3259cb84233198ed75a6f3b2b749a426f))
+
+### [19.3.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.4...v19.3.5) (2024-10-30)
+
+
+### Chore
+
+* deps ([#223](https://github.com/mojaloop/sdk-standard-components/issues/223)) ([0b8ccd7](https://github.com/mojaloop/sdk-standard-components/commit/0b8ccd75a0827372a650ef0a0ed35a820bd5d452))
+
+### [19.3.4](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.3...v19.3.4) (2024-10-30)
+
+
+### Chore
+
+* extended codeowners list ([#222](https://github.com/mojaloop/sdk-standard-components/issues/222)) ([f05ead6](https://github.com/mojaloop/sdk-standard-components/commit/f05ead6b781d37e1e259b29d2aeba290435fce1e))
+
+### [19.3.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.2...v19.3.3) (2024-10-30)
+
+
+### Chore
+
+* update deps ([#221](https://github.com/mojaloop/sdk-standard-components/issues/221)) ([a00f93f](https://github.com/mojaloop/sdk-standard-components/commit/a00f93f5508b0fa358c0bf06d16602f046885da5))
+
+### [19.3.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.1...v19.3.2) (2024-10-30)
+
+
+### Chore
+
+* update deps ([#220](https://github.com/mojaloop/sdk-standard-components/issues/220)) ([2b35ba5](https://github.com/mojaloop/sdk-standard-components/commit/2b35ba5affb3067a828c884459d6c281bb9e3584))
+
+### [19.3.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.0...v19.3.1) (2024-10-30)
+
+
+### Chore
+
+* support sdk added expiration ([#219](https://github.com/mojaloop/sdk-standard-components/issues/219)) ([3663832](https://github.com/mojaloop/sdk-standard-components/commit/366383278a3dd79cd1d0137469a9e1ba653fdbb7))
+
 ## [19.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.2.0...v19.3.0) (2024-10-28)
 
 

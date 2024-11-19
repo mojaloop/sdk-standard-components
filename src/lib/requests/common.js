@@ -10,9 +10,10 @@
 
 'use strict';
 
-const respErrSym = Symbol('ResponseErrorDataSym');
 const safeStringify = require('fast-safe-stringify');
+const { ApiType, ONLY_FSPIOP_RESOURCES} = require('../constants');
 
+const respErrSym = Symbol('ResponseErrorDataSym');
 
 /**
  * An HTTPResponseError class
@@ -119,10 +120,17 @@ const formatEndpointOrDefault = (endpoint, transportScheme, defaultEndpoint) => 
     return `${transportScheme}://${endpoint}`;
 };
 
+const defineApiType = (resource, configApiType) => {
+    if (ONLY_FSPIOP_RESOURCES.includes(resource)) {
+        return ApiType.FSPIOP;
+    }
+    return configApiType;
+};
 
 module.exports = {
     bodyStringifier,
     buildUrl,
+    defineApiType,
     formatEndpointOrDefault,
     HTTPResponseError,
     ResponseType,

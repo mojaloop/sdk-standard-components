@@ -93,9 +93,7 @@ class IlpV4 extends IlpBase {
         if (isNaN(expiresAt.getTime())){
             throw new TypeError(ERROR_MESSAGES.invalidIlpExpirationDate);
         }
-        const amount = isFx
-            ? ILP_AMOUNT_FOR_FX
-            : super._getIlpCurrencyAmount(transactionObject.amount);
+        const amount = this.#adjustAmount(transactionObject, isFx);
         const destination = this._getIlpAddress();
 
         this.logger.isDebugEnabled && this.logger.push({ transactionObject, amount, expiresAt, destination }).debug('ILP packet input details');
@@ -148,6 +146,19 @@ class IlpV4 extends IlpBase {
         const encodedSecret = Buffer.from(this.secret).toString('base64');
 
         return super._createHmac(base64EncodedTransaction, encodedSecret);
+    }
+
+    #adjustAmount(transactionObject, isFx) {
+        const amount = isFx
+            ? ILP_AMOUNT_FOR_FX
+            : super._getIlpCurrencyAmount(transactionObject.amount);
+
+        if (amount.includes('.')) {
+            const errMessage = ERROR_MESSAGES.invalidAdjustedAmount;
+            this.logger.push(transactionObject.amount).warn(errMessage);
+            throw new TypeError(errMessage);
+        }
+        return amount;
     }
 }
 

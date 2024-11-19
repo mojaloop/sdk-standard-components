@@ -4,10 +4,11 @@ const safeStringify = require('fast-safe-stringify');
 const http = require('http');
 const https = require('https');
 
-const { RESOURCES } = require('../constants');
+const { RESOURCES, ISO_20022_HEADER_PART } = require('../constants');
 const {
     bodyStringifier,
     buildUrl,
+    defineApiType,
     formatEndpointOrDefault,
     ResponseType,
     throwOrJson,
@@ -270,10 +271,13 @@ class BaseRequests {
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
-        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
-            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, isError: transformParams.isError,
-                $context: transformParams.$context
-            });
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method, {
+            body: reqOpts.body,
+            headers: reqOpts.headers,
+            params: transformParams,
+            isError: transformParams.isError,
+            $context: transformParams.$context
+        });
         reqOpts.body = transformed.body;
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
@@ -394,13 +398,13 @@ class BaseRequests {
      * @returns {*} headers object for use in requests to mojaloop api endpoints
      */
     _buildHeaders(method, resourceType, dest) {
-        let isoInsert = '';
-        if(this.apiType === ApiType.ISO20022) {
-            isoInsert = '.iso20022';
-        }
+        const apiType = defineApiType(resourceType, this.apiType);
+        const isoPart = apiType === ApiType.ISO20022
+            ? `.${ISO_20022_HEADER_PART}`
+            : '';
 
         let headers = {
-            'content-type': `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
+            'content-type': `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
             'date': new Date().toUTCString(),
         };
 
@@ -423,7 +427,7 @@ class BaseRequests {
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
             // if we are sending ISO we should "accept" it also
-            headers['accept'] = `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
+            headers['accept'] = `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
         }
 
         return headers;

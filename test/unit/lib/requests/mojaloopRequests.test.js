@@ -8,14 +8,15 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const fs = require('fs');
 jest.mock('http');
 const http = require('http');
+const fs = require('fs');
 
+const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const { ApiType, ISO_20022_HEADER_PART} = require('../../../../src/lib/constants');
 const mockLogger = require('../../../__mocks__/mockLogger');
-const { ApiType} = require('../../../../src/lib/requests/apiTransformer');
 
 // dummy request bodies
 const putPartiesBody = require('../../data/putPartiesBody.json');
@@ -31,7 +32,6 @@ const postFxQuotesBody = require('../../data/postFxQuotesBody.json');
 const putFxQuotesBody = require('../../data/putFxQuotesBody.json');
 const postFxTransfersBody = require('../../data/postFxTransfersBody.json');
 const putFxTransfersBody = require('../../data/putFxTransfersBody.json');
-const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 
@@ -725,6 +725,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.CdtTrfTxInf.Dbtr).toBeDefined();
         expect(reqBody.CdtTrfTxInf.CdtrAgt).toBeDefined();
         expect(reqBody.CdtTrfTxInf.DbtrAgt).toBeDefined();
+        expect(reqBody.CdtTrfTxInf.ChrgsInf.Agt).toBeDefined();
     });
 
     it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
@@ -855,8 +856,9 @@ describe('MojaloopRequests', () => {
         });
 
         const testMr = new mr(conf);
-        const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: isoPostQuoteContext.body});
+        const isoPostQuote = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
+        const isoPutQuoteContext = await TransformFacades.FSPIOP.quotes.put({params: {ID: '1234'}, body: putQuotesBody, $context: {isoPostQuote: isoPostQuote.body}});
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuoteResponse: isoPutQuoteContext.body});
 
         const reqBody = JSON.parse(res.originalRequest.body);
 
@@ -1390,5 +1392,19 @@ describe('MojaloopRequests', () => {
 
         // check the body was NOT converted to ISO20022
         expect(reqBody).toEqual(putErrorBody);
+    });
+
+    it('should set FSPIOP headers for putTransactionRequests', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+        http.request = jest.fn((options, callback) => {
+            return getReqMock(options, callback);
+        });
+        const testMr = new mr(conf);
+        const res = await testMr.putTransactionRequests('txnReqId', {}, 'fspId');
+
+        expect(res.originalRequest.headers['content-type']).not.toContain(ISO_20022_HEADER_PART);
     });
 });
