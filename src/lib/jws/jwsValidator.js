@@ -69,6 +69,8 @@ class JwsValidator {
 
             const token = `${protectedHeader}.${base64url(safeStringify(payload))}.${signature}`;
 
+            this.logger.isDebugEnabled && this.logger.debug(`JWS token to verify: ${token}, pubKey: ${pubKey}`);
+
             // validate signature
             const result = jwt.verify(token, pubKey, {
                 complete: true,
