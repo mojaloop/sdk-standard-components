@@ -8,13 +8,15 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const fs = require('fs');
+const fs = require('node:fs');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const { defaultHttpConfig, createHttpRequester } = require('#src/lib/httpRequester/index');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
+const logger = mockLogger({ app: 'request-errors-test' });
 
 describe('request error handling', () => {
 
@@ -22,11 +24,11 @@ describe('request error handling', () => {
         let jwsSign = false;
         let jwsSignPutParties = false;
 
-        const wso2Auth = new WSO2Auth({logger: console});
+        const wso2Auth = new WSO2Auth({ logger });
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-errors-test' }, undefined),
+            logger,
             tls: {
                 mutualTLS: {
                     enabled: false
@@ -40,12 +42,13 @@ describe('request error handling', () => {
         };
 
         const testMr = new mr(conf);
-        let url = '/';
+        let url = '/test';
         let resourceType = 'parties';
-        let body = {a: 1};
+        let body = { a: 1 };
         let dest = '42';
         let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
         await mojaloopRequestMethod(url, resourceType, body, dest);
+        await wso2Auth.stop();
     }
 
     test(
@@ -55,7 +58,6 @@ describe('request error handling', () => {
             try {
                 await primRequestSerializationTest('_post');
             } catch (err) {
-                console.log(err);
                 expect(err.code).toBe('ECONNREFUSED');
                 expect(err.address).toBe('127.0.0.1');
                 expect(err.port).toBe(9999);
@@ -86,13 +88,28 @@ describe('request error handling', () => {
             expect(err.address).toBe('127.0.0.1');
             expect(err.port).toBe(9999);
 
-            expect(err.originalRequest).not.toBeUndefined();
-            expect(err.originalRequest.port).not.toBeUndefined();
-            expect(err.originalRequest.body).not.toBeUndefined();
-            expect(err.originalRequest.headers).not.toBeUndefined();
-            expect(err.originalRequest.host).not.toBeUndefined();
-            expect(err.originalRequest.method).not.toBeUndefined();
-            expect(err.originalRequest.path).not.toBeUndefined();
+            expect(err.originalRequest).toBeDefined();
+            expect(err.originalRequest.data).toBeDefined();
+            expect(err.originalRequest.headers).toBeDefined();
+            expect(err.originalRequest.baseURL).toBeDefined();
+            expect(err.originalRequest.url).toBeDefined();
+            expect(err.originalRequest.method).toBeDefined();
         }
+    });
+
+    describe('axios Timeout Test -->', () => {
+        test('should be able to set default timeout', async () => {
+            expect.hasAssertions();
+            const timeout = 1;
+            const httpConfig = { ...defaultHttpConfig, timeout };
+            const http = createHttpRequester({ httpConfig });
+            const uri = 'https://jsonplaceholder.typicode.com/todos';
+
+            await http.sendRequest({ uri })
+                .catch(err => {
+                    expect(err.message).toBe(`timeout of ${timeout}ms exceeded`);
+                    expect(err.code).toBe('ECONNABORTED');
+                });
+        });
     });
 });

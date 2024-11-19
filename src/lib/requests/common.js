@@ -58,16 +58,6 @@ const throwOrJson = async (res) => {
     //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
     // }
 
-
-    // do this first - fail fast if we KNOW the request got an error response back
-    // note that 404 will throw. This is correct  behavior for the mojaloop api.
-    if (res.statusCode < 200 || res.statusCode >= 300) {
-        // not a successful request
-        throw new HTTPResponseError({ msg: `Request returned non-success status code ${res.statusCode}`,
-            res
-        });
-    }
-
     // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
     if ((res.headers['content-length']  && (res.headers['content-length'] !== '0' ) || (res.body && res.body.length > 0))) {
         throw new HTTPResponseError({ msg: `Expected empty response body but got content: ${res.body}`,

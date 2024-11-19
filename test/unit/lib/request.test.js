@@ -1,35 +1,25 @@
-const { EventEmitter } = require('node:events');
-const request = require('../../../src/lib/request');
-
-const mockReq = new EventEmitter();
-mockReq.end = jest.fn();
-
-const mockRes = new EventEmitter();
-mockRes.headers = {};
-mockRes.statusCode = 401;
-
-let mockCb;
-
-jest.mock('http', () => ({
-    ...jest.requireActual('http'),
-    request: jest.fn((reqOpts, cb) => {
-        mockCb = cb;
-        return mockReq;
-    }),
-}));
+const { mockAxios, mockGetReply } = require('#test/unit/utils');
+const { request } = require('#src/lib/httpRequester/index');
+const { ResponseType } = require('#src/lib/httpRequester/constants');
 
 describe('request Tests -->', () => {
-    test('should throw error on wrong content-type, and pass original statusCode', async () => {
-        const sentRequest = request({ uri: 'http://test.com' }).catch(e => e);
-        mockCb(mockRes);
-        setTimeout(() => {
-            mockRes.emit('data', Buffer.from('test data'));
-            mockRes.emit('end');
-        }, 10);
+    beforeEach(() => {
+        mockAxios.reset();
+    });
 
-        const err = await sentRequest;
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message.startsWith('Invalid content-type')).toBe(true);
-        expect(err.statusCode).toBe(mockRes.statusCode);
+    test('should throw error on wrong content-type, and pass original statusCode, when responseType = "json"', async () => {
+        expect.hasAssertions();
+        const route = '/xxx';
+        const statusCode = 200;
+        const data = 'Some data';
+        const headers = { 'content-type': 'text/html' };
+        mockGetReply({ route, statusCode, data, headers });
+
+        await request({ uri:`http://test.com${route}`, responseType: ResponseType.JSON })
+            .catch(err => {
+                expect(err).toBeInstanceOf(Error);
+                expect(err.message.startsWith('Invalid content-type')).toBe(true);
+                expect(err.statusCode).toBe(statusCode);
+            });
     });
 });

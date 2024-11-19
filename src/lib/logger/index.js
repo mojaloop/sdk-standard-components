@@ -23,6 +23,7 @@
 // while the mojaloop-sdk uses the logger defined here
 const util = require('util');
 const safeStringify = require('fast-safe-stringify');
+const { colorize } = require('./helpers');
 
 // Utility functions
 
@@ -64,14 +65,17 @@ const replaceOutput = (_, value) => {
 //   The function that will eventually perform the stringifying. Will be called with the same
 //   signature as JSON.stringify.
 const buildStringify = ({
-    space = 2,
     printTimestamp = true,
     timestampFmt = (ts => ts.toISOString()),
     stringify = safeStringify,
+    isJsonOutput = false,
+    space = isJsonOutput ? 2 : 0,
 } = {}) => {
     return ({ ctx, msg, level = undefined }) => {
         const ts = printTimestamp ? timestampFmt(new Date()) : undefined;
-        return stringify({ ts, level, msg, ctx, }, replaceOutput, space);
+        return isJsonOutput
+            ? stringify({ ts, level, msg, ctx, }, replaceOutput, space)
+            : `${ts} - ${colorize(level)}: ${msg} - ${stringify(ctx, replaceOutput, space)}`;
     };
 };
 
@@ -103,12 +107,13 @@ class Logger {
     //   { msg, ctx, level: 'verbose' }
     constructor({
         context = {},
-        stringify = buildStringify(),
         opts: {
-            allowContextOverwrite = false,
+            allowContextOverwrite = true,
             copy = o => o,
             levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal'],
+            isJsonOutput = false,
         } = {},
+        stringify = buildStringify({ isJsonOutput }),
     } = {}) {
         this[contextSym] = context;
         this.isVerboseEnabled = false;
@@ -124,6 +129,7 @@ class Logger {
                 allowContextOverwrite,
                 copy,
                 levels,
+                isJsonOutput,
             }
         });
     }
@@ -162,9 +168,7 @@ class Logger {
         // Check none of the new context replaces any of the old context
         const arrayIntersection = (a1, a2) => a1.filter(v => a2.includes(v));
         const objKeysIntersection = (o1, o2) => arrayIntersection(Object.keys(o1), Object.keys(o2));
-        if (!this.allowContextOverwrite &&
-            objKeysIntersection(context, this[contextSym]).length > 0
-        ) {
+        if (!this.opts.allowContextOverwrite && objKeysIntersection(context, this[contextSym]).length > 0) {
             throw new Error('Key already exists in logger');
         }
         return new Logger({
