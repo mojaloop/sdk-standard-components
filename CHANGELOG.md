@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.5.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.1...v19.5.0) (2024-11-19)
+
+
+### Features
+
+* **csi-128:** added axios;  fixed unit-tests ([#226](https://github.com/mojaloop/sdk-standard-components/issues/226)) ([1f9cb79](https://github.com/mojaloop/sdk-standard-components/commit/1f9cb79ccad36a214b310c9117ea3f541dbba5bc))
+
 ### [19.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.0...v19.4.1) (2024-11-05)
 
 

@@ -8,52 +8,15 @@
  *       James Bush - james.bush@modusbox.com                             *
  **************************************************************************/
 
-const http = require('http');
-jest.mock('http');
+const { mockAxios, jsonContentTypeHeader } = require('#test/unit/utils');
 
 const BaseRequests = require('../../../../src/lib/requests/baseRequests');
-// const WSO2Auth = require('../../../../lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 const { ApiType } = require('../../../../src/lib/requests/apiTransformer');
 
 const postQuotesBody = require('../../data/quoteRequest.json');
 const putPartiesBody = require('../../data/putPartiesBody.json');
 const patchTransfersBody = require('../../data/patchTransfersBody.json');
-
-
-// utility function that return a mock http ClientRequest type object which will complete a request and allow seeing
-// the sent headers and body etc...
-const getReqMock = (options, callback) => {
-    return {
-        on: jest.fn(),
-        write: jest.fn(() => {
-            console.log('reqMock.write called');
-            return true;
-        }),
-        end: jest.fn().mockImplementation(() => {
-            console.log('reqMock.end called');
-            const mr = {
-                statusCode: 202,
-                headers: {
-                    'content-type': 'application/json',
-                },
-                on: jest.fn((event, eventCallback) => {
-                    if (event === 'data') {
-                        // simulate response data
-                        console.log('sending mock resposne body');
-                        eventCallback(Buffer.from('{ "message": "mock response body" }'));
-                    }
-                    if (event === 'end') {
-                        // simulate end of response
-                        console.log('simulating end of response');
-                        eventCallback();
-                    }
-                }),
-            };
-            callback(mr);
-        }),
-    };
-};
 
 describe('BaseRequests wso2 authorisation', () => {
     let wso2Auth, defaultConf;
@@ -71,14 +34,12 @@ describe('BaseRequests wso2 authorisation', () => {
                 }
             },
         };
-        http.__request = jest.fn(() => ({ statusCode: 401 }));
+        mockAxios.reset();
+        mockAxios.onAny().reply(401, {}, jsonContentTypeHeader);
     });
 
-    afterEach(() => {
-        http.__request.mockClear();
-    });
-
-    it('does not retry requests when not configured to do so', async () => {
+    it('should not retry requests when not configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -88,13 +49,16 @@ describe('BaseRequests wso2 authorisation', () => {
         };
 
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever' });
-
-        expect(http.__request).toBeCalledTimes(1);
-        expect(wso2Auth.refreshToken).not.toBeCalled();
+        await br._request({ uri: 'http://what.ever' })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(1);
+                expect(wso2Auth.refreshToken).not.toHaveBeenCalled();
+            });
     });
 
-    it('retries requests once when configured to do so', async () => {
+    it('should retry requests once when configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -103,16 +67,17 @@ describe('BaseRequests wso2 authorisation', () => {
             },
         };
 
-        http.__request = jest.fn(() => ({ statusCode: 401 }));
-
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever', headers: {} });
-
-        expect(http.__request).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes + 1);
-        expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+        await br._request({ uri: 'http://what.ever', headers: {} })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
+                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+            });
     });
 
-    it('retries requests multiple times when configured to do so', async () => {
+    it('should retry requests multiple times when configured to do so', async () => {
+        expect.hasAssertions();
         const conf = {
             ...defaultConf,
             wso2: {
@@ -121,13 +86,13 @@ describe('BaseRequests wso2 authorisation', () => {
             },
         };
 
-        http.__request = jest.fn(() => ({ statusCode: 401 }));
-
         const br = new BaseRequests(conf);
-        await br._request({ uri: 'http://what.ever', headers: {} });
-
-        expect(http.__request).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes + 1);
-        expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+        await br._request({ uri: 'http://what.ever', headers: {} })
+            .catch((err) => {
+                expect(err.status).toBe(401);
+                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
+                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+            });
     });
 });
 
@@ -145,11 +110,8 @@ describe('BaseRequests', () => {
             },
             dfspId: 'testdfsp',
         };
-        http.__request = jest.fn(() => ({ statusCode: 200 }));
-    });
-
-    afterEach(() => {
-        http.__request.mockClear();
+        mockAxios.reset();
+        mockAxios.onAny().reply(200, {}, jsonContentTypeHeader);
     });
 
     it('returns original request details for GET calls when response type is mojaloop', async () => {
@@ -226,13 +188,6 @@ describe('BaseRequests', () => {
             ...defaultConf,
             apiType: ApiType.ISO20022,
         };
-
-        // mock the http request method so we can see the sent body
-        // yeah, this is more complicated than it should be.
-        http.request = jest.fn((options, callback) => {
-            return getReqMock(options, callback);
-        });
-
         const br = new BaseRequests(conf);
 
         const res = await br._post('quotes',
@@ -242,9 +197,10 @@ describe('BaseRequests', () => {
             undefined,
             undefined,
             undefined,
-            { SubId: 'abc' });
+            { SubId: 'abc' }
+        );
 
-        const reqBody = JSON.parse(res.originalRequest.body);
+        const reqBody = res.originalRequest.data;
 
         // check the correct content type was sent
         expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.quotes+json;version=1.0');
@@ -261,13 +217,6 @@ describe('BaseRequests', () => {
             ...defaultConf,
             apiType: ApiType.ISO20022,
         };
-
-        // mock the http request method so we can see the sent body
-        // yeah, this is more complicated than it should be.
-        http.request = jest.fn((options, callback) => {
-            return getReqMock(options, callback);
-        });
-
         const br = new BaseRequests(conf);
 
         const res = await br._put('parties/MSISDN/0123456789',
@@ -277,9 +226,10 @@ describe('BaseRequests', () => {
             undefined,
             undefined,
             undefined,
-            { Type: 'MSISDN', ID: '0123456789' });
+            { Type: 'MSISDN', ID: '0123456789' }
+        );
 
-        const reqBody = JSON.parse(res.originalRequest.body);
+        const reqBody = res.originalRequest.data;
 
         // check the correct content type was sent
         expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.parties+json;version=1.0');
@@ -298,13 +248,6 @@ describe('BaseRequests', () => {
             ...defaultConf,
             apiType: ApiType.ISO20022,
         };
-
-        // mock the http request method so we can see the sent body
-        // yeah, this is more complicated than it should be.
-        http.request = jest.fn((options, callback) => {
-            return getReqMock(options, callback);
-        });
-
         const br = new BaseRequests(conf);
 
         const res = await br._patch('transfers/20508186-1458-4ac0-a824-d4b07e37d7b3',
@@ -314,9 +257,10 @@ describe('BaseRequests', () => {
             undefined,
             undefined,
             undefined,
-            undefined);
+            undefined
+        );
 
-        const reqBody = JSON.parse(res.originalRequest.body);
+        const reqBody = res.originalRequest.data;
 
         // check the correct content type was sent
         expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.transfers+json;version=1.0');

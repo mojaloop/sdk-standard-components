@@ -567,6 +567,7 @@ declare namespace SDKStandardComponents {
 
 
         interface BuildStringifyParams {
+            isJsonOutput?: boolean
             space?: number
             printTimestamp?: boolean
             timestampFmt?: TimestampFormatter
