@@ -1,5 +1,9 @@
 const axiosRetry = require('axios-retry');
-const { DEFAULT_TIMEOUT, DEFAULT_RETRIES } = require('./constants');
+const {
+    DEFAULT_TIMEOUT,
+    DEFAULT_RETRIES,
+    DEFAULT_RETRY_DELAY,
+} = require('./constants');
 
 const retryableStatusCodes = [
     408,
@@ -25,6 +29,7 @@ const createDefaultHttpConfig = () => Object.freeze({
     }
 });
 
+// See all retry options here: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
 const createDefaultRetryConfig = (logger) => Object.freeze({
     retries: DEFAULT_RETRIES,
     retryCondition: (err) => {
@@ -32,8 +37,13 @@ const createDefaultRetryConfig = (logger) => Object.freeze({
             || axiosRetry.isRetryableError(err)
             || retryableStatusCodes.includes(err.status)
             || retryableHttpErrorCodes.includes(err.code);
-        logger.isDebugEnabled && logger.push({ needRetry, err }).debug('retryCondition is evaluated');
+        logger.isDebugEnabled && logger.push({ needRetry, err }).debug(`retryCondition is evaluated to ${needRetry}`);
         return needRetry;
+    },
+    retryDelay: (retryCount) => {
+        const delay = DEFAULT_RETRY_DELAY;
+        logger.isDebugEnabled && logger.push({ delay, retryCount }).debug(`http retryDelay is ${delay}ms`);
+        return delay;
     },
     onRetry: (retryCount, err) => {
         logger.isVerboseEnabled && logger.push({ retryCount, err }).verbose(`retrying HTTP request due to ${err?.message}...`);
