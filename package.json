@@ -42,7 +42,7 @@
   ],
   "dependencies": {
     "@mojaloop/ml-schema-transformer-lib": "^2.4.1",
-    "axios": "1.7.7",
+    "axios": "1.7.8",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
     "fast-safe-stringify": "^2.1.1",
@@ -64,9 +64,9 @@
     }
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^17.7.4",
+    "@mojaloop/api-snippets": "^17.7.5",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.9.1",
+    "@types/node": "^22.10.1",
     "audit-ci": "^7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
@@ -79,7 +79,7 @@
     "pre-commit": "^1.2.2",
     "replace": "^1.2.2",
     "standard-version": "^9.5.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   },
   "imports": {
     "#src/*": "./src/*.js",
