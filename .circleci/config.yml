@@ -215,7 +215,7 @@ jobs:
       - store_test_results:
           path: ./test/results
 
-  test-deprecated:
+  test-deprecations:
     executor: default-docker
     steps:
       - run:
