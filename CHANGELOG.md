@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.6.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.2...v19.6.0) (2024-11-29)
+
+
+### Features
+
+* deprecated dependencies check  ([#231](https://github.com/mojaloop/sdk-standard-components/issues/231)) ([c383b57](https://github.com/mojaloop/sdk-standard-components/commit/c383b5718e22e78259810cda079bfa38a6f6732d))
+
 ### [19.5.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.1...v19.5.2) (2024-11-21)
 
 
