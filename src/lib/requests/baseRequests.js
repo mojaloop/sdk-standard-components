@@ -1,19 +1,19 @@
 'use strict';
 
-const safeStringify = require('fast-safe-stringify');
-const http = require('http');
-const https = require('https');
+const http = require('node:http');
+const https = require('node:https');
 
-const { RESOURCES } = require('../constants');
+const { request } = require('../httpRequester');
+const { RESOURCES, ISO_20022_HEADER_PART } = require('../constants');
 const {
-    bodyStringifier,
     buildUrl,
+    defineApiType,
     formatEndpointOrDefault,
     ResponseType,
     throwOrJson,
 } = require('./common');
 
-const request = require('../request');
+
 const { ApiType, ApiTransformer } = require('./apiTransformer');
 const JwsSigner = require('../jws').signer;
 
@@ -42,9 +42,11 @@ class BaseRequests {
      * @param {Object | undefined} config.wso2 Optional. The wso2Auth object and
      *   number indicating how many times to retry a request that fails authorization.
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
+     * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
+     * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
      */
     constructor(config) {
-        this.logger = config.logger;
+        this.logger = config.logger.push({ component: BaseRequests.name });
 
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
@@ -165,43 +167,45 @@ class BaseRequests {
         };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
+        this.httpConfig = config.httpConfig || null;
+        this.retryConfig = config.retryConfig || null;
     }
 
     _request(opts, responseType) {
         const __request = async (opts, responseType, attempts) => request(opts)
-            .then((res) => {
-                const retry =
-                    res.statusCode === 401 &&
+            .catch((err) => {
+                const retryAuth = err.status === 401 &&
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
-                if (retry) {
+                if (retryAuth) {
                     this.logger.isDebugEnabled && this.logger.debug('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
                     } else {
                         const msg = 'Unable to retrieve WSO2 auth token';
-                        this.logger.isDebugEnabled && this.logger.push({ attempts, opts, res }).debug(msg);
+                        this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug(msg);
                         throw new Error(msg);
                     }
                     this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug('Retrying request with new WSO2 token.');
                     return __request(opts, responseType, attempts + 1);
+                } else {
+                    throw err;
                 }
-                return res;
             });
+
+        const { method, uri, headers } = opts;
+        this.logger.isVerboseEnabled && this.logger.push({ method, uri, headers }).verbose(`Executing HTTP ${method}...`);
+
+        if (this.httpConfig) opts.httpConfig = this.httpConfig;
+        if (this.retryConfig) opts.retryConfig = this.retryConfig;
+
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch((err) => {
-                const tryParse = (body) => {
-                    try {
-                        return JSON.parse(body);
-                    } catch {
-                        return undefined;
-                    }
-                };
-                this.logger.isDebugEnabled && this.logger
-                    .push({ opts: { ...opts, agent: '[REDACTED]' }, err, body: tryParse(opts.body) })
-                    .debug('Error attempting request');
+                this.logger.isWarnEnabled && this.logger
+                    .push({ err, opts: { ...opts, agent: '[REDACTED]' } })
+                    .warn('Error attempting request');
                 throw err;
             });
     }
@@ -236,8 +240,6 @@ class BaseRequests {
         }
 
         // Note we do not JWS sign requests with no body i.e. GET requests
-
-        this.logger.isDebugEnabled && this.logger.debug(`Executing HTTP GET: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -270,8 +272,13 @@ class BaseRequests {
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
-        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
-            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams, isError: transformParams.isError });
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method, {
+            body: reqOpts.body,
+            headers: reqOpts.headers,
+            params: transformParams,
+            isError: transformParams.isError,
+            $context: transformParams.$context
+        });
         reqOpts.body = transformed.body;
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
@@ -283,9 +290,6 @@ class BaseRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
-        reqOpts.body = bodyStringifier(reqOpts.body);
-
-        this.logger.isDebugEnabled && this.logger.debug(`Executing HTTP PUT: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -327,9 +331,6 @@ class BaseRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
-        reqOpts.body = bodyStringifier(reqOpts.body);
-
-        this.logger.isDebugEnabled && this.logger.debug(`Executing HTTP PATCH: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -362,8 +363,12 @@ class BaseRequests {
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
-        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method,
-            { body: reqOpts.body, headers: reqOpts.headers, params: transformParams });
+        const transformed = await this._apiTransformer.transformOutboundRequest(resourceType, reqOpts.method, {
+            body: reqOpts.body,
+            headers: reqOpts.headers,
+            params: transformParams,
+            $context: transformParams.$context
+        });
         reqOpts.body = transformed.body;
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
@@ -375,9 +380,6 @@ class BaseRequests {
             this.jwsSigner.sign(reqOpts);
         }
 
-        reqOpts.body = bodyStringifier(reqOpts.body);
-
-        this.logger.isDebugEnabled && this.logger.debug(`Executing HTTP POST: ${safeStringify({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }})}`);
         return this._request(reqOpts, responseType);
     }
 
@@ -392,13 +394,13 @@ class BaseRequests {
      * @returns {*} headers object for use in requests to mojaloop api endpoints
      */
     _buildHeaders(method, resourceType, dest) {
-        let isoInsert = '';
-        if(this.apiType === ApiType.ISO20022) {
-            isoInsert = '.iso20022';
-        }
+        const apiType = defineApiType(resourceType, this.apiType);
+        const isoPart = apiType === ApiType.ISO20022
+            ? `.${ISO_20022_HEADER_PART}`
+            : '';
 
         let headers = {
-            'content-type': `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
+            'content-type': `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
             'date': new Date().toUTCString(),
         };
 
@@ -421,7 +423,7 @@ class BaseRequests {
         // dont add accept header to PUT requests
         if(method.toUpperCase() !== 'PUT') {
             // if we are sending ISO we should "accept" it also
-            headers['accept'] = `application/vnd.interoperability${isoInsert}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
+            headers['accept'] = `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
         }
 
         return headers;

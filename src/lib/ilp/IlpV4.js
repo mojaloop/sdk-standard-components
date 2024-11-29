@@ -43,7 +43,7 @@ class IlpV4 extends IlpBase {
      * @returns {IlpResponse} - object containing the fulfilment, condition and ilp packet (v4)
      */
     getResponseIlp(transactionObject) {
-        const fulfilment = this.calculateFulfil(transactionObject);
+        const fulfilment = this.#calculateFulfilFromTransactionObject(transactionObject);
         const condition = super.calculateConditionFromFulfil(fulfilment);
         const ilpPacket = this.calculateIlpPacket(transactionObject, condition);
 
@@ -55,6 +55,17 @@ class IlpV4 extends IlpBase {
         this.logger.isDebugEnabled && this.logger.push({ transactionObject, result }).debug('Generated ILP response');
 
         return result;
+    }
+
+    /**
+     * Calculates a fulfilment given a base64 encoded ilp packet
+     *
+     * @returns {string} - string containing base64 encoded fulfilment
+     */
+    calculateFulfil(base64EncodedPacket) {
+        const transactionObject = this.getTransactionObject(base64EncodedPacket);
+        const { fulfilment } = this.getResponseIlp(transactionObject);
+        return fulfilment;
     }
 
     /**
@@ -82,9 +93,7 @@ class IlpV4 extends IlpBase {
         if (isNaN(expiresAt.getTime())){
             throw new TypeError(ERROR_MESSAGES.invalidIlpExpirationDate);
         }
-        const amount = isFx
-            ? ILP_AMOUNT_FOR_FX
-            : super._getIlpCurrencyAmount(transactionObject.amount);
+        const amount = this.#adjustAmount(transactionObject, isFx);
         const destination = this._getIlpAddress();
 
         this.logger.isDebugEnabled && this.logger.push({ transactionObject, amount, expiresAt, destination }).debug('ILP packet input details');
@@ -110,18 +119,6 @@ class IlpV4 extends IlpBase {
         return ILP_ADDRESS;
     }
 
-    /**
-     * Calculates a fulfilment given a transaction object and a secret
-     *
-     * @returns {string} - string containing base64 encoded fulfilment
-     */
-    calculateFulfil(transactionObject) {
-        const base64EncodedTransaction = Buffer.from(safeStringify(transactionObject)).toString('base64');
-        const encodedSecret = Buffer.from(this.secret).toString('base64');
-
-        return super._createHmac(base64EncodedTransaction, encodedSecret);
-    }
-
     calculateIlpPacket(transactionObject, condition) {
         const packetInput = this.makeQuotePacketInput(transactionObject, condition);
         const packet = ilpPacket.serializeIlpPrepare(packetInput);
@@ -137,6 +134,31 @@ class IlpV4 extends IlpBase {
     decodeIlpPacket(inputIlpPacket) {
         const binaryPacket = Buffer.from(inputIlpPacket, 'base64');
         return ilpPacket.deserializeIlpPrepare(binaryPacket);
+    }
+
+    /**
+     * Calculates a fulfilment given a transaction object and a secret
+     *
+     * @returns {string} - string containing base64 encoded fulfilment
+     */
+    #calculateFulfilFromTransactionObject(transactionObject) {
+        const base64EncodedTransaction = Buffer.from(safeStringify(transactionObject)).toString('base64');
+        const encodedSecret = Buffer.from(this.secret).toString('base64');
+
+        return super._createHmac(base64EncodedTransaction, encodedSecret);
+    }
+
+    #adjustAmount(transactionObject, isFx) {
+        const amount = isFx
+            ? ILP_AMOUNT_FOR_FX
+            : super._getIlpCurrencyAmount(transactionObject.amount);
+
+        if (amount.includes('.')) {
+            const errMessage = ERROR_MESSAGES.invalidAdjustedAmount;
+            this.logger.push(transactionObject.amount).warn(errMessage);
+            throw new TypeError(errMessage);
+        }
+        return amount;
     }
 }
 

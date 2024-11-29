@@ -14,7 +14,7 @@ const http = require('http');
 const https = require('https');
 const qs = require('querystring');
 const EventEmitter = require('events');
-const request = require('../request');
+const { request } = require('../httpRequester');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -70,8 +70,7 @@ class WSO2Auth extends EventEmitter {
         }
 
         if (opts.tokenEndpoint && opts.clientKey && opts.clientSecret) {
-            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`)
-                .toString('base64');
+            this._basicToken = Buffer.from(`${opts.clientKey}:${opts.clientSecret}`).toString('base64');
             this._reqOpts.uri = opts.tokenEndpoint;
         } else if (opts.staticToken) {
             this._logger.isDebugEnabled && this._logger.debug('WSO2 auth config token API data not set, fallback to static token');
@@ -114,11 +113,11 @@ class WSO2Auth extends EventEmitter {
         };
         let refreshSeconds;
         try {
-            const response = await request(reqOpts);
-            this._logger.isDebugEnabled && this._logger.push({ reqOpts: { ...reqOpts, agent: '[REDACTED]' }, response }).debug('Response received from WSO2');
-            if (response.statusCode > 299) {
+            const response = await request(reqOpts).catch(err => err);
+            this._logger.isVerboseEnabled && this._logger.verbose('Response received from WSO2');
+            if (response.status > 299) {
                 this.emit('error', 'Error retrieving WSO2 auth token');
-                throw new Error(`Unexpected response code ${response.statusCode} received from WSO2 token request`);
+                throw new Error(`Unexpected response code ${response.status} received from WSO2 token request`);
             }
             const { access_token, expires_in } = response.data;
             this._token = access_token;

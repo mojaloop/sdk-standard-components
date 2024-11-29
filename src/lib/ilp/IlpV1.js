@@ -11,7 +11,6 @@
 'use strict';
 
 const base64url = require('base64url');
-const safeStringify = require('fast-safe-stringify');
 
 // must be pinned at ilp-packet@2.2.0 for ILP v1 compatibility
 const ilpPacket = require('ilp-packet-v1');
@@ -38,15 +37,17 @@ class IlpV1 extends IlpBase {
         let generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
         let generatedCondition = super.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
-        const ret = {
+        const result = {
             fulfilment: generatedFulfilment,
-            ilpPacket: base64encodedIlpPacket,
-            condition: generatedCondition
+            condition: generatedCondition,
+            ilpPacket: base64encodedIlpPacket
         };
 
-        this.logger.isDebugEnabled && this.logger.debug(`Generated ILP: transaction object: ${safeStringify(transactionObject)}\nPacket input: ${safeStringify(packetInput)}\nOutput: ${safeStringify(ret)}`);
+        this.logger.isDebugEnabled && this.logger
+            .push({ transactionObject, result, packetInput: { ...packetInput, data: 'Buffer...' } })
+            .debug('Generated ILP response:');
 
-        return ret;
+        return result;
     }
 
 

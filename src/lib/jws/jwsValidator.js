@@ -38,7 +38,7 @@ class JwsValidator {
      */
     validate(request) {
         try {
-            const { headers, body, data } = request;
+            const { headers, body, data } = request; // todo: define, what to use: only body OR data ?
             const payload = body || data;
 
             this.logger.isDebugEnabled && this.logger.debug(`Validating JWS on request with headers: ${safeStringify(headers)} and body: ${safeStringify(payload)}`);
@@ -69,6 +69,8 @@ class JwsValidator {
 
             const token = `${protectedHeader}.${base64url(safeStringify(payload))}.${signature}`;
 
+            this.logger.isDebugEnabled && this.logger.debug(`JWS token to verify: ${token}, using public key: ${pubKey}`);
+
             // validate signature
             const result = jwt.verify(token, pubKey, {
                 complete: true,
@@ -83,9 +85,10 @@ class JwsValidator {
 
             // all ok if we got here
             this.logger.isDebugEnabled && this.logger.debug(`JWS valid for request ${safeStringify(request)}`);
+            return true;
         }
         catch(err) {
-            this.logger.isDebugEnabled && this.logger.debug(`Error validating JWS: ${err.stack || safeStringify(err)}`);
+            this.logger.isErrorEnabled && this.logger.error(`Error validating JWS: ${err.stack || safeStringify(err)}`);
             throw err;
         }
     }

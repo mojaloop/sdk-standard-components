@@ -100,9 +100,9 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteId, quoteResponse, destFspId,  headers) {
+    async putQuotes(quoteId, quoteResponse, destFspId,  headers, $context) {
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers,
-            undefined, undefined, { ID: quoteId });
+            undefined, undefined, { ID: quoteId, $context });
     }
 
 
@@ -160,8 +160,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransfers(prepare, destFspId) {
-        return this._post('transfers', 'transfers', prepare, destFspId);
+    async postTransfers(prepare, destFspId, $context) {
+        return this._post('transfers', 'transfers', prepare, destFspId,
+            undefined, undefined, undefined, { $context });
     }
 
     /**

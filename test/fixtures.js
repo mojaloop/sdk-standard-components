@@ -1,3 +1,9 @@
+const fs = require('node:fs');
+const WSO2Auth = require('#src/lib/WSO2Auth/index');
+const mockLogger = require('./__mocks__/mockLogger');
+
+const jwsSigningKey = fs.readFileSync(__dirname + '/unit/data/jwsSigningKey.pem');
+
 const moneyPayload = ({
     currency =  'EUR',
     amount = '123.45'
@@ -30,8 +36,34 @@ const fxQuotesBeResponse = (fxQuotesPayload) => {
     });
 };
 
+// Everything is false by default
+const mockConfigDto = ({
+    dfspId = 'testdfsp',
+    jwsSign = false,
+    jwsSignPutParties = false,
+    logger = mockLogger({ app: 'request-test' }),
+    wso2Auth =  new WSO2Auth({ logger }),
+    peerEndpoint = '127.0.0.1',
+    servicesEndpoint = '127.0.0.2',
+    thirdpartyRequestsEndpoint = 'thirdparty-api-adapter.local'
+} = {}) => ({
+    dfspId,
+    logger,
+    jwsSign,
+    jwsSignPutParties,
+    jwsSigningKey,
+    wso2Auth,
+    peerEndpoint,
+    servicesEndpoint,
+    thirdpartyRequestsEndpoint,
+    tls: {
+        mutualTLS: { enabled: false }
+    },
+});
+
 module.exports = {
     fxQuotesPayload,
     fxQuotesBeResponse,
     moneyPayload,
+    mockConfigDto,
 };

@@ -10,27 +10,31 @@
 
 'use strict';
 
-
+const axios = require('axios');
 const Errors = require('./lib/errors');
 const Ilp = require('./lib/ilp');
 const Jws = require('./lib/jws');
 const Logger = require('./lib/logger');
 const requests = require('./lib/requests');
-const request = require('./lib/request');
 const WSO2Auth = require('./lib/WSO2Auth');
 const randomPhrase = require('./lib/randomphrase');
+const httpRequester = require('./lib/httpRequester');
 
-const { MojaloopRequests, ThirdpartyRequests } = requests;
+const { request } = httpRequester;
+const { MojaloopRequests, ThirdpartyRequests, common } = requests;
 
 module.exports = {
+    axios, // to reuse in SDK tests
     Errors,
     Ilp,
     Jws,
     Logger,
     MojaloopRequests,
     ThirdpartyRequests,
+    common,
     request,
     requests,
+    httpRequester,
     WSO2Auth,
     randomPhrase,
 };

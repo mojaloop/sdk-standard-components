@@ -10,9 +10,10 @@
 
 'use strict';
 
-const respErrSym = Symbol('ResponseErrorDataSym');
 const safeStringify = require('fast-safe-stringify');
+const { ApiType, ONLY_FSPIOP_RESOURCES} = require('../constants');
 
+const respErrSym = Symbol('ResponseErrorDataSym');
 
 /**
  * An HTTPResponseError class
@@ -56,16 +57,6 @@ const throwOrJson = async (res) => {
     //     // we should have got a valid mojaloop content-type in the response
     //     throw new HTTPResponseError({ msg: `Unexpected content-type header: ${res.headers['content-type']}`, res });
     // }
-
-
-    // do this first - fail fast if we KNOW the request got an error response back
-    // note that 404 will throw. This is correct  behavior for the mojaloop api.
-    if (res.statusCode < 200 || res.statusCode >= 300) {
-        // not a successful request
-        throw new HTTPResponseError({ msg: `Request returned non-success status code ${res.statusCode}`,
-            res
-        });
-    }
 
     // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
     if ((res.headers['content-length']  && (res.headers['content-length'] !== '0' ) || (res.body && res.body.length > 0))) {
@@ -119,10 +110,17 @@ const formatEndpointOrDefault = (endpoint, transportScheme, defaultEndpoint) => 
     return `${transportScheme}://${endpoint}`;
 };
 
+const defineApiType = (resource, configApiType) => {
+    if (ONLY_FSPIOP_RESOURCES.includes(resource)) {
+        return ApiType.FSPIOP;
+    }
+    return configApiType;
+};
 
 module.exports = {
     bodyStringifier,
     buildUrl,
+    defineApiType,
     formatEndpointOrDefault,
     HTTPResponseError,
     ResponseType,

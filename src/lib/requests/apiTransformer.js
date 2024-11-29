@@ -12,11 +12,7 @@
  *************************************************************************/
 
 const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
-
-const ApiType = {
-    FSPIOP: 'fspiop',
-    ISO20022: 'iso20022',
-};
+const { ApiType } = require('../constants');
 
 /*
   Performs translation between message body formats on request bodies IF NEEDED.
@@ -29,12 +25,12 @@ class ApiTransformer {
         this._logger = conf.logger;
         this._apiType = conf.apiType;
 
-        if(!['fspiop', 'iso20022'].includes(this._apiType)) {
+        if(!Object.values(ApiType).includes(this._apiType)) {
             throw new Error(`Unsupported apiType: ${this._apiType}`);
         }
     }
 
-    async transformOutboundRequest(resourceType, method, { body, headers, params, isError }){
+    async transformOutboundRequest(resourceType, method, { body, headers, params, isError, $context }){
         // we only need to translate the body if we are not in FSPIOP mode...
         // and there is a translation available for the specific resource type
         if(this._apiType === ApiType.FSPIOP || !TransformFacades.FSPIOP[resourceType]) {
@@ -46,6 +42,7 @@ class ApiTransformer {
             headers: headers,
             body: body,
             params: params,
+            $context
         };
 
         // seems a bit backwards to call the facade for transforming to ISO "FSPIOP" but here we are.

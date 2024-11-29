@@ -1,23 +1,25 @@
 // todo: think, how to generate JSDocs based on these TS types
+type Prettify<T> = { //to make hover overlay more readable
+    [K in keyof T]: T[K];
+} & {};
+
+type Amount = {
+    amount: string;
+    currency: string;
+};
+
 export type IlpResponse = {
     fulfilment: string;
     condition: string;
     ilpPacket: string;
 }
 
-export type TransactionObject = {
-    quoteId: string;
-    transactionId: string;
-    transactionType: TransactionType;
-    payee: Party;
-    payer: Party;
-    expiration: string;
-    amount: {
-        amount: string;
-        currency: string;
-    };
-    note?: string;
-};
+export type TransactionObject = Prettify<
+    Pick<QuoteRequest, 'quoteId' | 'transactionId' | 'transactionType' | 'payee' | 'payer' | 'expiration'> & {
+        amount: Amount;
+        note?: string;
+    }
+>;
 
 export type IlpInputV1 = {
     amount: string;
@@ -64,14 +66,30 @@ export type TransactionType = {
     subScenario?: string;
 }
 
+export type QuoteRequest = {
+    quoteId: string;
+    transactionId: string;
+    transactionType: TransactionType;
+    payee: Party;
+    payer: Party;
+    expiration: string;
+    // add more fields, if needed
+}
+
+export type QuoteResponse = {
+    transferAmount: Amount;
+    note?: string;
+    // add more fields, if needed
+};
+
 export type FxQuoteRequest = {
     conversionRequestId: string;
-    // todo: define the rest fields
+    // add more fields, if needed
 }
 
 export type FxQuoteBeResponse = {
     conversionTerms: {
         expiration: string;
     };
-    // todo: define the rest fields
+    // add more fields, if needed
 };

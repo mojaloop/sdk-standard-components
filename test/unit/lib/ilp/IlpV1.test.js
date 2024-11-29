@@ -101,6 +101,14 @@ describe('IlpV1 Tests -->', () => {
         expect(condition).toBeTruthy();
     });
 
+    test('should calculate fulfilment based on ilpPacket sting', () => {
+        const transactionObj = dto.transactionObjectDto(quoteRequest, partialResponse);
+        const ilpCombo = ilp.getResponseIlp(transactionObj);
+
+        const fulfilment = ilp.calculateFulfil(ilpCombo.ilpPacket);
+        expect(fulfilment).toBe(ilpCombo.fulfilment);
+    });
+
     describe('Ilp Packet Serialize tests -->', () => {
         const createIlpJson = (amount) => ({
             data: Buffer.from('data'),

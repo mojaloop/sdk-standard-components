@@ -8,19 +8,25 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  **************************************************************************/
 
-const fs = require('fs');
+const { mockAxios } = require('#test/unit/utils');
+
+const { Readable } = require('node:stream');
+const fs = require('node:fs');
+const crypto = require('node:crypto');
 const querystring = require('querystring');
-const crypto = require('crypto');
-const nock = require('nock');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const WSO2Auth = require('../../../../src/lib/WSO2Auth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
-
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
+const logger = mockLogger({ app: 'request-test' });
 
-describe('request', () => {
+describe('mojaloopRequests Tests', () => {
+    beforeEach(() => {
+        mockAxios.reset();
+    });
+
     function streamToBuffer(stream) {
         const chunks = [];
         return new Promise((resolve, reject) => {
@@ -30,47 +36,66 @@ describe('request', () => {
         });
     }
 
-    async function testRequest(request, expectedResponse, responseType) {
-        const qs = querystring.encode(request.query);
-        nock(`${request.protocol}://${request.host}`)
-            .post(request.uri + (qs ? `?${qs}` : ''), request.body)
-            .reply(expectedResponse.statusCode, expectedResponse.data, expectedResponse.headers);
+    const toStream = data => Readable.from( data instanceof Buffer
+        ? data
+        : Buffer.from(JSON.stringify(data))
+    );
 
-        const wso2Auth = new WSO2Auth({logger: console});
+    const parseStreamData = async (data, expectedResponse, responseType) => {
+        if (!responseType.stream) return data;
+
+        let parsed = await streamToBuffer(data);
+        if (typeof expectedResponse.data === 'object' && responseType.json) {
+            parsed = JSON.parse(parsed);
+        }
+        return parsed;
+    };
+
+    const executeRequest = async (request, expectedResponse, responseType) => {
+        const qs = querystring.encode(request.query);
+        mockAxios
+            .onPost(request.uri + (qs ? `?${qs}` : ''), request.body)
+            .reply(
+                expectedResponse.statusCode,
+                responseType.stream ? toStream(expectedResponse.data) : expectedResponse.data,
+                expectedResponse.headers
+            );
+
+        const wso2Auth = new WSO2Auth({ logger });
 
         // Everything is false by default
         const conf = {
-            logger: mockLogger({ app: 'request-test' }, undefined),
+            logger,
             peerEndpoint: request.host,
             tls: {
-                mutualTLS: {
-                    enabled: false
-                }
+                mutualTLS: { enabled: false }
             },
             jwsSign: true,
             jwsSignPutParties: true,
             jwsSigningKey: jwsSigningKey,
             wso2Auth,
         };
-
         const testMr = new mr(conf);
-        const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream);
-        let { data } = resp;
-        if (responseType.stream) {
-            data = await streamToBuffer(data);
-            if (typeof expectedResponse.data === 'object' && responseType.json) {
-                data = JSON.parse(data);
-            }
-        }
+        const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream)
+            .catch(err => err);
 
-        expect(resp.originalRequest.body).toEqual(request.body);
-        expect(resp.originalRequest.headers).not.toBeUndefined();
-        expect(resp.originalRequest.path).not.toBeUndefined();
+        await wso2Auth.stop();
+
+        return resp;
+    };
+
+    async function testRequest(request, expectedResponse, responseType) {
+        const resp = await executeRequest(request, expectedResponse, responseType);
+
+        expect(resp.originalRequest.data).toEqual(request.body);
+        expect(resp.originalRequest.headers).toBeDefined();
+        expect(resp.originalRequest.url).toBeDefined();
 
         if(!expectedResponse.originalRequest) {
             // ignore the originalRequest prop on resp.
             delete resp.originalRequest;
         }
+        const data = await parseStreamData(resp.data, expectedResponse, responseType);
 
         expect({ ...resp, data }).toEqual(expectedResponse);
     }
@@ -160,7 +185,15 @@ describe('request', () => {
                 b: 'other param',
             },
         };
-        await testRequest(request, expectedResponse, { stream: true, json: true });
+        const responseType = { stream: true, json: true };
+        const resp = await executeRequest(request, expectedResponse, responseType);
+
+        expect(resp.originalRequest).toBeDefined();
+        expect(resp.response.status).toEqual(expectedResponse.statusCode);
+        expect(resp.response.headers.toJSON()).toEqual(expectedResponse.headers);
+
+        const data = await parseStreamData(resp.response.data, expectedResponse, responseType);
+        expect(data).toEqual(expectedResponse.data);
     });
 
     test('should receive 404 error', async () => {
@@ -182,6 +215,11 @@ describe('request', () => {
                 b: 'other param',
             },
         };
-        await testRequest(request, expectedResponse, { stream: false, json: true });
+
+        const resp = await executeRequest(request, expectedResponse, { stream: false, json: true });
+        expect(resp.originalRequest).toBeDefined();
+        expect(resp.response.data).toEqual(expectedResponse.data);
+        expect(resp.response.status).toEqual(expectedResponse.statusCode);
+        expect(resp.response.headers.toJSON()).toEqual(expectedResponse.headers);
     });
 });

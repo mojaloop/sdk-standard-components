@@ -1,4 +1,102 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.6.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.2...v19.6.0) (2024-11-29)
+
+
+### Features
+
+* deprecated dependencies check  ([#231](https://github.com/mojaloop/sdk-standard-components/issues/231)) ([c383b57](https://github.com/mojaloop/sdk-standard-components/commit/c383b5718e22e78259810cda079bfa38a6f6732d))
+
+### [19.5.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.1...v19.5.2) (2024-11-21)
+
+
+### Bug Fixes
+
+* reverted logger.push() ([#229](https://github.com/mojaloop/sdk-standard-components/issues/229)) ([69726d5](https://github.com/mojaloop/sdk-standard-components/commit/69726d546439f90ea935b060ccab3374fb23755b))
+
+### [19.5.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.0...v19.5.1) (2024-11-19)
+
+
+### Chore
+
+* **csi-884:** logging ([#228](https://github.com/mojaloop/sdk-standard-components/issues/228)) ([5d539dd](https://github.com/mojaloop/sdk-standard-components/commit/5d539dd00302f20dab22e0c0322e314cad262738))
+
+## [19.5.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.1...v19.5.0) (2024-11-19)
+
+
+### Features
+
+* **csi-128:** added axios;  fixed unit-tests ([#226](https://github.com/mojaloop/sdk-standard-components/issues/226)) ([1f9cb79](https://github.com/mojaloop/sdk-standard-components/commit/1f9cb79ccad36a214b310c9117ea3f541dbba5bc))
+
+### [19.4.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.4.0...v19.4.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* used FSPIOP header for PUT transactionRequests callback ([#225](https://github.com/mojaloop/sdk-standard-components/issues/225)) ([a12fef8](https://github.com/mojaloop/sdk-standard-components/commit/a12fef8db1eba18ee9a1f082bf56763db649bfff))
+
+## [19.4.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.5...v19.4.0) (2024-11-05)
+
+
+### Features
+
+* increased scale for test currencies ([#224](https://github.com/mojaloop/sdk-standard-components/issues/224)) ([2bb792f](https://github.com/mojaloop/sdk-standard-components/commit/2bb792f3259cb84233198ed75a6f3b2b749a426f))
+
+### [19.3.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.4...v19.3.5) (2024-10-30)
+
+
+### Chore
+
+* deps ([#223](https://github.com/mojaloop/sdk-standard-components/issues/223)) ([0b8ccd7](https://github.com/mojaloop/sdk-standard-components/commit/0b8ccd75a0827372a650ef0a0ed35a820bd5d452))
+
+### [19.3.4](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.3...v19.3.4) (2024-10-30)
+
+
+### Chore
+
+* extended codeowners list ([#222](https://github.com/mojaloop/sdk-standard-components/issues/222)) ([f05ead6](https://github.com/mojaloop/sdk-standard-components/commit/f05ead6b781d37e1e259b29d2aeba290435fce1e))
+
+### [19.3.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.2...v19.3.3) (2024-10-30)
+
+
+### Chore
+
+* update deps ([#221](https://github.com/mojaloop/sdk-standard-components/issues/221)) ([a00f93f](https://github.com/mojaloop/sdk-standard-components/commit/a00f93f5508b0fa358c0bf06d16602f046885da5))
+
+### [19.3.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.1...v19.3.2) (2024-10-30)
+
+
+### Chore
+
+* update deps ([#220](https://github.com/mojaloop/sdk-standard-components/issues/220)) ([2b35ba5](https://github.com/mojaloop/sdk-standard-components/commit/2b35ba5affb3067a828c884459d6c281bb9e3584))
+
+### [19.3.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.3.0...v19.3.1) (2024-10-30)
+
+
+### Chore
+
+* support sdk added expiration ([#219](https://github.com/mojaloop/sdk-standard-components/issues/219)) ([3663832](https://github.com/mojaloop/sdk-standard-components/commit/366383278a3dd79cd1d0137469a9e1ba653fdbb7))
+
+## [19.3.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.2.0...v19.3.0) (2024-10-28)
+
+
+### Features
+
+* add way to add prior post quotes context to iso req ([#218](https://github.com/mojaloop/sdk-standard-components/issues/218)) ([90415ee](https://github.com/mojaloop/sdk-standard-components/commit/90415ee30fa3638e92754353641d9f7356368492))
+
+## [19.2.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.3...v19.2.0) (2024-10-24)
+
+
+### Features
+
+* **csi-785:** unified ILP interface ([#217](https://github.com/mojaloop/sdk-standard-components/issues/217)) ([00a78e9](https://github.com/mojaloop/sdk-standard-components/commit/00a78e9df2a5b1ce42f25e49ce482873ba85f92b))
+
+### [19.1.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.2...v19.1.3) (2024-10-24)
+
+
+### Chore
+
+* update deps to remove circular ref ([#216](https://github.com/mojaloop/sdk-standard-components/issues/216)) ([ee5f547](https://github.com/mojaloop/sdk-standard-components/commit/ee5f547e12ac80b7019969e2495b4f25a2d9f513))
+
 ### [19.1.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.1...v19.1.2) (2024-10-23)
 
 ### [19.1.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.1.0...v19.1.1) (2024-10-23)
