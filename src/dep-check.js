@@ -13,7 +13,7 @@ function execCommand(command) {
 }
 
 const dependenciesMap = new Map();
-const regex = /(?:@[\w-]+\/)?[\w.-]+@\d+\.\d+\.\d+(?:[-+][\w.-]+)?/g;
+const regex = /(?:@[\w-]+\/)?[\w.-]+@\d{1,3}\.\d{1,3}\.\d{1,3}(?:[-+][\w.-]+)?/g;
 
 async function checkDependency(dependency) {
     if (dependenciesMap.has(dependency)) return; 
