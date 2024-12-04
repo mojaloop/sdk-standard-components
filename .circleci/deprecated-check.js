@@ -13,7 +13,7 @@ function execCommand(command) {
 }
 
 const dependenciesMap = new Map();
-const regex = /(?:@[\w-]+\/)?[\w-]+@\d+\.\d+\.\d+/g; 
+const regex = /(?:@[\w-]+\/)?[\w.-]+@\d+\.\d+\.\d+(?:[-+][\w.-]+)?/g;
 
 async function checkDependency(dependency) {
     if (dependenciesMap.has(dependency)) return; 
@@ -38,6 +38,7 @@ async function processLines(lines) {
         for (const match of matches) {
             const dependency = match[0]; 
             //console.log(dependency);
+            //console.log(line);
             await checkDependency(dependency); 
         }
     }
