@@ -3,109 +3,110 @@ const { exec } = require('child_process');
 function execCommand(command) {
     return new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
-            //console.log(command);
             if (error) {
-                reject(error.message);
-            } else if (stderr) {
-                reject(stderr);
+                reject(stderr || error.message); 
             } else {
                 resolve(stdout);
             }
         });
     });
 }
-const dependencies_map = new Map();
 
+const dependenciesMap = new Map();
+const regex = /(?:@[\w-]+\/)?[\w-]+@\d+\.\d+\.\d+/g; 
+
+async function checkDependency(dependency) {
+    if (dependenciesMap.has(dependency)) return; 
+    try {
+        const output = await execCommand(`npm view ${dependency}`);
+        if (output.includes("DEPRECATED")) {
+            dependenciesMap.set(dependency, "DEPRECATED");
+        } else {
+            dependenciesMap.set(dependency, "active");
+        }
+    } catch (error) {
+        //console.error(`Error checking dependency ${dependency}:`, error);
+        dependenciesMap.set(dependency, "UNKNOWN"); 
+    }
+}
+
+async function processLines(lines) {
+    for (const line of lines) {
+        const trimmedLine = line.trim();
+        const matches = trimmedLine.matchAll(regex); 
+
+        for (const match of matches) {
+            const dependency = match[0]; 
+            //console.log(dependency);
+            await checkDependency(dependency); 
+        }
+    }
+}
 
 async function checkDependencies(command) {
     try {
         const stdout = await execCommand(command);
-
-        const result = stdout.trim().split("\n");
-
-        for (let index = 0; index < result.length; index++) {
-            let line = result[index].trim();
-            if(line.includes("UNMET OPTIONAL DEPENDENCY")){
-                continue;
-            }
-            let dep = "";
-            if(index===0){
-                dep=line.split(" ")[0];
-            }
-            else{
-                arr=line.split(" ");
-                if(arr[arr.length-1]=="deduped" || arr[arr.length-1]=="overridden"){
-                    dep=arr[arr.length-2];
-                }
-                else{
-                    dep=arr[arr.length-1];
-                }
-            }
-            if(dep.includes(":")){
-                dep=dep.split(":").pop();
-            }
-            if (dependencies_map.has(dep)) {
-                continue;
-            } else {
-                try{
-                const output = await execCommand(`npm view ${dep}`);
-                
-                if (output.includes("DEPRECATED")) {
-                    dependencies_map.set(dep, "DEPRECATED");
-                } else {
-                    dependencies_map.set(dep, "active");
-                }
-                }
-                catch(error){
-                    console.log(error);
-                }
-            }
-        }
-
-        //console.log(dependencies_map);
+        const lines = stdout.trim().split("\n");
+        await processLines(lines);
     } catch (error) {
-        console.error(`Error: ${error}`);
+        //console.error(`Error executing command '${command}':`, error);
+        const errorLines = error.toString().trim().split("\n");
+        await processLines(errorLines); // Process error lines as well
     }
 }
 
 async function runDependencyCheck() {
-    
-    await checkDependencies('npm ls'); 
+    console.log("Checking dependencies at root level...");
+    await checkDependencies('npm ls');
 
-    let dep_check = true;
-    counter=0;
-    dependencies_map.forEach((val, key) => {
-        if (val === "DEPRECATED") {
+    let deprecatedFound = false;
+    let counter = 0;
+    dependenciesMap.forEach((status, dependency) => {
+        if (status === "DEPRECATED") {
             counter++;
-            dep_check = false;
-            console.log(counter+". "+key+" "+val);
+            deprecatedFound = true;
+            console.log(`${counter}. ${dependency} ${status}`);
         }
     });
 
-    if (dep_check) {
-        console.log("\x1b[32mSUCCESS: All tests passed, no deprecated packages found at root level! Congos!!\n\x1b[0m")
+    if (deprecatedFound) {
+        console.log("\x1b[31mWARNING!! Deprecated results found at root level.\n\x1b[0m");
     } else {
-        console.log("\x1b[31mWARNING!!Deprecated results found at root level.\n\x1b[0m");
+        console.log("\x1b[32mSUCCESS: No deprecated packages found at root level! Congos!!\n\x1b[0m");
     }
-    
+
+    console.log("Checking all dependencies (including transitive)...");
     await checkDependencies('npm ls --all');
 
-    counter=0;
-    dependencies_map.forEach((val, key) => {
-        if (val === "DEPRECATED") {
+    deprecatedFound = false;
+    counter = 0;
+    dependenciesMap.forEach((status, dependency) => {
+        if (status === "DEPRECATED") {
             counter++;
-            dep_check = false;
-            console.log(counter+". "+key+" "+val);
+            deprecatedFound = true;
+            console.log(`${counter}. ${dependency} ${status}`);
         }
     });
 
-    if (dep_check) {
-        console.log("\x1b[32mSUCCESS: All tests passed, no deprecated packages found! Congos!!\x1b[0m")
-    } else {
-        console.log("\x1b[31mWARINING!!Deprecated results found.\x1b[0m");
-    }
     
-}
 
+    if (deprecatedFound) {
+        console.log("\x1b[31mWARNING!! Deprecated results found in dependencies.\n\x1b[0m");
+    } else {
+        console.log("\x1b[32mSUCCESS: No deprecated packages found! Congos!!\x1b[0m");
+    }
+
+    /*
+    counter=0;
+    dependenciesMap.forEach((status, dependency) => {
+        if (status === "UNKNOWN") {
+            counter++;
+            deprecatedFound = true;
+            console.log(`${counter}. ${dependency} ${status}`);
+        }
+    });
+    console.log("UNKNOWN dependencies");
+    */
+}
 
 runDependencyCheck();
