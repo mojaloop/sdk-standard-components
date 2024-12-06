@@ -229,7 +229,7 @@ jobs:
                   key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
             - run:
                   name: Checking if deprecated dependencies exist
-                  command: node dep-check.js
+                  command: node .circleci/deprecated-check.js
 
     test-coverage:
         executor: default-docker
