@@ -1,4 +1,12 @@
 const { exec } = require('child_process');
+//const fs = require('fs');
+//const outputFile = 'dependencies_log.txt';
+
+/*
+function logToFile(data) {
+    fs.appendFileSync(outputFile, data + '\n', { encoding: 'utf-8' }); // Append data to the file
+}
+*/
 
 function execCommand(command) {
     return new Promise((resolve, reject) => {
@@ -13,7 +21,7 @@ function execCommand(command) {
 }
 
 const dependenciesMap = new Map();
-const regex = /(?:@[\w-]+\/)?[\w.-]+@\d{1,3}\.\d{1,3}\.\d{1,3}(?:[-+][\w.-]+)?/g;
+const regex = /(?:@[\w-]+\/)?[\w.-]{1,100}@\d{1,10}\.\d{1,10}\.\d{1,10}(?:[-+][\w.-]{1,50})?/g;
 
 async function checkDependency(dependency) {
     if (dependenciesMap.has(dependency)) return; 
@@ -37,8 +45,8 @@ async function processLines(lines) {
 
         for (const match of matches) {
             const dependency = match[0]; 
-            //console.log(dependency);
-            //console.log(line);
+            //logToFile(`Dependency: ${dependency}`); // Write to file
+            //logToFile(`Line: ${line}`); // Write to file
             await checkDependency(dependency); 
         }
     }
@@ -100,13 +108,13 @@ async function runDependencyCheck() {
     /*
     counter=0;
     dependenciesMap.forEach((status, dependency) => {
-        if (status === "UNKNOWN") {
+        if (status === 'UNKNOWN') {
             counter++;
             deprecatedFound = true;
             console.log(`${counter}. ${dependency} ${status}`);
         }
     });
-    console.log("UNKNOWN dependencies");
+    console.log('UNKNOWN dependencies');
     */
 }
 

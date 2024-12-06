@@ -219,7 +219,7 @@ jobs:
         steps:
             - run:
                   name: Checking if deprecated dependencies exist
-                  command: node src/dep-check.js
+                  command: node dep-check.js
 
     test-coverage:
         executor: default-docker
