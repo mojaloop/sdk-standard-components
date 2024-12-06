@@ -218,6 +218,16 @@ jobs:
         executor: default-docker
         steps:
             - run:
+                  name: Install general dependencies
+                  command: *defaults_docker_Dependencies
+            - checkout
+            - run:
+                  <<: *defaults_configure_nvm
+            - run:
+                  <<: *defaults_display_versions
+            - restore_cache:
+                  key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
+            - run:
                   name: Checking if deprecated dependencies exist
                   command: node dep-check.js
 
