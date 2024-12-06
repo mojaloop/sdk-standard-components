@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.6.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.1...v19.6.2) (2024-12-06)
+
+
+### Bug Fixes
+
+* add test-deprecations to workflow ([#233](https://github.com/mojaloop/sdk-standard-components/issues/233)) ([4df7e73](https://github.com/mojaloop/sdk-standard-components/commit/4df7e738548453cd4b44b26025a7c9dbdbd44ada))
+
 ### [19.6.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.0...v19.6.1) (2024-11-29)
 
 ## [19.6.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.5.2...v19.6.0) (2024-11-29)
