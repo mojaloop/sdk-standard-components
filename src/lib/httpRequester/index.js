@@ -39,7 +39,7 @@ const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
 
 const createHttpRequester = ({
-    logger = new Logger({ context: { component: AxiosHttpRequester.name } }),
+    logger = new Logger({ context: { component: AxiosHttpRequester.name }, opts: { levels: defaultConfig.logLevels } }),
     httpClient = null,
     httpConfig = defaultConfig.createDefaultHttpConfig(),
     retryConfig = defaultConfig.createDefaultRetryConfig(logger),

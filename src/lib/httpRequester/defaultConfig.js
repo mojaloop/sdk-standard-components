@@ -56,4 +56,5 @@ const createDefaultRetryConfig = (logger) => Object.freeze({
 module.exports = {
     createDefaultHttpConfig,
     createDefaultRetryConfig,
+    logLevels: ['warn', 'error', 'fatal']
 };
