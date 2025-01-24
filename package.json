@@ -19,6 +19,8 @@
     "test:xunit": "JEST_JUNIT_OUTPUT_FILE=./test/results/junit.xml npm run test:unit -- --reporters=jest-junit",
     "test:coverage": "jest --coverage --coverageThreshold='{}'",
     "test:coverage-check": "jest --coverage",
+    "test:functional": "echo 'No functional tests defined'",
+    "test:integration": "echo 'No integration tests defined'",
     "audit:fix": "npm audit fix",
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "dep:check": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" ncu -e 2",
@@ -56,7 +58,8 @@
       "ajv": "6.12.3",
       "ejs": "3.1.10",
       "sanitize-html": "2.12.1",
-      "markdown-it": "12.3.2"
+      "markdown-it": "12.3.2",
+      "undici": "6.21.1"
     },
     "widdershins": {
       "swagger2openapi": "7.0.8",
@@ -67,9 +70,9 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "^17.7.8",
+    "@mojaloop/api-snippets": "^17.7.9",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.10.10",
     "audit-ci": "^7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
@@ -77,12 +80,12 @@
     "eslint-plugin-import": "2.31.0",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
-    "nock": "^13.5.6",
-    "npm-check-updates": "^17.1.13",
+    "nock": "^14.0.0",
+    "npm-check-updates": "^17.1.14",
     "pre-commit": "^1.2.2",
     "replace": "^1.2.2",
     "standard-version": "^9.5.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "imports": {
     "#src/*": "./src/*.js",
