@@ -49,7 +49,7 @@ class ApiTransformer {
         // Note that the {method}Error way of calling the right transform method is a convention and as such somewhat
         // flaky in the long run. Further work should be done on the transformer lib to eliminate the need to use string
         // matching by the caller; e.g. by passing the entire request context to be transformed rather than just the body
-        return TransformFacades.FSPIOP[resourceType][method.toLowerCase() + (isError ? 'Error' : '')](transformOpts);
+        return TransformFacades.FSPIOP[resourceType][method.toLowerCase() + (isError ? 'Error' : '')](transformOpts, { unrollExtensions: true });
     }
 }
 
