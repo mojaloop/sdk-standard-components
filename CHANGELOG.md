@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.6.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.4...v19.6.5) (2025-02-20)
+
+
+### Bug Fixes
+
+* unroll extension list ([#236](https://github.com/mojaloop/sdk-standard-components/issues/236)) ([eb8daa6](https://github.com/mojaloop/sdk-standard-components/commit/eb8daa6d7a839ba89398034f27cb7a944ab423a6))
+
 ### [19.6.4](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.3...v19.6.4) (2025-01-27)
 
 
