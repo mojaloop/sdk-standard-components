@@ -43,7 +43,7 @@
     }
   ],
   "dependencies": {
-    "@mojaloop/ml-schema-transformer-lib": "^2.5.2",
+    "@mojaloop/ml-schema-transformer-lib": "^2.5.3",
     "axios": "1.7.9",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
