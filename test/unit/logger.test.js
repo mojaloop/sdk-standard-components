@@ -1,4 +1,5 @@
-const { Logger } = require(`${__ROOT__}/src/lib/logger`);
+const { Logger } = require('#src/lib/logger/index');
+const { logLevels } = require('#src/lib/logger/helpers');
 
 describe('Logger', () => {
     // From https://stackoverflow.com/a/14322189
@@ -10,7 +11,11 @@ describe('Logger', () => {
     };
 
     test('should construct', () => {
-        new Logger();
+        expect(new Logger()).toBeTruthy();
+    });
+
+    test('should have static logLevels list', () => {
+        expect(Logger.logLevels).toEqual(logLevels);
     });
 
     test('should log correctly', () => {

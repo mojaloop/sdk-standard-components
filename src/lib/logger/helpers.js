@@ -13,6 +13,9 @@ const colorize = (level) => {
     return `\u001b[${colorMap[level]}m${level}\u001b[0m`;
 };
 
+const logLevels = Object.keys(colorMap);
+
 module.exports = {
-    colorize
+    colorize,
+    logLevels
 };

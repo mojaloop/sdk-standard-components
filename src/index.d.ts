@@ -619,6 +619,8 @@ declare namespace SDKStandardComponents {
             trace(arg: unknown): void
             info(arg: unknown): void
             fatal(arg: unknown): void
+
+            static logLevels: Level[]
         }
     }
 
