@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.7.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.7...v19.7.0) (2025-02-24)
+
+
+### Features
+
+* **csi-1237:** added static Logger.logLevels ([#239](https://github.com/mojaloop/sdk-standard-components/issues/239)) ([0d37a60](https://github.com/mojaloop/sdk-standard-components/commit/0d37a607df0815c6baf435e3f1c123f166dd58c1))
+
 ### [19.6.7](https://github.com/mojaloop/sdk-standard-components/compare/v19.6.6...v19.6.7) (2025-02-21)
 
 
