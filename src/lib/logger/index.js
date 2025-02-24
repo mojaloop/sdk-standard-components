@@ -23,7 +23,7 @@
 // while the mojaloop-sdk uses the logger defined here
 const util = require('util');
 const safeStringify = require('fast-safe-stringify');
-const { colorize } = require('./helpers');
+const { colorize, logLevels } = require('./helpers');
 
 // Utility functions
 
@@ -110,7 +110,7 @@ class Logger {
         opts: {
             allowContextOverwrite = true,
             copy = o => o,
-            levels = ['verbose', 'debug', 'warn', 'error', 'trace', 'info', 'fatal'],
+            levels = logLevels,
             isJsonOutput = false,
         } = {},
         stringify = buildStringify({ isJsonOutput }),
@@ -213,9 +213,11 @@ class Logger {
     trace(){}
     info(){}
     fatal(){}
+
+    static get logLevels () { return [...logLevels]; }
 }
 
 module.exports = {
     Logger,
-    buildStringify,
+    buildStringify
 };
