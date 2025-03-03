@@ -113,8 +113,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postQuotes(quoteRequest, destFspId) {
-        return this._post('quotes', 'quotes', quoteRequest, destFspId);
+    async postQuotes(quoteRequest, destFspId, headers = {}) {
+        return this._post('quotes', 'quotes', quoteRequest, destFspId, headers);
     }
 
     /**
@@ -170,9 +170,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getTransfers(transferId) {
+    async getTransfers(transferId, dest = '', headers = {}) {
         const url = `transfers/${transferId}`;
-        return this._get(url, 'transfers');
+        return this._get(url, 'transfers', dest, headers);
     }
 
     /**
@@ -180,9 +180,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransfers(prepare, destFspId, $context) {
-        return this._post('transfers', 'transfers', prepare, destFspId,
-            undefined, undefined, undefined, { $context });
+    async postTransfers(prepare, destFspId, headers = {}, $context = {}) {
+        return this._post('transfers', 'transfers', prepare, destFspId, headers,
+            undefined, undefined, { $context });
     }
 
     /**
@@ -199,8 +199,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async patchTransfers(transferId, body, destFspId) {
-        return this._patch(`transfers/${transferId}`, 'transfers', body, destFspId);
+    async patchTransfers(transferId, body, destFspId, headers = {}) {
+        return this._patch(`transfers/${transferId}`, 'transfers', body, destFspId, headers);
     }
 
     /**
@@ -218,8 +218,8 @@ class MojaloopRequests extends BaseRequests {
    *
    * @returns {object} - JSON response body if one was received
    */
-    async postFxQuotes(quotePayload, destFspId) {
-        return this._post('fxQuotes', RESOURCES.fxQuotes, quotePayload, destFspId);
+    async postFxQuotes(quotePayload, destFspId, headers = {}) {
+        return this._post('fxQuotes', RESOURCES.fxQuotes, quotePayload, destFspId, headers);
     }
 
     /**
@@ -227,8 +227,8 @@ class MojaloopRequests extends BaseRequests {
    *
    * @returns {object} - JSON response body if one was received
    */
-    async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId) {
-        return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId);
+    async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId, headers = {}) {
+        return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId, headers);
     }
 
     /**
@@ -246,8 +246,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postFxTransfers(preparePayload, destFspId) {
-        return this._post('fxTransfers', RESOURCES.fxTransfers, preparePayload, destFspId);
+    async postFxTransfers(preparePayload, destFspId, headers = {}) {
+        return this._post('fxTransfers', RESOURCES.fxTransfers, preparePayload, destFspId, headers);
     }
 
     /**
@@ -255,8 +255,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putFxTransfers(commitRequestId, fulfilmentPayload, destFspId) {
-        return this._put(`fxTransfers/${commitRequestId}`, RESOURCES.fxTransfers, fulfilmentPayload, destFspId);
+    async putFxTransfers(commitRequestId, fulfilmentPayload, destFspId, headers = {}) {
+        return this._put(`fxTransfers/${commitRequestId}`, RESOURCES.fxTransfers, fulfilmentPayload, destFspId, headers);
     }
 
     /**
