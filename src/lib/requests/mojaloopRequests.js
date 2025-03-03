@@ -180,9 +180,10 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransfers(prepare, destFspId, headers = {}, $context = {}) {
-        return this._post('transfers', 'transfers', prepare, destFspId, headers,
-            undefined, undefined, { $context });
+    // todo: change $context <--> headers params order
+    async postTransfers(prepare, destFspId, $context, headers = {}) {
+        return this._post('transfers', 'transfers', prepare, destFspId,
+            headers, undefined, undefined, { $context });
     }
 
     /**
