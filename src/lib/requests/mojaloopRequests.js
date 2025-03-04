@@ -112,10 +112,10 @@ class MojaloopRequests extends BaseRequests {
      * Executes a DELETE /participants/{idType}/{idValue}/{idSubValue} request for the specified identifier type and indentifier 
      * and (optionally) sub identifier
      */
-    async deleteParticipants(idType, idValue, idSubValue, destFspId) {
+    async deleteParticipants(idType, idValue, idSubValue, destFspId, headers, query, responseType) {
         const url = `participants/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._delete(url, 'participants', destFspId);
+        return this._delete(url, 'participants', destFspId, headers, query, responseType);
     }
 
     /**
