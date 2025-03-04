@@ -3,4 +3,3 @@ reject:
   - "ilp-packet-v1"
   # eslint-config-airbnb-base relies on eslint < 9.0.0
   - "eslint"
-  - "@mojaloop/ml-schema-transformer-lib"
