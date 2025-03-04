@@ -228,7 +228,8 @@ class MojaloopRequests extends BaseRequests {
    * @returns {object} - JSON response body if one was received
    */
     async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId) {
-        return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId);
+        return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId,
+            undefined, undefined, undefined, { ID: conversionRequestId });
     }
 
     /**
@@ -238,7 +239,7 @@ class MojaloopRequests extends BaseRequests {
    */
     async putFxQuotesError(conversionRequestId, error, destFspId) {
         return this._put(`fxQuotes/${conversionRequestId}/error`, RESOURCES.fxQuotes, error, destFspId,
-            undefined, undefined, undefined, { isError: true });
+            undefined, undefined, undefined, { ID: conversionRequestId, isError: true });
     }
 
     /**
