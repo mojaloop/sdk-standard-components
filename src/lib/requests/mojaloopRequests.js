@@ -70,11 +70,11 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
      */
-    async putPartiesError(idType, idValue, idSubValue, error, destFspId) {
+    async putPartiesError(idType, idValue, idSubValue, error, destFspId, headers = {}) {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
-        return this._put(url, 'parties', error, destFspId, undefined,undefined,
+        return this._put(url, 'parties', error, destFspId, headers,undefined,
             undefined, { Type: idType, ID: idValue, SubId: idSubValue, isError: true });
     }
 
@@ -83,8 +83,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postParticipants(request, destFspId) {
-        return this._post('participants', 'participants', request, destFspId);
+    async postParticipants(request, destFspId, headers = {}) {
+        return this._post('participants', 'participants', request, destFspId, headers);
     }
 
     /**
