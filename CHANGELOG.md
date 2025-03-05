@@ -1,4 +1,16 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.9.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.7.1...v19.9.0) (2025-03-05)
+
+
+### Features
+
+* **csi-1210:** added headers to ML requests ([#241](https://github.com/mojaloop/sdk-standard-components/issues/241)) ([f8b50e9](https://github.com/mojaloop/sdk-standard-components/commit/f8b50e94216f4264b4ae452db22b0050ef1c675f))
+
+
+### Chore
+
+* updated deps ([#243](https://github.com/mojaloop/sdk-standard-components/issues/243)) ([b616f0a](https://github.com/mojaloop/sdk-standard-components/commit/b616f0ac59aaf77fddafb361d8a537ea18a56d01))
+
 ### [19.7.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.7.0...v19.7.1) (2025-02-27)
 
 
