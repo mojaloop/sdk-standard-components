@@ -34,7 +34,7 @@ const http = require('http');
 const https = require('https');
 const qs = require('querystring');
 const EventEmitter = require('events');
-const { request } = require('../httpRequester');
+const { createHttpRequester } = require('../httpRequester');
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
 const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
@@ -60,7 +60,7 @@ class WSO2Auth extends EventEmitter {
      */
     constructor(opts) {
         super({ captureExceptions: true });
-        this._logger = opts.logger;
+        this._logger = opts.logger.push({ component: WSO2Auth.name });
         this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
 
@@ -74,6 +74,7 @@ class WSO2Auth extends EventEmitter {
             throw new Error('WSO2 auth config requires logger property');
         }
 
+        this._requester = createHttpRequester({ logger: this._logger });
         this._reqOpts = {
             method: 'POST',
             body: qs.stringify({
@@ -133,7 +134,7 @@ class WSO2Auth extends EventEmitter {
         };
         let refreshSeconds;
         try {
-            const response = await request(reqOpts).catch(err => err);
+            const response = await this._requester.sendRequest(reqOpts).catch(err => err);
             this._logger.isVerboseEnabled && this._logger.verbose('Response received from WSO2');
             if (response.status > 299) {
                 this.emit('error', 'Error retrieving WSO2 auth token');

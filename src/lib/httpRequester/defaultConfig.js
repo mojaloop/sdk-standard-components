@@ -37,7 +37,7 @@ const createDefaultRetryConfig = (logger) => Object.freeze({
             || axiosRetry.isRetryableError(err)
             || retryableStatusCodes.includes(err.status)
             || retryableHttpErrorCodes.includes(err.code);
-        logger.isDebugEnabled && logger.push({ needRetry, err }).debug(`retryCondition is evaluated to ${needRetry}`);
+        logger.isDebugEnabled && logger.push(formatAxiosError(err)).debug(`retryCondition is evaluated to ${needRetry}`);
         return needRetry;
     },
     retryDelay: (retryCount) => {
@@ -46,12 +46,22 @@ const createDefaultRetryConfig = (logger) => Object.freeze({
         return delay;
     },
     onRetry: (retryCount, err) => {
-        logger.isVerboseEnabled && logger.push({ retryCount, err }).verbose(`retrying HTTP request due to ${err?.message}...`);
+        logger.isVerboseEnabled && logger.push(formatAxiosError(err, retryCount)).verbose(`retrying HTTP request...  [reason: ${err?.message}]`);
     },
     onMaxRetryTimesExceeded: (err, retryCount) => {
-        logger.isInfoEnabled && logger.push({ retryCount, err }).info('max retries exceeded on HTTP request!');
+        logger.isInfoEnabled && logger.push(formatAxiosError(err, retryCount)).info('max retries exceeded for HTTP request!');
     },
 });
+
+const formatAxiosError = (error, retryCount) =>  {
+    const { message, code, status, response } = error;
+
+    return {
+        message, code, status,
+        ...(response?.data && { errorResponseData: response.data }),
+        ...(retryCount && { retryCount }),
+    };
+};
 
 module.exports = {
     createDefaultHttpConfig,

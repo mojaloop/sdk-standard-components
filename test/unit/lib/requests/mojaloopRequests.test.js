@@ -628,7 +628,7 @@ describe('MojaloopRequests', () => {
 
         const testMr = new mr(conf);
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuote: {}});
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {},  { isoPostQuote: {} });
 
         const reqBody = res.originalRequest.data;
         // check the correct content type was sent
@@ -654,7 +654,7 @@ describe('MojaloopRequests', () => {
         const isoPostQuote = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
         const isoPutQuoteContext = await TransformFacades.FSPIOP.quotes.put({params: {ID: '1234'}, body: putQuotesBody, $context: {isoPostQuote: isoPostQuote.body}});
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {isoPostQuoteResponse: isoPutQuoteContext.body});
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {},{ isoPostQuoteResponse: isoPutQuoteContext.body });
 
         const reqBody = res.originalRequest.data;
         // Test fields that transformed when given previous iso quote as context
