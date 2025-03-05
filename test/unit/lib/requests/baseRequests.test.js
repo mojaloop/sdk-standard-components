@@ -148,6 +148,20 @@ describe('BaseRequests', () => {
         expect(res.originalRequest).not.toBeUndefined();
     });
 
+    it('returns original request details for DELETE calls when response type is mojaloop', async () => {
+        const conf = {
+            ...defaultConf,
+        };
+
+        const br = new BaseRequests(conf);
+        const res = await br._delete('participants/MSISDN/1234567',
+            'participants',
+            'somefsp');
+
+        expect(res).not.toBeUndefined();
+        expect(res.originalRequest).not.toBeUndefined();
+    });
+
     it('returns original request details for POST calls when response type is mojaloop', async () => {
         const conf = {
             ...defaultConf,
