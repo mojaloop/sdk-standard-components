@@ -37,12 +37,12 @@
  * @prop {http.Agent} agent - HTTP agent, used to send the request.
  */
 
-const { Logger } = require('../logger');
+const { createLogger } = require('../logger');
 const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
 
 const createHttpRequester = ({
-    logger = new Logger({ context: { component: AxiosHttpRequester.name } }),
+    logger = createLogger({ context: { component: AxiosHttpRequester.name } }),
     httpClient = null,
     httpConfig = defaultConfig.createDefaultHttpConfig(),
     retryConfig = defaultConfig.createDefaultRetryConfig(logger),

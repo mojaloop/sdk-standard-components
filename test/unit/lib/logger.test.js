@@ -20,16 +20,28 @@
  optionally within square brackets <email>.
 
  * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-
- * ModusBox
- - Paweł Marzec - pawel.marzec@modusbox.com - ORIGINAL AUTHOR
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
 
  --------------
  ******/
 
-const { createLogger } = require('../../src/lib/logger');
+const { createLogger, SdkLogger } = require('#src/lib/logger');
 
-// todo: use createLogger instead of mockLogger in tests
+describe('SdkLogger Tests -->', () => {
+    test('should have log() method', () => {
+        const logger = createLogger();
+        expect(typeof logger.log).toBe('function');
+    });
 
-module.exports = createLogger;
+    test('should have push() method', () => {
+        const logger = createLogger();
+        expect(typeof logger.push).toBe('function');
+    });
+
+    test('should return SdkLogger instance from push() method', () => {
+        const logger = createLogger();
+        const log = logger.push({ context: 'test' });
+        expect(log).toBeInstanceOf(SdkLogger);
+    });
+});
+
