@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const WSO2Auth = require('#src/lib/WSO2Auth/index');
-const mockLogger = require('./__mocks__/mockLogger');
+const { loggerFactory } = require('#src/lib/logger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/unit/data/jwsSigningKey.pem');
 
@@ -41,7 +41,7 @@ const mockConfigDto = ({
     dfspId = 'testdfsp',
     jwsSign = false,
     jwsSignPutParties = false,
-    logger = mockLogger({ app: 'request-test' }),
+    logger = loggerFactory({ app: 'request-test' }),
     wso2Auth =  new WSO2Auth({ logger }),
     peerEndpoint = '127.0.0.1',
     servicesEndpoint = '127.0.0.2',

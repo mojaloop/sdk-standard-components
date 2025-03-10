@@ -1,5 +1,6 @@
 import http from 'http'
 import { KeyObject } from 'tls'
+import { ILogger, ContextLogger } from '@mojaloop/central-services-logger/src/contextLogger'
 import {
     //This needs reconsidering if and when more changes are included in fspiop v2.0, currently they're non-breaking as far as any existing fields are replaced, but when such changes come in, this needs to be reviewed.
     v2_0 as fspiopAPI,
@@ -7,6 +8,13 @@ import {
 } from '@mojaloop/api-snippets'
 
 import * as ilp from './ilp'
+
+type Json =
+    | string
+    | number
+    | boolean
+    | { [x: string]: Json }
+    | Array<Json>;
 
 declare namespace SDKStandardComponents {
 
@@ -41,7 +49,7 @@ declare namespace SDKStandardComponents {
     }
 
     type BaseRequestConfigType = {
-        logger: Logger.Logger;
+        logger: Logger.SdkLogger;
         tls: BaseRequestTLSConfig;
         dfspId: string;
         jwsSign: boolean;
@@ -512,7 +520,7 @@ declare namespace SDKStandardComponents {
     }
 
     interface WSO2AuthConfig {
-        logger: Logger.Logger,
+        logger: Logger.SdkLogger,
         tlsCreds?: {
             ca: string
             cert: string
@@ -553,75 +561,25 @@ declare namespace SDKStandardComponents {
          */
         stop(): void
     }
+
     namespace Logger {
-        type Level = 'verbose' | 'debug' | 'warn' | 'error' | 'trace' | 'info' | 'fatal'
-        type TimestampFormatter = (ts: Date) => string;
-        type Stringify = (toBeStringified: unknown) => string;
-        interface LoggerStringifyParams {
-            ctx: unknown
-            msg: unknown
-            level: Level
+        type Level = 'silly' | 'debug' | 'verbose' | 'perf' | 'info' | 'trace' | 'audit' | 'warn' | 'error'
+        type LogContext = Json | null;
+        type LogMeta = Json | Error | null;
+
+        type CreateLoggerFactoryConfig = {
+            context?: LogContext,
+            isJsonOutput?: boolean,
         }
+        // todo: need to be aligned with ContextLogger ctor params
 
-        type LoggerStringify = (params: LoggerStringifyParams) => string
+        export function loggerFactory(config?: CreateLoggerFactoryConfig): SdkLogger;
 
-
-        interface BuildStringifyParams {
-            isJsonOutput?: boolean
-            space?: number
-            printTimestamp?: boolean
-            timestampFmt?: TimestampFormatter
-            stringify?: Stringify
+        export class SdkLogger extends ContextLogger implements ILogger {
+            push(context?: LogContext): SdkLogger
+            log(message: string, meta?: LogMeta): void
         }
-        type BuildStringify = (params: BuildStringifyParams) => LoggerStringify;
-
-        function buildStringify(params: BuildStringifyParams): LoggerStringify
-
-        interface LoggerOptions {
-            allowContextOverwrite: boolean
-            copy: (arg0: unknown) => unknown
-            levels: Level[]
-        }
-
-        interface LoggerConstructorParams {
-            ctx?: unknown
-            stringify?: Stringify
-            opts?: LoggerOptions
-        }
-
-        interface LoggerConfigureParams {
-            stringify?: Stringify
-            opts?: LoggerOptions
-        }
-
-        /**
-         * @class Logger
-         * @description fast and lightweight logger which do pretty dumping of anything into the log in a pretty way
-         */
-        class Logger {
-            protected stringify: BuildStringify
-            protected opts: LoggerOptions
-
-            constructor(params?: LoggerConstructorParams)
-
-            configure(params?: LoggerConfigureParams): void
-
-            push(arg: unknown): Logger
-            log(...args: unknown[]): void
-
-            // default set of logging methods taken from default levels
-            // if you want to use different log levels
-            // this part of code will not work for you
-            verbose(arg: unknown): void
-            debug(arg: unknown): void
-            warn(arg: unknown): void
-            error(arg: unknown): void
-            trace(arg: unknown): void
-            info(arg: unknown): void
-            fatal(arg: unknown): void
-
-            static logLevels: Level[]
-        }
+        export const LOG_LEVELS: Level[]
     }
 
     enum RequestResponseType { ArrayBuffer, JSON, Text, Stream }
@@ -813,12 +771,12 @@ declare namespace SDKStandardComponents {
     }
 
     type JwsValidatorConfig = {
-        logger: Logger.Logger
+        logger: Logger.SdkLogger
         validationKeys: Record<string, Buffer> | Record<string, string>
     }
 
     type JwsSignerConfig = {
-        logger: Logger.Logger
+        logger: Logger.SdkLogger
         signingKey: String
     }
 
@@ -890,7 +848,7 @@ declare namespace SDKStandardComponents {
 
     type IlpOptions = {
         secret: string;
-        logger: Logger.Logger;
+        logger: Logger.SdkLogger;
     }
 
     namespace Ilp {

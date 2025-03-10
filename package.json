@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "19.9.0",
+  "version": "19.10.0-snapshot.2",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -43,8 +43,9 @@
     }
   ],
   "dependencies": {
+    "@mojaloop/central-services-logger": "11.5.5",
     "@mojaloop/ml-schema-transformer-lib": "2.5.6",
-    "axios": "1.8.1",
+    "axios": "1.8.2",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
     "fast-safe-stringify": "2.1.1",
@@ -72,7 +73,7 @@
   "devDependencies": {
     "@mojaloop/api-snippets": "17.8.0",
     "@types/jest": "29.5.14",
-    "@types/node": "22.13.9",
+    "@types/node": "22.13.10",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",

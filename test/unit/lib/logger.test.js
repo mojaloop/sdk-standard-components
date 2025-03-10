@@ -20,16 +20,32 @@
  optionally within square brackets <email>.
 
  * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-
- * ModusBox
- - Paweł Marzec - pawel.marzec@modusbox.com - ORIGINAL AUTHOR
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
 
  --------------
  ******/
 
-const { loggerFactory } = require('../../src/lib/logger');
+const { loggerFactory, SdkLogger } = require('#src/lib/logger');
 
-// todo: use loggerFactory directly in tests instead of mockLogger
+describe('SdkLogger Tests -->', () => {
+    test('should create an instance of SdkLogger class', () => {
+        expect(loggerFactory()).toBeInstanceOf(SdkLogger);
+    });
 
-module.exports = loggerFactory;
+    test('should have log() method', () => {
+        const logger = loggerFactory();
+        expect(typeof logger.log).toBe('function');
+    });
+
+    test('should have push() method', () => {
+        const logger = loggerFactory();
+        expect(typeof logger.push).toBe('function');
+    });
+
+    test('should return SdkLogger instance from push() method', () => {
+        const logger = loggerFactory();
+        const log = logger.push({ context: 'test' });
+        expect(log).toBeInstanceOf(SdkLogger);
+    });
+});
+

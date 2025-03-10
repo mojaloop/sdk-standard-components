@@ -2,12 +2,12 @@ const { ilpFactory, ILP_VERSIONS } = require('#src/lib/ilp/index');
 const IlpV1 = require('#src/lib/ilp/IlpV1');
 const IlpV4 = require('#src/lib/ilp/IlpV4');
 const { ERROR_MESSAGES } = require('#src/lib/constants');
-const { Logger } = require('#src/lib/logger/index');
+const { loggerFactory } = require('#src/lib/logger');
 
 describe('ilpFactory Tests -->', () => {
     const ilpOptions = {
         secret: 'test',
-        logger: new Logger()
+        logger: loggerFactory()
     };
 
     test('should throw error if unsupported version is provided', () => {
