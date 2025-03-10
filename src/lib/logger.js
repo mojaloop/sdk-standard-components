@@ -25,22 +25,14 @@
  --------------
  ******/
 
-const { hostname } = require('node:os');
 const { ContextLogger } = require('@mojaloop/central-services-logger/src/contextLogger');
 const { allLevels } = require('@mojaloop/central-services-logger/src/lib/constants');
 
 const LOG_LEVELS = Object.keys(allLevels);
 
-const createLogger = (config = {}) => {
+const loggerFactory = (config = {}) => {
     // todo: align config with ContextLogger ctor format
-    const {
-        context = {
-            // If we're running from a Mojaloop helm chart deployment, we'll have a SIM_NAME
-            simulator: process.env['SIM_NAME'],
-            hostname: hostname(),
-        },
-        isJsonOutput = false,
-    } = config;
+    const { context, isJsonOutput = false } = config;
 
     return new SdkLogger(context, { jsonOutput: isJsonOutput });
 };
@@ -66,7 +58,7 @@ class SdkLogger extends ContextLogger {
 }
 
 module.exports = {
-    createLogger,
+    loggerFactory,
     SdkLogger,
     LOG_LEVELS,
 };

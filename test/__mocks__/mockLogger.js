@@ -28,8 +28,8 @@
  --------------
  ******/
 
-const { createLogger } = require('../../src/lib/logger');
+const { loggerFactory } = require('../../src/lib/logger');
 
-// todo: use createLogger instead of mockLogger in tests
+// todo: use loggerFactory directly in tests instead of mockLogger
 
-module.exports = createLogger;
+module.exports = loggerFactory;

@@ -573,7 +573,7 @@ declare namespace SDKStandardComponents {
         }
         // todo: need to be aligned with ContextLogger ctor params
 
-        export function createLogger(config?: CreateLoggerFactoryConfig): SdkLogger;
+        export function loggerFactory(config?: CreateLoggerFactoryConfig): SdkLogger;
 
         export class SdkLogger extends ContextLogger implements ILogger {
             push(context?: LogContext): SdkLogger

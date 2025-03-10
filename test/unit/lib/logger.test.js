@@ -25,21 +25,25 @@
  --------------
  ******/
 
-const { createLogger, SdkLogger } = require('#src/lib/logger');
+const { loggerFactory, SdkLogger } = require('#src/lib/logger');
 
 describe('SdkLogger Tests -->', () => {
+    test('should create an instance of SdkLogger class', () => {
+        expect(loggerFactory()).toBeInstanceOf(SdkLogger);
+    });
+
     test('should have log() method', () => {
-        const logger = createLogger();
+        const logger = loggerFactory();
         expect(typeof logger.log).toBe('function');
     });
 
     test('should have push() method', () => {
-        const logger = createLogger();
+        const logger = loggerFactory();
         expect(typeof logger.push).toBe('function');
     });
 
     test('should return SdkLogger instance from push() method', () => {
-        const logger = createLogger();
+        const logger = loggerFactory();
         const log = logger.push({ context: 'test' });
         expect(log).toBeInstanceOf(SdkLogger);
     });
