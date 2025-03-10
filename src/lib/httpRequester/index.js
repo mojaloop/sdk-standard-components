@@ -58,6 +58,7 @@ const httpRequester = createHttpRequester();
 
 /**
  * Backwards compatibility http request functionality
+ * @deprecated  Use createHttpRequester instead
  * @param {HttpOptions} reqOpts - HTTP request options
  * @returns {Promise<unknown>} HTTP response
  */
@@ -65,7 +66,7 @@ const request = (reqOpts) => httpRequester.sendRequest(reqOpts);
 request.responseType = httpRequester.responseType;
 
 module.exports = {
-    request,
+    request, // use createHttpRequester instead
     createHttpRequester,
     defaultConfig,
 };

@@ -46,7 +46,7 @@ class BaseRequests {
      * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
      */
     constructor(config) {
-        this.logger = config.logger.push({ component: BaseRequests.name });
+        this.logger = config.logger.push({ component: this.constructor.name });
         this.requester = createHttpRequester({ logger: this.logger });
 
         // FSPID of THIS DFSP
@@ -179,7 +179,7 @@ class BaseRequests {
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
                 if (retryAuth) {
-                    this.logger.isDebugEnabled && this.logger.debug('Received HTTP 401 for request. Attempting to retrieve a new token.');
+                    this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;

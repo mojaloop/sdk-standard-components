@@ -42,7 +42,7 @@ const SIGNATURE_ALGORITHMS = ['RS256', 'ES256'];
  */
 class JwsValidator {
     constructor(config) {
-        this.logger = config.logger || console;
+        this.logger = config.logger?.push({ component: this.constructor.name }) || console;
 
         if(!config.validationKeys) {
             throw new Error('Validation keys must be supplied as config argument');
