@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.10.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.9.0...v19.10.0) (2025-03-10)
+
+
+### Features
+
+* **csi-1252:** switched to use ContextLogger ([#244](https://github.com/mojaloop/sdk-standard-components/issues/244)) ([741950e](https://github.com/mojaloop/sdk-standard-components/commit/741950ef57282ddbbff1960800514c1922f09875))
+
 ## [19.9.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.7.1...v19.9.0) (2025-03-05)
 
 
