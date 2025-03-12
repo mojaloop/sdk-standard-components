@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.10.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.2...v19.10.3) (2025-03-12)
+
+
+### Bug Fixes
+
+* update ml-schema-transformer-lib ([#247](https://github.com/mojaloop/sdk-standard-components/issues/247)) ([a5a069b](https://github.com/mojaloop/sdk-standard-components/commit/a5a069b8c3ffcf6a9cf11fdcd4902bfc70f31cc9))
+
 ### [19.10.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.1...v19.10.2) (2025-03-12)
 
 
