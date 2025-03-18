@@ -46,7 +46,7 @@ const DIGEST_ENCODING = 'base64url';
 class IlpBase {
     constructor(config) {
         this.secret = config.secret;
-        this.logger = config.logger;
+        this.logger = config.logger.push({ component: this.constructor.name });
     }
 
     get version() {

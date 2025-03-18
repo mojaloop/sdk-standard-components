@@ -1,4 +1,44 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.10.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.2...v19.10.3) (2025-03-12)
+
+
+### Bug Fixes
+
+* update ml-schema-transformer-lib ([#247](https://github.com/mojaloop/sdk-standard-components/issues/247)) ([a5a069b](https://github.com/mojaloop/sdk-standard-components/commit/a5a069b8c3ffcf6a9cf11fdcd4902bfc70f31cc9))
+
+### [19.10.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.1...v19.10.2) (2025-03-12)
+
+
+### Bug Fixes
+
+* update logger ([#246](https://github.com/mojaloop/sdk-standard-components/issues/246)) ([c11a90e](https://github.com/mojaloop/sdk-standard-components/commit/c11a90e83bb46f88c6ae76d7fd4ac1a47467faaf))
+
+### [19.10.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.0...v19.10.1) (2025-03-12)
+
+
+### Chore
+
+* fix dependency loop ([#245](https://github.com/mojaloop/sdk-standard-components/issues/245)) ([b9bf2ae](https://github.com/mojaloop/sdk-standard-components/commit/b9bf2aea0a18331507e08c8f8b25b0157ce09f55))
+
+## [19.10.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.9.0...v19.10.0) (2025-03-10)
+
+
+### Features
+
+* **csi-1252:** switched to use ContextLogger ([#244](https://github.com/mojaloop/sdk-standard-components/issues/244)) ([741950e](https://github.com/mojaloop/sdk-standard-components/commit/741950ef57282ddbbff1960800514c1922f09875))
+
+## [19.9.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.7.1...v19.9.0) (2025-03-05)
+
+
+### Features
+
+* **csi-1210:** added headers to ML requests ([#241](https://github.com/mojaloop/sdk-standard-components/issues/241)) ([f8b50e9](https://github.com/mojaloop/sdk-standard-components/commit/f8b50e94216f4264b4ae452db22b0050ef1c675f))
+
+
+### Chore
+
+* updated deps ([#243](https://github.com/mojaloop/sdk-standard-components/issues/243)) ([b616f0a](https://github.com/mojaloop/sdk-standard-components/commit/b616f0ac59aaf77fddafb361d8a537ea18a56d01))
+
 ### [19.7.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.7.0...v19.7.1) (2025-02-27)
 
 

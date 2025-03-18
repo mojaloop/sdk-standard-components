@@ -3,7 +3,7 @@
 const http = require('node:http');
 const https = require('node:https');
 
-const { request } = require('../httpRequester');
+const { createHttpRequester } = require('../httpRequester');
 const { RESOURCES, ISO_20022_HEADER_PART } = require('../constants');
 const {
     buildUrl,
@@ -46,7 +46,8 @@ class BaseRequests {
      * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
      */
     constructor(config) {
-        this.logger = config.logger.push({ component: BaseRequests.name });
+        this.logger = config.logger.push({ component: this.constructor.name });
+        this.requester = createHttpRequester({ logger: this.logger });
 
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
@@ -172,13 +173,13 @@ class BaseRequests {
     }
 
     _request(opts, responseType) {
-        const __request = async (opts, responseType, attempts) => request(opts)
+        const __request = async (opts, responseType, attempts) => this.requester.sendRequest(opts)
             .catch((err) => {
                 const retryAuth = err.status === 401 &&
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
                 if (retryAuth) {
-                    this.logger.isDebugEnabled && this.logger.debug('Received HTTP 401 for request. Attempting to retrieve a new token.');
+                    this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token.');
                     const token = this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
@@ -236,7 +237,7 @@ class BaseRequests {
         };
 
         if (responseType === ResponseType.Stream) {
-            reqOpts.responseType = request.responseType.Stream;
+            reqOpts.responseType = this.requester.responseType.Stream;
         }
 
         // Note we do not JWS sign requests with no body i.e. GET requests
@@ -283,7 +284,7 @@ class BaseRequests {
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
         if (responseType === ResponseType.Stream) {
-            reqOpts.responseType = request.responseType.Stream;
+            reqOpts.responseType = this.requester.responseType.Stream;
         }
 
         if ((responseType === ResponseType.Mojaloop) && this.jwsSign && (resourceType === 'parties' ? this.jwsSignPutParties : true)) {
@@ -373,7 +374,7 @@ class BaseRequests {
         reqOpts.headers = { ...reqOpts.headers, ...transformed.headers };
 
         if (responseType === ResponseType.Stream) {
-            reqOpts.responseType = request.responseType.Stream;
+            reqOpts.responseType = this.requester.responseType.Stream;
         }
 
         if ((responseType === ResponseType.Mojaloop) && this.jwsSign) {
@@ -408,10 +409,6 @@ class BaseRequests {
             agent: this.agent,
         };
 
-        if (responseType === ResponseType.Stream) {
-            reqOpts.responseType = request.responseType.Stream;
-        }
-
         return this._request(reqOpts, responseType);
     }
 
@@ -440,7 +437,7 @@ class BaseRequests {
             headers['fspiop-source'] = this.dfspId;
         }
 
-        if(dest) {
+        if (dest) {
             headers['fspiop-destination'] = dest;
         }
 

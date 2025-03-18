@@ -20,16 +20,45 @@
  optionally within square brackets <email>.
 
  * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-
- * ModusBox
- - Paweł Marzec - pawel.marzec@modusbox.com - ORIGINAL AUTHOR
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
 
  --------------
  ******/
 
-const { loggerFactory } = require('../../src/lib/logger');
+const { ContextLogger } = require('@mojaloop/central-services-logger/src/contextLogger');
+const { allLevels } = require('@mojaloop/central-services-logger/src/lib/constants');
 
-// todo: use loggerFactory directly in tests instead of mockLogger
+const LOG_LEVELS = Object.keys(allLevels);
 
-module.exports = loggerFactory;
+const loggerFactory = (config = {}) => {
+    // todo: align config with ContextLogger ctor format
+    const { context, isJsonOutput = false } = config;
+
+    return new SdkLogger(context, { jsonOutput: isJsonOutput });
+};
+
+class SdkLogger extends ContextLogger {
+    // todo: - update ContextLogger.child() to be able to use it in SdkLogger
+    //       - think about adding logLevel to ContextLoggerOptions
+    //       - add log() method to ContextLogger (?)
+    //       - export logLevels from ContextLogger (?)
+    child(context) {
+        const { mlLogger } = this;
+        const childContext = this.createContext(context);
+        return new this.constructor(Object.assign({}, this.context, childContext), { mlLogger });
+    }
+
+    push(context) {
+        return this.child(context);
+    }
+
+    log(message, meta = null) {
+        this.silly(message, meta);
+    }
+}
+
+module.exports = {
+    loggerFactory,
+    SdkLogger,
+    LOG_LEVELS,
+};

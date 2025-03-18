@@ -37,12 +37,12 @@
  * @prop {http.Agent} agent - HTTP agent, used to send the request.
  */
 
-const { Logger } = require('../logger');
+const { loggerFactory } = require('../logger');
 const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
 
 const createHttpRequester = ({
-    logger = new Logger({ context: { component: AxiosHttpRequester.name } }),
+    logger = loggerFactory({ context: { component: AxiosHttpRequester.name } }),
     httpClient = null,
     httpConfig = defaultConfig.createDefaultHttpConfig(),
     retryConfig = defaultConfig.createDefaultRetryConfig(logger),
@@ -58,6 +58,7 @@ const httpRequester = createHttpRequester();
 
 /**
  * Backwards compatibility http request functionality
+ * @deprecated  Use createHttpRequester instead
  * @param {HttpOptions} reqOpts - HTTP request options
  * @returns {Promise<unknown>} HTTP response
  */
@@ -65,7 +66,7 @@ const request = (reqOpts) => httpRequester.sendRequest(reqOpts);
 request.responseType = httpRequester.responseType;
 
 module.exports = {
-    request,
+    request, // use createHttpRequester instead
     createHttpRequester,
     defaultConfig,
 };

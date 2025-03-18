@@ -42,7 +42,7 @@ const SIGNATURE_ALGORITHMS = ['RS256', 'ES256'];
  */
 class JwsValidator {
     constructor(config) {
-        this.logger = config.logger || console;
+        this.logger = config.logger?.push({ component: this.constructor.name }) || console;
 
         if(!config.validationKeys) {
             throw new Error('Validation keys must be supplied as config argument');
@@ -100,15 +100,11 @@ class JwsValidator {
             // check protected header has all required fields and matches actual incoming headers
             this._validateProtectedHeader(headers, result.header);
 
-            // const result = jwt.verify(token, pubKey, { complete: true, json: true });
-            this.logger.isDebugEnabled && this.logger.debug(`JWS verify result: ${safeStringify(result)}`);
-
-            // all ok if we got here
-            this.logger.isDebugEnabled && this.logger.debug(`JWS valid for request ${safeStringify(request)}`);
+            this.logger.debug('JWS verify result for request:', { result, request });
             return true;
         }
-        catch(err) {
-            this.logger.isErrorEnabled && this.logger.error(`Error validating JWS: ${err.stack || safeStringify(err)}`);
+        catch (err) {
+            this.logger.error(`Error validating JWS: ${err?.message}`, err);
             throw err;
         }
     }

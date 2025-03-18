@@ -131,14 +131,13 @@ class AxiosHttpRequester {
 
     #makeErrorResponse(err) {
         err.statusCode = err.status || err.response?.status; // for backward compatibility
+
+        let config;
         if (err.config) {
-            err.config = {
-                ...err.config,
-                ...(err.config.httpAgent && { httpAgent: '[REDACTED]' }),
-                ...(err.config.httpsAgent && { httpsAgent: '[REDACTED]' }),
-            };
+            const { method, baseURL, url, params } = err.config;
+            config = { method, baseURL, url, params, restData: '[REDACTED]' };
         }
-        this.logger.push({ err }).warn('error in sending HTTP request');
+        this.logger.warn('error in sending HTTP request', { error: { ...err, config, request: '[REDACTED]' } });
         return err;
     }
 

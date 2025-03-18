@@ -70,11 +70,11 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /parties/{IdType}/{IdValue}/error request for the specified identifier type and indentifier
      */
-    async putPartiesError(idType, idValue, idSubValue, error, destFspId) {
+    async putPartiesError(idType, idValue, idSubValue, error, destFspId, headers = {}) {
         const url = `parties/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
-        return this._put(url, 'parties', error, destFspId, undefined,undefined,
+        return this._put(url, 'parties', error, destFspId, headers,undefined,
             undefined, { Type: idType, ID: idValue, SubId: idSubValue, isError: true });
     }
 
@@ -83,28 +83,28 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postParticipants(request, destFspId) {
-        return this._post('participants', 'participants', request, destFspId);
+    async postParticipants(request, destFspId, headers = {}) {
+        return this._post('participants', 'participants', request, destFspId, headers);
     }
 
     /**
      * Executes a PUT /participants request for the specified identifier type and indentifier
      */
-    async putParticipants(idType, idValue, idSubValue, body, destFspId) {
+    async putParticipants(idType, idValue, idSubValue, body, destFspId, headers = {}) {
         const url = `participants/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '');
-        return this._put(url, 'participants', body, destFspId, undefined, undefined,
+        return this._put(url, 'participants', body, destFspId, headers, undefined,
             undefined, { Type: idType, ID: idValue, SubId: idSubValue});
     }
 
     /**
      * Executes a PUT /participants/{idType}/{idValue}/error request for the specified identifier type and indentifier
      */
-    async putParticipantsError(idType, idValue, idSubValue, error, destFspId) {
+    async putParticipantsError(idType, idValue, idSubValue, error, destFspId, headers = {}) {
         const url = `participants/${idType}/${idValue}`
             + (idSubValue ? `/${idSubValue}` : '')
             + '/error';
-        return this._put(url, 'participants', error, destFspId, undefined, undefined,
+        return this._put(url, 'participants', error, destFspId, headers, undefined,
             undefined, { Type: idType, ID: idValue, SubId: idSubValue, isError: true });
     }
 
@@ -123,14 +123,14 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postQuotes(quoteRequest, destFspId) {
-        return this._post('quotes', 'quotes', quoteRequest, destFspId);
+    async postQuotes(quoteRequest, destFspId, headers = {}) {
+        return this._post('quotes', 'quotes', quoteRequest, destFspId, headers);
     }
 
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotes(quoteId, quoteResponse, destFspId,  headers, $context) {
+    async putQuotes(quoteId, quoteResponse, destFspId, headers, $context) {
         return this._put(`quotes/${quoteId}`, 'quotes', quoteResponse, destFspId, headers,
             undefined, undefined, { ID: quoteId, $context });
     }
@@ -139,30 +139,30 @@ class MojaloopRequests extends BaseRequests {
     /**
      * Executes a PUT /quotes/{ID} request for the specified quote
      */
-    async putQuotesError(quoteId, error, destFspId) {
-        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId, undefined,
+    async putQuotesError(quoteId, error, destFspId, headers = {}) {
+        return this._put(`quotes/${quoteId}/error`, 'quotes', error, destFspId, headers,
             undefined, undefined, { ID: quoteId, isError: true });
     }
 
     /**
      * Executes a POST /bulkQuotes request
      */
-    async postBulkQuotes(bulkQuoteRequest, destFspId) {
-        return this._post('bulkQuotes', 'bulkQuotes', bulkQuoteRequest, destFspId);
+    async postBulkQuotes(bulkQuoteRequest, destFspId, headers = {}) {
+        return this._post('bulkQuotes', 'bulkQuotes', bulkQuoteRequest, destFspId, headers);
     }
 
     /**
     * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
     */
-    async putBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId) {
-        return this._put(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId);
+    async putBulkQuotes(bulkQuoteId, bulkQuoteResponse, destFspId, headers = {}) {
+        return this._put(`bulkQuotes/${bulkQuoteId}`, 'bulkQuotes', bulkQuoteResponse, destFspId, headers);
     }
 
     /**
     * Executes a PUT /bulkQuotes/{ID} request for the specified bulk quotes
     */
-    async putBulkQuotesError(bulkQuoteId, error, destFspId) {
-        return this._put(`bulkQuotes/${bulkQuoteId}/error`, 'bulkQuotes', error, destFspId);
+    async putBulkQuotesError(bulkQuoteId, error, destFspId, headers = {}) {
+        return this._put(`bulkQuotes/${bulkQuoteId}/error`, 'bulkQuotes', error, destFspId, headers);
     }
 
     /**
@@ -170,9 +170,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getBulkQuotes(bulkQuoteId) {
+    async getBulkQuotes(bulkQuoteId, headers = {}) {
         const url = `bulkQuotes/${bulkQuoteId}`;
-        return this._get(url, 'bulkQuotes');
+        return this._get(url, 'bulkQuotes', undefined, headers);
     }
 
     /**
@@ -180,9 +180,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getTransfers(transferId) {
+    async getTransfers(transferId, dest = '', headers = {}) {
         const url = `transfers/${transferId}`;
-        return this._get(url, 'transfers');
+        return this._get(url, 'transfers', dest, headers);
     }
 
     /**
@@ -190,9 +190,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransfers(prepare, destFspId, $context) {
+    async postTransfers(prepare, destFspId, headers = {}, $context = {}) {
         return this._post('transfers', 'transfers', prepare, destFspId,
-            undefined, undefined, undefined, { $context });
+            headers, undefined, undefined, { $context });
     }
 
     /**
@@ -209,8 +209,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async patchTransfers(transferId, body, destFspId) {
-        return this._patch(`transfers/${transferId}`, 'transfers', body, destFspId);
+    async patchTransfers(transferId, body, destFspId, headers = {}) {
+        return this._patch(`transfers/${transferId}`, 'transfers', body, destFspId, headers);
     }
 
     /**
@@ -218,9 +218,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransfersError(transferId, error, destFspId) {
+    async putTransfersError(transferId, error, destFspId, headers = {}) {
         return this._put(`transfers/${transferId}/error`, 'transfers', error, destFspId,
-            undefined, undefined, undefined, { isError: true });
+            headers, undefined, undefined, { isError: true });
     }
 
     /**
@@ -228,8 +228,8 @@ class MojaloopRequests extends BaseRequests {
    *
    * @returns {object} - JSON response body if one was received
    */
-    async postFxQuotes(quotePayload, destFspId) {
-        return this._post('fxQuotes', RESOURCES.fxQuotes, quotePayload, destFspId);
+    async postFxQuotes(quotePayload, destFspId, headers = {}) {
+        return this._post('fxQuotes', RESOURCES.fxQuotes, quotePayload, destFspId, headers);
     }
 
     /**
@@ -237,9 +237,9 @@ class MojaloopRequests extends BaseRequests {
    *
    * @returns {object} - JSON response body if one was received
    */
-    async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId) {
+    async putFxQuotes(conversionRequestId, fxQuoteResponse, destFspId, headers = {}) {
         return this._put(`fxQuotes/${conversionRequestId}`, RESOURCES.fxQuotes, fxQuoteResponse, destFspId,
-            undefined, undefined, undefined, { ID: conversionRequestId });
+            headers, undefined, undefined, { ID: conversionRequestId });
     }
 
     /**
@@ -247,9 +247,9 @@ class MojaloopRequests extends BaseRequests {
    *
    * @returns {object} - JSON response body if one was received
    */
-    async putFxQuotesError(conversionRequestId, error, destFspId) {
+    async putFxQuotesError(conversionRequestId, error, destFspId, headers = {}) {
         return this._put(`fxQuotes/${conversionRequestId}/error`, RESOURCES.fxQuotes, error, destFspId,
-            undefined, undefined, undefined, { ID: conversionRequestId, isError: true });
+            headers, undefined, undefined, { ID: conversionRequestId, isError: true });
     }
 
     /**
@@ -257,8 +257,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postFxTransfers(preparePayload, destFspId) {
-        return this._post('fxTransfers', RESOURCES.fxTransfers, preparePayload, destFspId);
+    async postFxTransfers(preparePayload, destFspId, headers = {}) {
+        return this._post('fxTransfers', RESOURCES.fxTransfers, preparePayload, destFspId, headers);
     }
 
     /**
@@ -266,8 +266,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putFxTransfers(commitRequestId, fulfilmentPayload, destFspId) {
-        return this._put(`fxTransfers/${commitRequestId}`, RESOURCES.fxTransfers, fulfilmentPayload, destFspId);
+    async putFxTransfers(commitRequestId, fulfilmentPayload, destFspId, headers = {}) {
+        return this._put(`fxTransfers/${commitRequestId}`, RESOURCES.fxTransfers, fulfilmentPayload, destFspId, headers);
     }
 
     /**
@@ -275,9 +275,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putFxTransfersError(commitRequestId, error, destFspId) {
+    async putFxTransfersError(commitRequestId, error, destFspId, headers = {}) {
         return this._put(`fxTransfers/${commitRequestId}/error`, RESOURCES.fxTransfers, error, destFspId,
-            undefined, undefined, undefined, { isError: true });
+            headers, undefined, undefined, { isError: true });
     }
 
     /**
@@ -285,9 +285,9 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async getBulkTransfers(bulkTransferId) {
+    async getBulkTransfers(bulkTransferId, headers = {}) {
         const url = `bulkTransfers/${bulkTransferId}`;
-        return this._get(url, 'bulkTransfers');
+        return this._get(url, 'bulkTransfers', undefined, headers);
     }
 
     /**
@@ -295,8 +295,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postBulkTransfers(prepare, destFspId) {
-        return this._post('bulkTransfers', 'bulkTransfers', prepare, destFspId);
+    async postBulkTransfers(prepare, destFspId, headers = {}) {
+        return this._post('bulkTransfers', 'bulkTransfers', prepare, destFspId, headers);
     }
 
     /**
@@ -304,8 +304,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putBulkTransfers(bulkTransferId, fulfilment, destFspId) {
-        return this._put(`bulkTransfers/${bulkTransferId}`, 'bulkTransfers', fulfilment, destFspId);
+    async putBulkTransfers(bulkTransferId, fulfilment, destFspId, headers = {}) {
+        return this._put(`bulkTransfers/${bulkTransferId}`, 'bulkTransfers', fulfilment, destFspId, headers);
     }
 
     /**
@@ -313,8 +313,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putBulkTransfersError(bulkTransferId, error, destFspId) {
-        return this._put(`bulkTransfers/${bulkTransferId}/error`, 'bulkTransfers', error, destFspId);
+    async putBulkTransfersError(bulkTransferId, error, destFspId, headers = {}) {
+        return this._put(`bulkTransfers/${bulkTransferId}/error`, 'bulkTransfers', error, destFspId, headers);
     }
 
     /**
@@ -322,8 +322,8 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async postTransactionRequests(transactionRequest, destFspId) {
-        return this._post('transactionRequests', 'transactionRequests', transactionRequest, destFspId);
+    async postTransactionRequests(transactionRequest, destFspId, headers = {}) {
+        return this._post('transactionRequests', 'transactionRequests', transactionRequest, destFspId, headers);
     }
 
     /**
@@ -331,8 +331,14 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransactionRequests(transactionRequestId, transactionRequestResponse, destFspId) {
-        return this._put(`transactionRequests/${transactionRequestId}`, 'transactionRequests', transactionRequestResponse, destFspId);
+    async putTransactionRequests(transactionRequestId, transactionRequestResponse, destFspId, headers = {}) {
+        return this._put(
+            `transactionRequests/${transactionRequestId}`,
+            'transactionRequests',
+            transactionRequestResponse,
+            destFspId,
+            headers
+        );
     }
 
     /**
@@ -340,8 +346,14 @@ class MojaloopRequests extends BaseRequests {
      *
      * @returns {object} - JSON response body if one was received
      */
-    async putTransactionRequestsError(transactionRequestId, error, destFspId) {
-        return this._put(`transactionRequests/${transactionRequestId}/error`, 'transactionRequests', error, destFspId);
+    async putTransactionRequestsError(transactionRequestId, error, destFspId, headers = {}) {
+        return this._put(
+            `transactionRequests/${transactionRequestId}/error`,
+            'transactionRequests',
+            error,
+            destFspId,
+            headers
+        );
     }
 
     /**
