@@ -385,6 +385,34 @@ class BaseRequests {
     }
 
     /**
+     * @function _delete
+     * @description
+     *  Performs a HTTP DELETE request.
+     *
+     *  **Note**: `config.jwsSign` is ignored here, as we don't JWS sign requests with no body
+     * @param {string} url - The url of the resource
+     * @param {string} resourceType - The 'type' of resource. Used to resolve the endpoint for the request
+     * @param {string | undefined} dest - The destination participant. Leave empty if participant is unknown
+     * @param {*} headers - Optional additional headers
+     * @param {*} query - Optional query parameters
+     * @param {*} responseType - Optional, defaults to `Mojaloop`
+     */
+    async _delete(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+        const reqOpts = {
+            method: 'DELETE',
+            uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
+            headers: {
+                ...this._buildHeaders('DELETE', resourceType, dest),
+                ...headers,
+            },
+            qs: query,
+            agent: this.agent,
+        };
+
+        return this._request(reqOpts, responseType);
+    }
+
+    /**
      * @function _buildHeaders
      * @description
      *   Utility function for building outgoing request headers as required by the mojaloop api spec
