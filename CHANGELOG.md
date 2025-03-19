@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.11.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.3...v19.11.0) (2025-03-19)
+
+
+### Features
+
+* **csi-1244:** add delete participants request ([#242](https://github.com/mojaloop/sdk-standard-components/issues/242)) ([7d5339c](https://github.com/mojaloop/sdk-standard-components/commit/7d5339c2f6d61de4eb024a0da6b1fd6eaf5fdf71))
+
 ### [19.10.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.2...v19.10.3) (2025-03-12)
 
 
