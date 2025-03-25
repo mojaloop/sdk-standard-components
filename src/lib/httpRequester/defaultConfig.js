@@ -10,7 +10,6 @@ const retryableStatusCodes = [
     429,
     502,
     503,
-    504,
 ];
 
 const retryableHttpErrorCodes = [
