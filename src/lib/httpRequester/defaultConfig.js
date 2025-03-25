@@ -8,14 +8,13 @@ const {
 const retryableStatusCodes = [
     408,
     429,
-    500,
     502,
     503,
-    504,
 ];
 
 const retryableHttpErrorCodes = [
-    'ETIMEDOUT'
+    'ETIMEDOUT',
+    'EAI_AGAIN'
 ];
 
 // think, which else default options we need to have (maybe, use env vars)
