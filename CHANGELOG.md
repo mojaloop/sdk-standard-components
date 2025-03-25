@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.11.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.0...v19.11.1) (2025-03-25)
+
+
+### Chore
+
+* **csi-1324:** remove 500 from retry codes ([#248](https://github.com/mojaloop/sdk-standard-components/issues/248)) ([089e5f6](https://github.com/mojaloop/sdk-standard-components/commit/089e5f6126c1f71917b197d51e4ec3953ea70f8a))
+
 ## [19.11.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.10.3...v19.11.0) (2025-03-19)
 
 
