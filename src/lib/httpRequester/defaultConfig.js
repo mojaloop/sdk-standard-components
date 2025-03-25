@@ -8,7 +8,6 @@ const {
 const retryableStatusCodes = [
     408,
     429,
-    500,
     502,
     503,
     504,
