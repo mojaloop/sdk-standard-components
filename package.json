@@ -43,8 +43,8 @@
     }
   ],
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.7.0",
-    "@mojaloop/ml-schema-transformer-lib": "2.6.0",
+    "@mojaloop/central-services-logger": "11.8.0",
+    "@mojaloop/ml-schema-transformer-lib": "2.7.0",
     "axios": "1.8.4",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@mojaloop/api-snippets": "17.10.1",
     "@types/jest": "29.5.14",
-    "@types/node": "22.13.13",
+    "@types/node": "22.13.14",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
