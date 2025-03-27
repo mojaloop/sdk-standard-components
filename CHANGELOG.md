@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.11.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.1...v19.11.2) (2025-03-27)
+
+
+### Chore
+
+* update transform-lib, others ([#249](https://github.com/mojaloop/sdk-standard-components/issues/249)) ([ab551b0](https://github.com/mojaloop/sdk-standard-components/commit/ab551b0f61c3819a66bdf1f5cf4cd31b9a23111e))
+
 ### [19.11.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.0...v19.11.1) (2025-03-25)
 
 
