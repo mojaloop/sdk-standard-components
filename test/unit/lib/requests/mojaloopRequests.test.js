@@ -600,7 +600,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.TxInfAndSts).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Cd).toEqual(putErrorBody.errorInformation.errorCode);
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
     });
 
     it('Sends FSPIOP PUT /quotes error bodies when ApiType is fspiop', async () => {
@@ -779,7 +779,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.TxInfAndSts).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Cd).toEqual(putErrorBody.errorInformation.errorCode);
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
     });
 
     it('Sends FSPIOP PUT /transfers error bodies when ApiType is fspiop', async () => {
@@ -898,7 +898,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.TxInfAndSts).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Cd).toEqual(putErrorBody.errorInformation.errorCode);
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
     });
 
     it('Sends FSPIOP PUT /fxQuotes error bodies when ApiType is fspiop', async () => {
@@ -1017,7 +1017,7 @@ describe('MojaloopRequests', () => {
         expect(reqBody.TxInfAndSts).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
         expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Cd).toEqual(putErrorBody.errorInformation.errorCode);
+        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
     });
 
     it('Sends FSPIOP PUT /fxTransfers error bodies when ApiType is fspiop', async () => {
