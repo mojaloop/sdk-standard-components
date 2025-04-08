@@ -1,4 +1,12 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.11.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.2...v19.11.3) (2025-04-08)
+
+
+### Bug Fixes
+
+* **csi-1316:** updated logger usage inside ILP ([#252](https://github.com/mojaloop/sdk-standard-components/issues/252)) ([5b50d56](https://github.com/mojaloop/sdk-standard-components/commit/5b50d569d9b09aa4097734718d91c270e1b12c97))
+* **csi-1350:** made http retry defaults configurable ([#250](https://github.com/mojaloop/sdk-standard-components/issues/250)) ([d9e7ee4](https://github.com/mojaloop/sdk-standard-components/commit/d9e7ee40474cc8d5e3c8c390b5cff2a20f8a3a60))
+
 ### [19.11.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.1...v19.11.2) (2025-03-27)
 
 
