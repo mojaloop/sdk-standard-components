@@ -42,7 +42,7 @@ const SIGNATURE_ALGORITHMS = ['RS256', 'ES256'];
  */
 class JwsValidator {
     constructor(config) {
-        this.logger = config.logger?.push({ component: this.constructor.name }) || console;
+        this.logger = config.logger?.child({ component: this.constructor.name }) || console;
 
         if(!config.validationKeys) {
             throw new Error('Validation keys must be supplied as config argument');
@@ -61,7 +61,7 @@ class JwsValidator {
             const { headers, body, data } = request; // todo: define, what to use: only body OR data ?
             const payload = body || data;
 
-            this.logger.isDebugEnabled && this.logger.debug(`Validating JWS on request with headers: ${safeStringify(headers)} and body: ${safeStringify(payload)}`);
+            this.logger.debug('Validating JWS on request with headers and body: ', { headers, body });
 
             if(!payload) {
                 throw new Error('Cannot validate JWS without a body');
@@ -88,8 +88,7 @@ class JwsValidator {
             const { protectedHeader, signature } = signatureHeader;
 
             const token = `${protectedHeader}.${base64url(safeStringify(payload))}.${signature}`;
-
-            this.logger.isDebugEnabled && this.logger.debug(`JWS token to verify: ${token}, using public key: ${pubKey}`);
+            this.logger.debug(`JWS token to verify: ${token}, using public key: ${pubKey}`);
 
             // validate signature
             const result = jwt.verify(token, pubKey, {
@@ -104,7 +103,7 @@ class JwsValidator {
             return true;
         }
         catch (err) {
-            this.logger.error(`Error validating JWS: ${err?.message}`, err);
+            this.logger.error('Error validating JWS: ', err);
             throw err;
         }
     }
