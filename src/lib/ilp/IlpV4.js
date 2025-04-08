@@ -55,7 +55,7 @@ class IlpV4 extends IlpBase {
             condition,
             ilpPacket
         };
-        this.logger.isDebugEnabled && this.logger.push({ transactionObject, result }).debug('Generated ILP response');
+        this.logger.debug('Generated ILP v4 response: ', { transactionObject, result });
 
         return result;
     }
@@ -98,8 +98,7 @@ class IlpV4 extends IlpBase {
         }
         const amount = this.#adjustAmount(transactionObject, isFx);
         const destination = this._getIlpAddress();
-
-        this.logger.isDebugEnabled && this.logger.push({ transactionObject, amount, expiresAt, destination }).debug('ILP packet input details');
+        this.logger.debug('ILP packet input details:', { transactionObject, amount, expiresAt, destination });
 
         return Object.freeze({
             amount, // unsigned 64bit integer as a string
@@ -158,7 +157,7 @@ class IlpV4 extends IlpBase {
 
         if (amount.includes('.')) {
             const errMessage = ERROR_MESSAGES.invalidAdjustedAmount;
-            this.logger.push(transactionObject.amount).warn(errMessage);
+            this.logger.warn(errMessage, { amount, isFx });
             throw new TypeError(errMessage);
         }
         return amount;
