@@ -63,9 +63,9 @@ class IlpV1 extends IlpBase {
             ilpPacket: base64encodedIlpPacket
         };
 
-        this.logger.isDebugEnabled && this.logger
-            .push({ transactionObject, result, packetInput: { ...packetInput, data: 'Buffer...' } })
-            .debug('Generated ILP response:');
+        this.logger.debug('Generated ILP v1 response:', {
+            transactionObject, result, packetInput: { ...packetInput, data: 'Buffer...' }
+        });
 
         return result;
     }
