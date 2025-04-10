@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.12.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.3...v19.12.0) (2025-04-10)
+
+
+### Features
+
+* **csi-422:** used logger.child() method ([#253](https://github.com/mojaloop/sdk-standard-components/issues/253)) ([a8d6054](https://github.com/mojaloop/sdk-standard-components/commit/a8d6054f2d5f018833d6bac413f3b0c44f06d7fa))
+
 ### [19.11.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.2...v19.11.3) (2025-04-08)
 
 
