@@ -41,7 +41,7 @@ const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bu
  */
 class JwsSigner {
     constructor(config) {
-        this.logger = config.logger?.push({ component: this.constructor.name }) || console;
+        this.logger = config.logger?.child({ component: this.constructor.name }) || console;
 
         if(!config.signingKey) {
             throw new Error('Signing key must be supplied as config argument');

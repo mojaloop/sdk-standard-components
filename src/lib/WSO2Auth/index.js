@@ -60,7 +60,7 @@ class WSO2Auth extends EventEmitter {
      */
     constructor(opts) {
         super({ captureExceptions: true });
-        this._logger = opts.logger.push({ component: this.constructor.name });
+        this._logger = opts.logger.child({ component: this.constructor.name });
         this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
         this._refreshRetrySeconds = opts.refreshRetrySeconds || DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS;
 
