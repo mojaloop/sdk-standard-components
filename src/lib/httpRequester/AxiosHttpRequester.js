@@ -1,3 +1,30 @@
+/*****
+ License
+ --------------
+ Copyright © 2020-2025 Mojaloop Foundation
+ The Mojaloop files are made available by the Mojaloop Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Mojaloop Foundation for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+
+ * Mojaloop Foundation
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
+
+ --------------
+ ******/
+
 const { URL } = require('node:url');
 const https = require('node:https');
 const querystring = require('node:querystring');
@@ -11,9 +38,9 @@ axios.defaults.headers.common = {}; // do not use default axios headers
 /**
  * @typedef {Object} AxiosHttpRequestDeps
  * @prop {Logger} logger - Logger instance.
+ * @prop {axios.AxiosRequestConfig} httpConfig - Default configuration for axios instance.
+ * @prop {Object} [retryConfig] - Default configuration for axiosRetry. (details: https://github.com/softonic/axios-retry?tab=readme-ov-file#options)
  * @prop {Object} [httpClient] - HTTP client to be used to send requests.
- * @prop {Object} httpConfig - Default configuration for axios instance.
- * @prop {Object} retryConfig - Default configuration for axiosRetry. (details: https://github.com/softonic/axios-retry?tab=readme-ov-file#options)
  */
 
 class AxiosHttpRequester {
@@ -27,7 +54,7 @@ class AxiosHttpRequester {
      */
     constructor(deps) {
         this.deps = deps;
-        this.logger = deps.logger;
+        this.logger = deps.logger.child({ component: this.constructor.name });
         this.#httpClient = this.#createAxiosClient(deps);
     }
 
@@ -57,12 +84,13 @@ class AxiosHttpRequester {
         } catch (err) {
             err.originalRequest = originalRequest;
             throw this.#makeErrorResponse(err);
-            // todo: think, how to handle errors: rethrow AxiosError ot create our own HttpError?
+            // think, how to handle errors: rethrow AxiosError ot create our own HttpError?
         }
     }
 
     get responseType() { return ResponseType; }
 
+    /** @param {HttpOptions} httpOpts */
     convertToAxiosOptions(httpOpts) {
         const {
             uri,
@@ -72,6 +100,7 @@ class AxiosHttpRequester {
             body,
             responseType, // = ResponseType.JSON
             agent,
+            timeout,
             httpConfig = {},
         } = httpOpts;
 
@@ -86,6 +115,7 @@ class AxiosHttpRequester {
             data: body,
             headers,
             responseType,
+            timeout,
             ...(!agent ? null : {
                 [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
             }),
@@ -141,12 +171,15 @@ class AxiosHttpRequester {
         return err;
     }
 
+    /** @param {AxiosHttpRequestDeps} deps */
     #createAxiosClient(deps) {
         if (deps.httpClient) return deps.httpClient;
 
         this.logger.push(deps.httpConfig).debug('createAxiosClient...');
-        const client = axios.default; // todo: think, if we need to use axios.create
-        // const client = axios.create(deps.config);
+        const client = deps.httpConfig
+            ? axios.create(deps.httpConfig)
+            : axios.default;
+        // IMPORTANT! using axios.create() might break some existing functionalities
 
         if (deps.retryConfig) {
             axiosRetry(client, deps.retryConfig);

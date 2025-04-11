@@ -5,6 +5,7 @@ const https = require('node:https');
 
 const { createHttpRequester } = require('../httpRequester');
 const { RESOURCES, ISO_20022_HEADER_PART } = require('../constants');
+const JwsSigner = require('../jws').signer;
 const {
     buildUrl,
     defineApiType,
@@ -13,9 +14,7 @@ const {
     throwOrJson,
 } = require('./common');
 
-
 const { ApiType, ApiTransformer } = require('./apiTransformer');
-const JwsSigner = require('../jws').signer;
 
 
 /**
@@ -29,17 +28,14 @@ const JwsSigner = require('../jws').signer;
 class BaseRequests {
 
     /**
-     * @function constructor
      * @param {Object} config - The Config Object
-     * @param {Object} config.logger Logging function
-     * @param {Object} config.tls The tls config object
-     * @param {string} config.dfspId The `FSPID` of _this_ DFSP/Participant
-     * @param {boolean} config.jwsSign If `true`, then requests will be JWS signed
-     * @param {boolean | undefined} config.jwsSignPutParties Optional. If undefined,
-     *    it will default to the value of `config.jwsSign`
-     * @param {string | undefined} config.jwsSigningKey Optional. The jwsSigningKey
-     *   to use. Required if `jwsSign === true`
-     * @param {Object | undefined} config.wso2 Optional. The wso2Auth object and
+     * @param {Object} config.logger - Logging function
+     * @param {Object} config.tls - The tls config object
+     * @param {string} config.dfspId - The `FSPID` of _this_ DFSP/Participant
+     * @param {boolean} config.jwsSign - If `true`, then requests will be JWS signed
+     * @param {boolean} [config.jwsSignPutParties] - If not provided, it will default to the value of `config.jwsSign`
+     * @param {string} [config.jwsSigningKey] - The jwsSigningKey to use. Required if `jwsSign === true`
+     * @param {Object} [config.wso2] The wso2Auth object and
      *   number indicating how many times to retry a request that fails authorization.
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
      * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
@@ -47,7 +43,7 @@ class BaseRequests {
      */
     constructor(config) {
         this.logger = config.logger.push({ component: this.constructor.name });
-        this.requester = createHttpRequester({ logger: this.logger });
+        this.requester = this.#createHttpRequester(config);
 
         // FSPID of THIS DFSP
         this.dfspId = config.dfspId;
@@ -168,8 +164,8 @@ class BaseRequests {
         };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
-        this.httpConfig = config.httpConfig || null;
-        this.retryConfig = config.retryConfig || null;
+        // this.httpConfig = config.httpConfig || null;
+        // this.retryConfig = config.retryConfig || null;
     }
 
     _request(opts, responseType) {
@@ -198,8 +194,8 @@ class BaseRequests {
         const { method, uri, headers } = opts;
         this.logger.isVerboseEnabled && this.logger.push({ method, uri, headers }).verbose(`Executing HTTP ${method}...`);
 
-        if (this.httpConfig) opts.httpConfig = this.httpConfig;
-        if (this.retryConfig) opts.retryConfig = this.retryConfig;
+        // if (this.httpConfig) opts.httpConfig = this.httpConfig;
+        // if (this.retryConfig) opts.retryConfig = this.retryConfig;
 
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
@@ -466,6 +462,12 @@ class BaseRequests {
      */
     _pickPeerEndpoint(resourceType) {
         return this.resourceEndpoints[resourceType] || this.peerEndpoint;
+    }
+
+    /** @returns {AxiosHttpRequester} */
+    #createHttpRequester({ httpConfig, retryConfig }) {
+        const { logger } = this;
+        return createHttpRequester({ logger, httpConfig, retryConfig });
     }
 }
 
