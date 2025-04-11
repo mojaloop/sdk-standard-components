@@ -52,7 +52,17 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(config.timeout).toBeGreaterThan(0);
             return [200];
         });
-        await http.sendRequest({ uri: 'http://test.url' });
+        await http.sendRequest({ uri: makeMockUri('/') });
+    });
+
+    test('should use timeout per request', async () => {
+        const timeout = 123;
+        expect.hasAssertions();
+        mockAxios.onAny().reply((config) => {
+            expect(config.timeout).toBe(timeout);
+            return [200];
+        });
+        await http.sendRequest({ timeout, uri: makeMockUri('/') });
     });
 
     test('should fail with statusCode 404, when uri is not registered in mockAxios', async () => {
