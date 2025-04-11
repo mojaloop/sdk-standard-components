@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "19.13.0-snapshot.1",
+  "version": "19.13.0-snapshot.2",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "src/index.js",
   "types": "src/index.d.ts",
