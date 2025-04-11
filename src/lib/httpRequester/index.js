@@ -34,15 +34,19 @@
  * @prop {Object | null} [qs=null] - The request URL query strings.
  * @prop {Object | null} [body=null] - Payload of the request.
  * @prop {('arraybuffer' | 'json' | 'text' | 'stream')} [responseType='json'] - responseType of the request.
- * @prop {http.Agent} agent - HTTP agent, used to send the request.
+ * @prop {http.Agent} [agent] - HTTP agent, used to send the request.
+ * @prop {number} [timeout] - Number of milliseconds before the request times out.
+ * @prop {axios.AxiosRequestConfig} [httpConfig] - axios configs to be able to override default axios options per one request
  */
 
 const { loggerFactory } = require('../logger');
 const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
 
+const defaultLogger = loggerFactory({ context: 'SDK_SC' });
+
 const createHttpRequester = ({
-    logger = loggerFactory({ context: { component: AxiosHttpRequester.name } }),
+    logger = defaultLogger,
     httpClient = null,
     httpConfig = defaultConfig.createDefaultHttpConfig(),
     retryConfig = defaultConfig.createDefaultRetryConfig(logger),

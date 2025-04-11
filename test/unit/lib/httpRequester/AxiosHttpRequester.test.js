@@ -46,6 +46,15 @@ describe('AxiosHttpRequester Test -->', () => {
         expect(http).toBeInstanceOf(AxiosHttpRequester);
     });
 
+    test('should pass default timeout to axios', async () => {
+        expect.hasAssertions();
+        mockAxios.onAny().reply((config) => {
+            expect(config.timeout).toBeGreaterThan(0);
+            return [200];
+        });
+        await http.sendRequest({ uri: 'http://test.url' });
+    });
+
     test('should fail with statusCode 404, when uri is not registered in mockAxios', async () => {
         expect.hasAssertions();
         const uri = 'arbitrary-uri';
@@ -110,19 +119,19 @@ describe('AxiosHttpRequester Test -->', () => {
     describe('convertToAxiosOptions Tests -->', () => {
         test('should add http protocol, if no protocol in uri', () => {
             const uri = '8.8.8.8:1234';
-            const converted = http.convertToAxiosOptions({ uri});
+            const converted = http.convertToAxiosOptions({ uri });
             expect(converted.baseURL).toBe(`http://${uri}`);
         });
 
         test('should NOT add http protocol, if uri has it', () => {
             const uri = 'http://8.8.8.8:1234';
-            const converted = http.convertToAxiosOptions({ uri});
+            const converted = http.convertToAxiosOptions({ uri });
             expect(converted.baseURL).toBe(uri);
         });
 
         test('should add http protocol, and define root url', () => {
             const uri = '127.0.0.2';
-            const converted = http.convertToAxiosOptions({ uri});
+            const converted = http.convertToAxiosOptions({ uri });
             expect(converted.baseURL).toBe(`http://${uri}`);
         });
 
@@ -155,6 +164,13 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(converted.httpsAgent).toBeUndefined();
             expect(converted.httpAgent).toBeUndefined();
             expect(converted.agent).toBeUndefined();
+        });
+
+        test('should allow to override default timeout', () => {
+            const timeout = 1000;
+            const httpOpts = { timeout, uri: 'http://localhost:1234' };
+            const converted = http.convertToAxiosOptions(httpOpts);
+            expect(converted.timeout).toBe(timeout);
         });
     });
 
