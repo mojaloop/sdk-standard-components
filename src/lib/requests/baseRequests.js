@@ -164,8 +164,6 @@ class BaseRequests {
         };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
-        // this.httpConfig = config.httpConfig || null;
-        // this.retryConfig = config.retryConfig || null;
     }
 
     _request(opts, responseType) {
