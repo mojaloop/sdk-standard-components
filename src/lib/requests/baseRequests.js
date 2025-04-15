@@ -192,9 +192,6 @@ class BaseRequests {
         const { method, uri, headers } = opts;
         this.logger.isVerboseEnabled && this.logger.push({ method, uri, headers }).verbose(`Executing HTTP ${method}...`);
 
-        // if (this.httpConfig) opts.httpConfig = this.httpConfig;
-        // if (this.retryConfig) opts.retryConfig = this.retryConfig;
-
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch((err) => {
