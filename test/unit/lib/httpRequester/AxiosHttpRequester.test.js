@@ -56,8 +56,8 @@ describe('AxiosHttpRequester Test -->', () => {
     });
 
     test('should use timeout per request', async () => {
-        const timeout = 123;
         expect.hasAssertions();
+        const timeout = 123;
         mockAxios.onAny().reply((config) => {
             expect(config.timeout).toBe(timeout);
             return [200];
