@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.13.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.12.0...v19.13.0) (2025-04-15)
+
+
+### Features
+
+* **csi-1348:** used axios.create() to get httpClient ([#254](https://github.com/mojaloop/sdk-standard-components/issues/254)) ([8f16f09](https://github.com/mojaloop/sdk-standard-components/commit/8f16f096d6ac019dc6c239b41fc9be4d7bb713b6))
+
 ## [19.12.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.11.3...v19.12.0) (2025-04-10)
 
 
