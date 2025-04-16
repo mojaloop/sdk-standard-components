@@ -55,6 +55,8 @@ class JwsValidator {
     /**
      * Validates the JWS headers on an incoming HTTP request
      * Throws if the protected header or signature are not valid
+     *
+     * @returns {true}
      */
     validate(request) {
         try {

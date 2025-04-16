@@ -802,7 +802,7 @@ declare namespace SDKStandardComponents {
              *
              * Throws if the protected header or signature are not valid
             */
-            validate(request: JwsRequest): void
+            validate(request: JwsRequest): true
         }
 
         class JwsSigner {
