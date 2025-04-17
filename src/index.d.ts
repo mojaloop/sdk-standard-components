@@ -519,43 +519,6 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
     }
 
-    ///** Client library for making outbound ping requests in the Mojaloop ecosystem */
-    // export class PingRequests extends BaseRequests {
-    //     constructor(config: BaseRequestConfigType & {
-    //         pingEndpoint?: string;
-    //     });
-    //
-    //     /**
-    //      *  Executes a `PUT /ping/{requestId}` request
-    //      * @param {Object} params - The ping request parameters
-    //      * @param {string} params.requestId - The ID of the ping request
-    //      * @param {string} params.destination - The ID of the destination participant
-    //      * @param {Object} params.headers - Headers for the request
-    //      * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}
-    //      */
-    //     putPing(params: {
-    //         requestId: string;
-    //         destination: string;
-    //         headers: Record<string, string>;
-    //     }): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-    //
-    //     /**
-    //      *  Executes a `PUT /ping/{requestId}/error` request
-    //      * @param {Object} params - The ping error request parameters
-    //      * @param {string} params.requestId - The ID of the ping request
-    //      * @param {string} params.destination - The ID of the destination participant
-    //      * @param {Object} [params.headers] - Optional headers for the request
-    //      * @param {Object} params.errInfo - Error information to send
-    //      * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}
-    //      */
-    //     putPingError(params: {
-    //         requestId: string;
-    //         destination: string;
-    //         headers?: any;
-    //         errInfo: Errors.MojaloopApiErrorObject;
-    //     }): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
-    // }
-
     interface WSO2AuthConfig {
         logger: Logger.SdkLogger,
         tlsCreds?: {
@@ -649,6 +612,25 @@ declare namespace SDKStandardComponents {
     namespace requests {
         namespace common {
             function bodyStringifier(arg0: unknown): string | Buffer
+        }
+
+        type PutPingParams = {
+            requestId: string;
+            destination: string;
+            headers: Record<string, string>;
+        }
+
+        /** Client library for making outbound ping requests in the Mojaloop ecosystem */
+        export class PingRequests extends BaseRequests {
+            constructor(config: BaseRequestConfigType & {
+                pingEndpoint?: string;
+            });
+
+            putPing(params: PutPingParams): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+            putPingError(params: PutPingParams & {
+                errInfo: Errors.MojaloopApiErrorObject;
+            }): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
         }
     }
 
