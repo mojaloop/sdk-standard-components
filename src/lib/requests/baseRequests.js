@@ -67,8 +67,7 @@ class BaseRequests {
             });
 
             this.transportScheme = 'https';
-        }
-        else {
+        } else {
             this.agent = http.globalAgent;
             this.transportScheme = 'http';
         }
@@ -79,8 +78,7 @@ class BaseRequests {
         // if no jwsSignPutParties config is supplied it inherits the value of config.jwsSign
         if (typeof (config.jwsSignPutParties) === 'undefined') {
             this.jwsSignPutParties = config.jwsSign;
-        }
-        else {
+        } else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
 
@@ -91,77 +89,79 @@ class BaseRequests {
             });
         }
 
-        this.resourceVersions = {
-            parties: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            participants: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            quotes: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            bulkQuotes: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            bulkTransfers: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            transactionRequests: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            authorizations: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            [RESOURCES.fxQuotes]: {
-                contentVersion: '2.0',
-                acceptVersion: '2',
-            },
-            [RESOURCES.fxTransfers]: {
-                contentVersion: '2.0',
-                acceptVersion: '2',
-            },
-            transfers: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            custom: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            thirdparty: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            services: {
-                contentVersion: '1.0',
-                acceptVersion: '1',
-            },
-            ...config.resourceVersions
-        };
+        // this.resourceVersions = {
+        //     parties: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     participants: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     quotes: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     bulkQuotes: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     bulkTransfers: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     transactionRequests: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     authorizations: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     [RESOURCES.fxQuotes]: {
+        //         contentVersion: '2.0',
+        //         acceptVersion: '2',
+        //     },
+        //     [RESOURCES.fxTransfers]: {
+        //         contentVersion: '2.0',
+        //         acceptVersion: '2',
+        //     },
+        //     transfers: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     custom: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     thirdparty: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     services: {
+        //         contentVersion: '1.0',
+        //         acceptVersion: '1',
+        //     },
+        //     ...config.resourceVersions
+        // };
 
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
-        this.resourceEndpoints = {
-            parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
-            participants: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
-            quotes: formatEndpointOrDefault(config.quotesEndpoint, this.transportScheme, this.peerEndpoint),
-            bulkQuotes: formatEndpointOrDefault(config.bulkQuotesEndpoint, this.transportScheme, this.peerEndpoint),
-            transfers: formatEndpointOrDefault(config.transfersEndpoint, this.transportScheme, this.peerEndpoint),
-            bulkTransfers: formatEndpointOrDefault(config.bulkTransfersEndpoint, this.transportScheme, this.peerEndpoint),
-            transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
-            authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
-            [RESOURCES.fxQuotes]: formatEndpointOrDefault(config.fxQuotesEndpoint, this.transportScheme, this.peerEndpoint),
-            [RESOURCES.fxTransfers]: formatEndpointOrDefault(config.fxTransfersEndpoint, this.transportScheme, this.peerEndpoint),
-            thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
-            services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
-        };
+        this.#defineResourceVersionsAndEndpoints(config);
+
+        // this.resourceEndpoints = {
+        //     parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+        //     participants: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+        //     quotes: formatEndpointOrDefault(config.quotesEndpoint, this.transportScheme, this.peerEndpoint),
+        //     bulkQuotes: formatEndpointOrDefault(config.bulkQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+        //     transfers: formatEndpointOrDefault(config.transfersEndpoint, this.transportScheme, this.peerEndpoint),
+        //     bulkTransfers: formatEndpointOrDefault(config.bulkTransfersEndpoint, this.transportScheme, this.peerEndpoint),
+        //     transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+        //     authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+        //     [RESOURCES.fxQuotes]: formatEndpointOrDefault(config.fxQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+        //     [RESOURCES.fxTransfers]: formatEndpointOrDefault(config.fxTransfersEndpoint, this.transportScheme, this.peerEndpoint),
+        //     thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+        //     services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
+        // };
 
         this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
     }
@@ -463,6 +463,78 @@ class BaseRequests {
     #createHttpRequester({ httpConfig, retryConfig }) {
         const { logger } = this;
         return createHttpRequester({ logger, httpConfig, retryConfig });
+    }
+
+    #defineResourceVersionsAndEndpoints(config) {
+        this.resourceVersions = {
+            parties: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            participants: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            quotes: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            bulkQuotes: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            bulkTransfers: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            transactionRequests: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            authorizations: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            [RESOURCES.fxQuotes]: {
+                contentVersion: '2.0',
+                acceptVersion: '2',
+            },
+            [RESOURCES.fxTransfers]: {
+                contentVersion: '2.0',
+                acceptVersion: '2',
+            },
+            transfers: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            custom: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            thirdparty: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            services: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
+            ...config.resourceVersions
+        };
+        this.resourceEndpoints = {
+            parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+            participants: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
+            quotes: formatEndpointOrDefault(config.quotesEndpoint, this.transportScheme, this.peerEndpoint),
+            bulkQuotes: formatEndpointOrDefault(config.bulkQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+            transfers: formatEndpointOrDefault(config.transfersEndpoint, this.transportScheme, this.peerEndpoint),
+            bulkTransfers: formatEndpointOrDefault(config.bulkTransfersEndpoint, this.transportScheme, this.peerEndpoint),
+            transactionRequests: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            authorizations: formatEndpointOrDefault(config.transactionRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            [RESOURCES.fxQuotes]: formatEndpointOrDefault(config.fxQuotesEndpoint, this.transportScheme, this.peerEndpoint),
+            [RESOURCES.fxTransfers]: formatEndpointOrDefault(config.fxTransfersEndpoint, this.transportScheme, this.peerEndpoint),
+            thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
+            services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
+        };
     }
 }
 

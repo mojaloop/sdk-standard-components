@@ -20,24 +20,44 @@
  optionally within square brackets <email>.
 
  * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-
- * ModusBox
- - James Bush - james.bush@modusbox.com - ORIGINAL AUTHOR
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
 
  --------------
  ******/
 
-'use strict';
+const { RESOURCES} = require('../constants');
+const { formatEndpointOrDefault } = require('./common');
+const BaseRequests = require('./baseRequests');
 
-const MojaloopRequests = require('./mojaloopRequests');
-const ThirdpartyRequests = require('./thirdpartyRequests');
-const PingRequests = require('./PingRequests');
-const common = require('./common');
+const PING = RESOURCES.ping;
 
-module.exports = {
-    common,
-    MojaloopRequests,
-    ThirdpartyRequests,
-    PingRequests,
-};
+class PingRequests extends BaseRequests {
+    // constructor(options) {
+    //     super(options);
+    // }
+
+    #defineResourceVersionsAndEndpoints(config) {
+        this.resourceVersions = {
+            [PING]: {
+                contentVersion: '2.0',
+                acceptVersion: '2',
+            }
+        };
+        this.resourceEndpoints = {
+            [PING]: formatEndpointOrDefault(config.pingEndpoint, this.transportScheme, this.peerEndpoint),
+        };
+    }
+
+    async putPing({ requestId, destination, headers }) {
+        const url = `${PING}/${requestId}/`;
+        const body = { requestId };
+        return this._put(url, PING, body, destination, headers);
+    }
+
+    async putPingError({ requestId, destination, headers, errInfo }) {
+        const url = `${PING}/${requestId}/error`;
+        return this._put(url, PING, errInfo, destination, headers);
+    }
+}
+
+module.exports = PingRequests;

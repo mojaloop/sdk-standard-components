@@ -5,7 +5,8 @@ const ApiType = Object.freeze({
 
 const RESOURCES = Object.freeze({
     fxQuotes: 'fxQuotes',
-    fxTransfers: 'fxTransfers'
+    fxTransfers: 'fxTransfers',
+    ping: 'ping',
 });
 
 const ERROR_MESSAGES = Object.freeze({
