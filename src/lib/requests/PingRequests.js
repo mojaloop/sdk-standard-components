@@ -31,12 +31,16 @@ const BaseRequests = require('./baseRequests');
 
 const PING = RESOURCES.ping;
 
-class PingRequests extends BaseRequests {
-    // constructor(options) {
-    //     super(options);
-    // }
+/**
+ * @typedef {Object} PutPingParams
+ * @prop {string} requestId - The ID of the ping request
+ * @prop {string} destination - The ID of the destination participant
+ * @prop {Object.<string, string>} headers - Headers for the request
+ * @prop {MojaloopApiErrorObject} [errInfo] - Payload for error callback
+ */
 
-    #defineResourceVersionsAndEndpoints(config) {
+class PingRequests extends BaseRequests {
+    defineResourceVersionsAndEndpoints(config) {
         this.resourceVersions = {
             [PING]: {
                 contentVersion: '2.0',
@@ -48,12 +52,22 @@ class PingRequests extends BaseRequests {
         };
     }
 
+    /**
+     *  Executes `PUT /ping/{requestId}` request
+     * @param {PutPingParams} params
+     * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}}
+     */
     async putPing({ requestId, destination, headers }) {
         const url = `${PING}/${requestId}/`;
         const body = { requestId };
         return this._put(url, PING, body, destination, headers);
     }
 
+    /**
+     *  Executes `PUT /ping/{requestId}/error` request
+     * @param {PutPingParams} params
+     * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}
+     */
     async putPingError({ requestId, destination, headers, errInfo }) {
         const url = `${PING}/${requestId}/error`;
         return this._put(url, PING, errInfo, destination, headers);

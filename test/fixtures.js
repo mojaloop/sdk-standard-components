@@ -61,9 +61,19 @@ const mockConfigDto = ({
     },
 });
 
+const Headers = Object.freeze({
+    SOURCE: 'fspiop-source',
+    DESTINATION: 'fspiop-destination',
+    PROXY: 'fspiop-proxy',
+    HTTP_METHOD: 'fspiop-http-method',
+    SIGNATURE: 'fspiop-signature',
+    URI: 'fspiop-uri'
+});
+
 module.exports = {
     fxQuotesPayload,
     fxQuotesBeResponse,
     moneyPayload,
     mockConfigDto,
+    Headers,
 };

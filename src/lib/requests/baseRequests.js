@@ -146,7 +146,7 @@ class BaseRequests {
         // };
 
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
-        this.#defineResourceVersionsAndEndpoints(config);
+        this.defineResourceVersionsAndEndpoints(config);
 
         // this.resourceEndpoints = {
         //     parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
@@ -465,7 +465,7 @@ class BaseRequests {
         return createHttpRequester({ logger, httpConfig, retryConfig });
     }
 
-    #defineResourceVersionsAndEndpoints(config) {
+    defineResourceVersionsAndEndpoints(config) {
         this.resourceVersions = {
             parties: {
                 contentVersion: '1.0',
