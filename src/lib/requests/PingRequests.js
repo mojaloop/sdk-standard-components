@@ -25,7 +25,7 @@
  --------------
  ******/
 
-const { RESOURCES} = require('../constants');
+const { RESOURCES } = require('../constants');
 const { formatEndpointOrDefault } = require('./common');
 const BaseRequests = require('./baseRequests');
 
