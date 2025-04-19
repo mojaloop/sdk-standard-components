@@ -613,6 +613,25 @@ declare namespace SDKStandardComponents {
         namespace common {
             function bodyStringifier(arg0: unknown): string | Buffer
         }
+
+        type PutPingParams = {
+            requestId: string;
+            destination: string;
+            headers: Record<string, string>;
+        }
+
+        /** Client library for making outbound ping requests in the Mojaloop ecosystem */
+        export class PingRequests extends BaseRequests {
+            constructor(config: BaseRequestConfigType & {
+                pingEndpoint?: string;
+            });
+
+            putPing(params: PutPingParams): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+
+            putPingError(params: PutPingParams & {
+                errInfo: Errors.MojaloopApiErrorObject;
+            }): Promise<GenericRequestResponse | GenericRequestResponseUndefined>;
+        }
     }
 
     namespace Errors {
@@ -626,7 +645,7 @@ declare namespace SDKStandardComponents {
             errorInformation: {
                 errorCode: string
                 errorDescription: string
-                extensionList: unknown[]
+                extensionList?: unknown[]
             }
         }
         interface MojaloopApiErrorCodesEnum {
@@ -802,7 +821,7 @@ declare namespace SDKStandardComponents {
              *
              * Throws if the protected header or signature are not valid
             */
-            validate(request: JwsRequest): void
+            validate(request: JwsRequest): true
         }
 
         class JwsSigner {

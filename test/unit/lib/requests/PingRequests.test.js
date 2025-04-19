@@ -20,24 +20,38 @@
  optionally within square brackets <email>.
 
  * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-
- * ModusBox
- - James Bush - james.bush@modusbox.com - ORIGINAL AUTHOR
+ * Eugen Klymniuk <eugen.klymniuk@infitx.com>
 
  --------------
  ******/
 
-'use strict';
+const { PingRequests } = require('#src/lib/requests/index');
+const { mockConfigDto, Headers } = require('#test/fixtures');
+const { mockAxios} = require('#test/unit/utils');
 
-const MojaloopRequests = require('./mojaloopRequests');
-const ThirdpartyRequests = require('./thirdpartyRequests');
-const PingRequests = require('./PingRequests');
-const common = require('./common');
+describe('PingRequests Tests -->', () => {
+    beforeEach(() => {
+        mockAxios.reset();
+    });
 
-module.exports = {
-    common,
-    MojaloopRequests,
-    ThirdpartyRequests,
-    PingRequests,
-};
+    test('should send successful PUT callback', async () => {
+        expect.hasAssertions();
+        const dfspId = 'sdk123';
+        const destination = 'destFsp';
+        const requestId = String(Date.now());
+
+        mockAxios.onPut().reply((config) => {
+            expect(config.headers[Headers.DESTINATION]).toBe(destination);
+            expect(config.headers[Headers.SOURCE]).toBe(dfspId);
+            expect(config.data).toBe(JSON.stringify({ requestId }));
+            return [200];
+        });
+
+        const pr = new PingRequests(mockConfigDto({ dfspId }));
+        await pr.putPing({
+            requestId,
+            destination,
+            headers: {}
+        });
+    });
+});
