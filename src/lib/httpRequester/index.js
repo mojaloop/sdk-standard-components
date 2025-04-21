@@ -43,7 +43,7 @@ const { loggerFactory } = require('../logger');
 const defaultConfig = require('./defaultConfig');
 const AxiosHttpRequester = require('./AxiosHttpRequester');
 
-const defaultLogger = loggerFactory({ context: 'SDK_SC', component: 'HttpRequester' });
+const defaultLogger = loggerFactory({ context: 'SDK_SC', system: 'HttpRequester' });
 
 const createHttpRequester = ({
     logger = defaultLogger,
