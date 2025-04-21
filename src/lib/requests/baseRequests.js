@@ -67,8 +67,7 @@ class BaseRequests {
             });
 
             this.transportScheme = 'https';
-        }
-        else {
+        } else {
             this.agent = http.globalAgent;
             this.transportScheme = 'http';
         }
@@ -79,8 +78,7 @@ class BaseRequests {
         // if no jwsSignPutParties config is supplied it inherits the value of config.jwsSign
         if (typeof (config.jwsSignPutParties) === 'undefined') {
             this.jwsSignPutParties = config.jwsSign;
-        }
-        else {
+        } else {
             this.jwsSignPutParties = config.jwsSignPutParties;
         }
 
@@ -91,6 +89,13 @@ class BaseRequests {
             });
         }
 
+        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
+        this.defineResourceVersionsAndEndpoints(config);
+
+        this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
+    }
+
+    defineResourceVersionsAndEndpoints(config) {
         this.resourceVersions = {
             parties: {
                 contentVersion: '1.0',
@@ -146,8 +151,6 @@ class BaseRequests {
             },
             ...config.resourceVersions
         };
-
-        this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.resourceEndpoints = {
             parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
             participants: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
@@ -162,8 +165,6 @@ class BaseRequests {
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
             services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
         };
-
-        this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
     }
 
     _request(opts, responseType) {
@@ -458,6 +459,8 @@ class BaseRequests {
     _pickPeerEndpoint(resourceType) {
         return this.resourceEndpoints[resourceType] || this.peerEndpoint;
     }
+
+
 
     /** @returns {AxiosHttpRequester} */
     #createHttpRequester({ httpConfig, retryConfig }) {
