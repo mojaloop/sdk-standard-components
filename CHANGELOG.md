@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.14.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.13.0...v19.14.0) (2025-04-21)
+
+
+### Features
+
+* **csi-1408:** fixed typings for JwsValidator ([#255](https://github.com/mojaloop/sdk-standard-components/issues/255)) ([403e4c6](https://github.com/mojaloop/sdk-standard-components/commit/403e4c68277a805baccacdb7ca03f09979361970))
+
 ## [19.13.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.12.0...v19.13.0) (2025-04-15)
 
 
