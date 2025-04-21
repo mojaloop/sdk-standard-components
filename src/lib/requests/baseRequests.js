@@ -197,7 +197,7 @@ class BaseRequests {
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch((err) => {
                 this.logger.isWarnEnabled && this.logger
-                    .push({ err, opts: { ...opts, agent: '[REDACTED]' } })
+                    .push({ error: err, opts: { ...opts, agent: '[REDACTED]' } })
                     .warn('Error attempting request');
                 throw err;
             });

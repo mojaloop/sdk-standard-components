@@ -2,3 +2,5 @@ node_modules/
 junit.xml
 coverage/
 .idea/
+
+.rush
