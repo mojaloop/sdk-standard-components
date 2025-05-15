@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.15.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.14.0...v19.15.0) (2025-05-15)
+
+
+### Features
+
+* bump up node to v22.15.0 ([#257](https://github.com/mojaloop/sdk-standard-components/issues/257)) ([22e02d1](https://github.com/mojaloop/sdk-standard-components/commit/22e02d18360fe39a8d71914e160fef2297295c70))
+
 ## [19.14.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.13.0...v19.14.0) (2025-04-21)
 
 
