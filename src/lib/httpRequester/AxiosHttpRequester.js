@@ -167,7 +167,8 @@ class AxiosHttpRequester {
             const { method, baseURL, url, params } = err.config;
             config = { method, baseURL, url, params, restData: '[REDACTED]' };
         }
-        this.logger.warn('error in sending HTTP request', { error: { ...err, config, request: '[REDACTED]' } });
+        const response = err.response?.data;
+        this.logger.warn('error in sending HTTP request', { error: { ...err, config, request: '[REDACTED]', response } });
         return err;
     }
 
