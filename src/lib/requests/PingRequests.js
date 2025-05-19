@@ -45,10 +45,15 @@ class PingRequests extends BaseRequests {
             [PING]: {
                 contentVersion: '2.0',
                 acceptVersion: '2',
-            }
+            },
+            parties: {
+                contentVersion: '1.0',
+                acceptVersion: '1',
+            },
         };
         this.resourceEndpoints = {
             [PING]: formatEndpointOrDefault(config.pingEndpoint, this.transportScheme, this.peerEndpoint),
+            parties: formatEndpointOrDefault(config.alsEndpoint, this.transportScheme, this.peerEndpoint),
         };
     }
 
@@ -71,6 +76,13 @@ class PingRequests extends BaseRequests {
     async putPingError({ requestId, destination, headers, errInfo }) {
         const url = `${PING}/${requestId}/error`;
         return this._put(url, PING, errInfo, destination, headers);
+    }
+
+    // TODO: just for testing!!!  Need to be removed
+    async putParties() {
+        const url = 'parties/MSISDN/1234';
+        return this._put(url, 'parties', {}, 'destFspId', {})
+            .catch(err => { this.logger.warn('error in ping putParties: ', err); });
     }
 }
 
