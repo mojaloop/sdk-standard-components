@@ -81,7 +81,12 @@ class PingRequests extends BaseRequests {
     // TODO: just for testing!!!  Need to be removed
     async putParties() {
         const url = 'parties/MSISDN/1234';
-        return this._put(url, 'parties', {}, 'destFspId', {})
+        const headers = {
+            ['fspiop-source']: 'sourceId',
+            ['fspiop-destination']: 'destFspId',
+        };
+        return this._put(url, 'parties', {}, 'destFspId', headers, undefined,
+            undefined, { Type: 'MSISDN', ID: '1234' })
             .catch(err => { this.logger.warn('error in ping putParties: ', err); });
     }
 }
