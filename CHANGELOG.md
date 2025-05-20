@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.15.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.15.0...v19.15.1) (2025-05-20)
+
+
+### Chore
+
+* remove trailing slash ([#259](https://github.com/mojaloop/sdk-standard-components/issues/259)) ([13cc305](https://github.com/mojaloop/sdk-standard-components/commit/13cc30572920a3f9bf46aaaabaa19a6bb1c7154e))
+
 ## [19.15.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.14.0...v19.15.0) (2025-05-15)
 
 
