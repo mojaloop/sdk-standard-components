@@ -58,7 +58,7 @@ class PingRequests extends BaseRequests {
      * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}}
      */
     async putPing({ requestId, destination, headers }) {
-        const url = `${PING}/${requestId}/`;
+        const url = `${PING}/${requestId}`;
         const body = { requestId };
         return this._put(url, PING, body, destination, headers);
     }
