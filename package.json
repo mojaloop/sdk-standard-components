@@ -73,7 +73,7 @@
   "devDependencies": {
     "@mojaloop/api-snippets": "17.10.3",
     "@types/jest": "29.5.14",
-    "@types/node": "22.15.18",
+    "@types/node": "22.15.20",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
