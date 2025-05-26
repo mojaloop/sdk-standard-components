@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-standard-components",
-  "version": "19.15.1",
+  "version": "19.15.2-snapshot.0",
   "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@mojaloop/api-snippets": "17.10.3",
     "@types/jest": "29.5.14",
-    "@types/node": "22.15.20",
+    "@types/node": "22.15.21",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
