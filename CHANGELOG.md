@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.15.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.15.1...v19.15.2) (2025-05-26)
+
+
+### Chore
+
+* fixed error response logs ([#258](https://github.com/mojaloop/sdk-standard-components/issues/258)) ([e33261b](https://github.com/mojaloop/sdk-standard-components/commit/e33261b34c7e81a5866821958d97ce5714c23644))
+
 ### [19.15.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.15.0...v19.15.1) (2025-05-20)
 
 
