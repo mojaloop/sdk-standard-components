@@ -576,6 +576,7 @@ declare namespace SDKStandardComponents {
         export function loggerFactory(config?: CreateLoggerFactoryConfig): SdkLogger;
 
         export class SdkLogger extends ContextLogger implements ILogger {
+            child(context?: LogContext): SdkLogger
             push(context?: LogContext): SdkLogger
             log(message: string, meta?: LogMeta): void
         }

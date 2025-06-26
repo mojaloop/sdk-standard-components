@@ -127,7 +127,7 @@ describe('Common', () => {
             const action = () => Common.formatEndpointOrDefault('als.com');
 
             // Assert
-            expect(action).toThrowError('defaultEndpoint must be set');
+            expect(action).toThrow('defaultEndpoint must be set');
         });
     });
 });
