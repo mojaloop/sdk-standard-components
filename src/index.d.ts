@@ -576,6 +576,7 @@ declare namespace SDKStandardComponents {
         export function loggerFactory(config?: CreateLoggerFactoryConfig): SdkLogger;
 
         export class SdkLogger extends ContextLogger implements ILogger {
+            child(context?: LogContext): SdkLogger
             push(context?: LogContext): SdkLogger
             log(message: string, meta?: LogMeta): void
         }
@@ -590,7 +591,7 @@ declare namespace SDKStandardComponents {
         uri: string
         agent: http.Agent
         qs?: { [key: string]: unknown }
-        headers?: Record<string, string>
+        headers?: Headers
         // body is passed to http.ClientRequest.write
         // https://nodejs.org/api/http.html#http_class_http_clientrequest
         // https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
@@ -599,7 +600,7 @@ declare namespace SDKStandardComponents {
     }
     interface RequestResponse<Data = string | Buffer | Record<string, unknown>>{
         statusCode: number
-        headers?: Record<string, string>
+        headers?: Headers
         data: Data
     }
 
@@ -617,7 +618,7 @@ declare namespace SDKStandardComponents {
         type PutPingParams = {
             requestId: string;
             destination: string;
-            headers: Record<string, string>;
+            headers: Headers;
         }
 
         /** Client library for making outbound ping requests in the Mojaloop ecosystem */
@@ -878,6 +879,12 @@ declare namespace SDKStandardComponents {
             v4: 'v4';
         }>;
     }
+
+    namespace utils {
+        function cleanupIncomingHeaders(headers: Headers, incomingHeadersRemoval?: string[]): Headers;
+    }
+
+    type Headers = Record<string, string>;
 }
 
 export = SDKStandardComponents

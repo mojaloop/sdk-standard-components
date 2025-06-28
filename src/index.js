@@ -39,6 +39,7 @@ const requests = require('./lib/requests');
 const WSO2Auth = require('./lib/WSO2Auth');
 const randomPhrase = require('./lib/randomphrase');
 const httpRequester = require('./lib/httpRequester');
+const utils = require('./lib/utils');
 
 const { request } = httpRequester;
 const { MojaloopRequests, ThirdpartyRequests, common } = requests;
@@ -57,4 +58,5 @@ module.exports = {
     httpRequester,
     WSO2Auth,
     randomPhrase,
+    utils,
 };
