@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.16.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.15.2...v19.16.0) (2025-06-30)
+
+
+### Features
+
+* **csi-1595:** fixed SdkLogger .child() typings ([#261](https://github.com/mojaloop/sdk-standard-components/issues/261)) ([c0311db](https://github.com/mojaloop/sdk-standard-components/commit/c0311dbc8911c9612beaff725bf5092cf366c4a2))
+
 ### [19.15.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.15.1...v19.15.2) (2025-05-26)
 
 
