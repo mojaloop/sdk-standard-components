@@ -92,7 +92,7 @@ describe('BaseRequests wso2 authorisation', () => {
             .catch((err) => {
                 expect(err.status).toBe(401);
                 expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+                expect(wso2Auth.refreshToken).toHaveBeenCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
             });
     });
 
@@ -111,7 +111,7 @@ describe('BaseRequests wso2 authorisation', () => {
             .catch((err) => {
                 expect(err.status).toBe(401);
                 expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-                expect(wso2Auth.refreshToken).toBeCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+                expect(wso2Auth.refreshToken).toHaveBeenCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
             });
     });
 });
