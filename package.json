@@ -71,15 +71,15 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "18.0.0",
+    "@mojaloop/api-snippets": "18.1.0",
     "@types/jest": "30.0.0",
-    "@types/node": "24.0.7",
+    "@types/node": "24.0.14",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",
-    "jest": "30.0.3",
+    "jest": "30.0.4",
     "jest-junit": "16.0.0",
     "nock": "14.0.5",
     "npm-check-updates": "18.0.1",
