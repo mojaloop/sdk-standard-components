@@ -181,6 +181,9 @@ class AxiosHttpRequester {
         const sanitizedError = new Error(err.message || 'HTTP request error');
         sanitizedError.name = err.name || 'AxiosHttpRequesterError';
         sanitizedError.statusCode = err.statusCode;
+        sanitizedError.code = err.code; // maintain err.code
+        sanitizedError.status = err.status;
+        sanitizedError.contentType = err.contentType;
         sanitizedError.stack = err.stack;
         sanitizedError.config = config;
         sanitizedError.originalRequest = err.originalRequest ? { ...err.originalRequest } : undefined;
