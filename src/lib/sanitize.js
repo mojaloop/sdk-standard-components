@@ -26,21 +26,21 @@
  ******/
 
 /**
- * Sanitizes a request object for safe logging by redacting sensitive fields.
+ * Returns a sanitized copy of a request object for safe logging by redacting sensitive fields.
  * Fields such as Authorization, httpAgent, and httpsAgent are replaced with '[REDACTED]'.
- * Note: This function mutates the original request object.
+ * Note: This function does not mutate the original request object.
  * @param {Object} request - The request object to sanitize.
  * @returns {Object} The sanitized request object.
  */
 function sanitizeRequest(request) {
     if (!request || typeof request !== 'object') return request;
 
-    if (request.headers && request.headers.Authorization) {
-        request.headers.Authorization = '[REDACTED]';
-    }
-    if (request.httpAgent) request.httpAgent = '[REDACTED]';
-    if (request.httpsAgent) request.httpsAgent = '[REDACTED]';
-    return request;
+  return {
+    ...request,
+    ...request.headers?.Authorization && {headers: {...request.headers, Authorization: '[REDACTED]'}},
+    ...request.httpAgent && {httpAgent: '[REDACTED]'},
+    ...request.httpsAgent && {httpsAgent: '[REDACTED]'}
+  }
 }
 
 /**
@@ -82,9 +82,11 @@ function sanitizeError(err) {
     }
 
     // response.config
-    if (err.response && err.response.config && err.response.config.headers) {
-        if (err.response.config.headers.Authorization) {
-            err.response.config.headers.Authorization = '[REDACTED]';
+    if (err.response && err.response.config) {
+        if (err.response.config.headers) {
+            if (err.response.config.headers.Authorization) {
+                err.response.config.headers.Authorization = '[REDACTED]';
+            }
         }
         if (err.response.config.httpAgent) {
             err.response.config.httpAgent = '[REDACTED]';
