@@ -150,7 +150,6 @@ class AxiosHttpRequester {
                         ...originalRequest.headers,
                         Authorization: originalRequest.headers?.Authorization ? '[REDACTED]' : undefined
                     },
-                    body: originalRequest.body ? '[REDACTED]' : undefined,
                     httpAgent: originalRequest.httpAgent ? '[REDACTED]' : undefined,
                     httpsAgent: originalRequest.httpsAgent ? '[REDACTED]' : undefined
                 };
@@ -205,9 +204,6 @@ class AxiosHttpRequester {
         if (sanitizedError.originalRequest) {
             if (sanitizedError.originalRequest.headers && sanitizedError.originalRequest.headers.Authorization) {
                 sanitizedError.originalRequest.headers.Authorization = '[REDACTED]';
-            }
-            if (sanitizedError.originalRequest.body) {
-                sanitizedError.originalRequest.body = '[REDACTED]';
             }
             if (sanitizedError.originalRequest.httpAgent) {
                 sanitizedError.originalRequest.httpAgent = '[REDACTED]';

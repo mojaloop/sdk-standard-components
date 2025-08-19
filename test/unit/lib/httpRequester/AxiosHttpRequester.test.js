@@ -272,25 +272,6 @@ describe('AxiosHttpRequester Test -->', () => {
             });
         });
 
-        test('should redact body in originalRequest on error', async () => {
-            expect.hasAssertions();
-            const route = '/body-error';
-            const statusCode = 500;
-            const data = { message: 'error' };
-            mockGetReply({ route, statusCode, data });
-
-            await http.sendRequest({
-                uri: makeMockUri(route),
-                method: 'POST',
-                body: { secret: 'value' },
-                headers: {}
-            }).catch(err => {
-                if (err.originalRequest) {
-                    expect(err.originalRequest.body).toBe('[REDACTED]');
-                }
-            });
-        });
-
         test('should redact request field in error', async () => {
             expect.hasAssertions();
             const route = '/request-error';
