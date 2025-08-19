@@ -28,96 +28,96 @@
 const { sanitizeRequest, sanitizeError } = require('../../../src/lib/sanitize');
 
 describe('sanitizeRequest', () => {
-  it('should redact Authorization header', () => {
-    const req = { headers: { Authorization: 'Bearer secret', foo: 'bar' } };
-    const sanitized = sanitizeRequest(req);
-    expect(sanitized.headers.Authorization).toBe('[REDACTED]');
-    expect(sanitized.headers.foo).toBe('bar');
-  });
+    it('should redact Authorization header', () => {
+        const req = { headers: { Authorization: 'Bearer secret', foo: 'bar' } };
+        const sanitized = sanitizeRequest(req);
+        expect(sanitized.headers.Authorization).toBe('[REDACTED]');
+        expect(sanitized.headers.foo).toBe('bar');
+    });
 
-  it('should redact httpAgent and httpsAgent', () => {
-    const req = { httpAgent: {}, httpsAgent: {}, headers: {} };
-    const sanitized = sanitizeRequest(req);
-    expect(sanitized.httpAgent).toBe('[REDACTED]');
-    expect(sanitized.httpsAgent).toBe('[REDACTED]');
-  });
+    it('should redact httpAgent and httpsAgent', () => {
+        const req = { httpAgent: {}, httpsAgent: {}, headers: {} };
+        const sanitized = sanitizeRequest(req);
+        expect(sanitized.httpAgent).toBe('[REDACTED]');
+        expect(sanitized.httpsAgent).toBe('[REDACTED]');
+    });
 
-  it('should not mutate the original request object', () => {
-    const req = { headers: { Authorization: 'secret' }, httpAgent: {}, httpsAgent: {} };
-    const copy = { ...req, headers: { ...req.headers } };
-    sanitizeRequest(req);
-    expect(req).toEqual(copy);
-  });
+    it('should not mutate the original request object', () => {
+        const req = { headers: { Authorization: 'secret' }, httpAgent: {}, httpsAgent: {} };
+        const copy = { ...req, headers: { ...req.headers } };
+        sanitizeRequest(req);
+        expect(req).toEqual(copy);
+    });
 
-  it('should handle missing headers gracefully', () => {
-    const req = { foo: 'bar' };
-    const sanitized = sanitizeRequest(req);
-    expect(sanitized.foo).toBe('bar');
-  });
+    it('should handle missing headers gracefully', () => {
+        const req = { foo: 'bar' };
+        const sanitized = sanitizeRequest(req);
+        expect(sanitized.foo).toBe('bar');
+    });
 
-  it('should return input if not an object', () => {
-    expect(sanitizeRequest(null)).toBe(null);
-    expect(sanitizeRequest('string')).toBe('string');
-    expect(sanitizeRequest(123)).toBe(123);
-  });
+    it('should return input if not an object', () => {
+        expect(sanitizeRequest(null)).toBe(null);
+        expect(sanitizeRequest('string')).toBe('string');
+        expect(sanitizeRequest(123)).toBe(123);
+    });
 });
 
 describe('sanitizeError', () => {
-  it('should redact Authorization in err.config.headers', () => {
-    const err = { config: { headers: { Authorization: 'secret', foo: 'bar' } } };
-    sanitizeError(err);
-    expect(err.config.headers.Authorization).toBe('[REDACTED]');
-    expect(err.config.headers.foo).toBe('bar');
-  });
+    it('should redact Authorization in err.config.headers', () => {
+        const err = { config: { headers: { Authorization: 'secret', foo: 'bar' } } };
+        sanitizeError(err);
+        expect(err.config.headers.Authorization).toBe('[REDACTED]');
+        expect(err.config.headers.foo).toBe('bar');
+    });
 
-  it('should redact httpAgent and httpsAgent in err.config', () => {
-    const err = { config: { httpAgent: {}, httpsAgent: {} } };
-    sanitizeError(err);
-    expect(err.config.httpAgent).toBe('[REDACTED]');
-    expect(err.config.httpsAgent).toBe('[REDACTED]');
-  });
+    it('should redact httpAgent and httpsAgent in err.config', () => {
+        const err = { config: { httpAgent: {}, httpsAgent: {} } };
+        sanitizeError(err);
+        expect(err.config.httpAgent).toBe('[REDACTED]');
+        expect(err.config.httpsAgent).toBe('[REDACTED]');
+    });
 
-  it('should redact Authorization in err.originalRequest.headers', () => {
-    const err = { originalRequest: { headers: { Authorization: 'secret' } } };
-    sanitizeError(err);
-    expect(err.originalRequest.headers.Authorization).toBe('[REDACTED]');
-  });
+    it('should redact Authorization in err.originalRequest.headers', () => {
+        const err = { originalRequest: { headers: { Authorization: 'secret' } } };
+        sanitizeError(err);
+        expect(err.originalRequest.headers.Authorization).toBe('[REDACTED]');
+    });
 
-  it('should redact httpAgent and httpsAgent in err.originalRequest', () => {
-    const err = { originalRequest: { httpAgent: {}, httpsAgent: {} } };
-    sanitizeError(err);
-    expect(err.originalRequest.httpAgent).toBe('[REDACTED]');
-    expect(err.originalRequest.httpsAgent).toBe('[REDACTED]');
-  });
+    it('should redact httpAgent and httpsAgent in err.originalRequest', () => {
+        const err = { originalRequest: { httpAgent: {}, httpsAgent: {} } };
+        sanitizeError(err);
+        expect(err.originalRequest.httpAgent).toBe('[REDACTED]');
+        expect(err.originalRequest.httpsAgent).toBe('[REDACTED]');
+    });
 
-  it('should redact err.request field', () => {
-    const err = { request: { some: 'data' } };
-    sanitizeError(err);
-    expect(err.request).toBe('[REDACTED]');
-  });
+    it('should redact err.request field', () => {
+        const err = { request: { some: 'data' } };
+        sanitizeError(err);
+        expect(err.request).toBe('[REDACTED]');
+    });
 
-  it('should redact Authorization in err.response.config.headers', () => {
-    const err = { response: { config: { headers: { Authorization: 'secret' } } } };
-    sanitizeError(err);
-    expect(err.response.config.headers.Authorization).toBe('[REDACTED]');
-  });
+    it('should redact Authorization in err.response.config.headers', () => {
+        const err = { response: { config: { headers: { Authorization: 'secret' } } } };
+        sanitizeError(err);
+        expect(err.response.config.headers.Authorization).toBe('[REDACTED]');
+    });
 
-  it('should redact httpAgent and httpsAgent in err.response.config', () => {
-    const err = { response: { config: { httpAgent: {}, httpsAgent: {} } } };
-    sanitizeError(err);
-    expect(err.response.config.httpAgent).toBe('[REDACTED]');
-    expect(err.response.config.httpsAgent).toBe('[REDACTED]');
-  });
+    it('should redact httpAgent and httpsAgent in err.response.config', () => {
+        const err = { response: { config: { httpAgent: {}, httpsAgent: {} } } };
+        sanitizeError(err);
+        expect(err.response.config.httpAgent).toBe('[REDACTED]');
+        expect(err.response.config.httpsAgent).toBe('[REDACTED]');
+    });
 
-  it('should handle missing fields gracefully', () => {
-    const err = { foo: 'bar' };
-    sanitizeError(err);
-    expect(err.foo).toBe('bar');
-  });
+    it('should handle missing fields gracefully', () => {
+        const err = { foo: 'bar' };
+        sanitizeError(err);
+        expect(err.foo).toBe('bar');
+    });
 
-  it('should return input if not an object', () => {
-    expect(sanitizeError(null)).toBe(null);
-    expect(sanitizeError('string')).toBe('string');
-    expect(sanitizeError(123)).toBe(123);
-  });
+    it('should return input if not an object', () => {
+        expect(sanitizeError(null)).toBe(null);
+        expect(sanitizeError('string')).toBe('string');
+        expect(sanitizeError(123)).toBe(123);
+    });
 });

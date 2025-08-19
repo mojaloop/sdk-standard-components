@@ -35,12 +35,12 @@
 function sanitizeRequest(request) {
     if (!request || typeof request !== 'object') return request;
 
-  return {
-    ...request,
-    ...request.headers?.Authorization && {headers: {...request.headers, Authorization: '[REDACTED]'}},
-    ...request.httpAgent && {httpAgent: '[REDACTED]'},
-    ...request.httpsAgent && {httpsAgent: '[REDACTED]'}
-  }
+    return {
+        ...request,
+        ...request.headers?.Authorization && {headers: {...request.headers, Authorization: '[REDACTED]'}},
+        ...request.httpAgent && {httpAgent: '[REDACTED]'},
+        ...request.httpsAgent && {httpsAgent: '[REDACTED]'}
+    };
 }
 
 /**
