@@ -34,7 +34,7 @@ const WSO2Auth = require('../../src/lib/WSO2Auth');
 const mockLogger = require('../__mocks__/mockLogger');
 
 describe('WSO2Auth', () => {
-    let mockOpts, basicToken;
+    let mockOpts;
 
     beforeEach(() => {
         const clientKey = 'client-key';
@@ -46,7 +46,6 @@ describe('WSO2Auth', () => {
             tokenEndpoint: 'http://token-endpoint.com/v2',
             refreshSeconds: 2,
         };
-        basicToken = Buffer.from(`${clientKey}:${clientSecret}`).toString('base64');
     });
 
     async function testTokenRefresh(userRefreshSeconds, tokenExpiresSeconds) {
@@ -72,7 +71,7 @@ describe('WSO2Auth', () => {
         const token = auth.getToken();
 
         expect(mockAxios.history.post.length).toBe(1);
-        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe('[REDACTED]');
         expect(token).toBe(TOKEN);
         // Wait for token refresh
         await new Promise(resolve => {
@@ -107,7 +106,7 @@ describe('WSO2Auth', () => {
         await auth.start();
         const token = auth.getToken();
         expect(mockAxios.history.post.length).toBe(1);
-        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe('[REDACTED]');
         expect(token).toBe(TOKEN);
         auth.stop();
     });
@@ -141,7 +140,7 @@ describe('WSO2Auth', () => {
         auth.on('error', errCallback);
         await auth.start();
         expect(mockAxios.history.post.length).toBe(1);
-        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe('[REDACTED]');
         expect(errCallback).toHaveBeenCalledTimes(1);
         auth.stop();
     });
