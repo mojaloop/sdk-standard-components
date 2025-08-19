@@ -32,6 +32,7 @@ const axios = require('axios');
 const axiosRetry = require('axios-retry').default;
 const safeStringify = require('fast-safe-stringify');
 const { ResponseType } = require('./constants');
+const { sanitizeRequest, sanitizeError } = require('../sanitize');
 
 axios.defaults.headers.common = {}; // do not use default axios headers
 
@@ -143,16 +144,8 @@ class AxiosHttpRequester {
             const contentType = headers['content-type'];
             if (!/^application\/json/.test(contentType)) {
                 const err = new Error('Invalid content-type. ' +
-                `Expected application/json but received ${contentType}: ${data?.toString()}`);
-                err.originalRequest = {
-                    ...originalRequest,
-                    headers: {
-                        ...originalRequest.headers,
-                        Authorization: originalRequest.headers?.Authorization ? '[REDACTED]' : undefined
-                    },
-                    httpAgent: originalRequest.httpAgent ? '[REDACTED]' : undefined,
-                    httpsAgent: originalRequest.httpsAgent ? '[REDACTED]' : undefined
-                };
+            `Expected application/json but received ${contentType}: ${data?.toString()}`);
+                err.originalRequest = sanitizeRequest(originalRequest);
                 err.status = status;
                 err.contentType = contentType;
                 throw err;
@@ -170,65 +163,17 @@ class AxiosHttpRequester {
     #makeErrorResponse(err) {
         err.statusCode = err.status || err.response?.status; // for backward compatibility
 
+        // Sanitize error before logging and returning
+        const sanitizedErr = sanitizeError(err);
+
         let config;
-        if (err.config) {
-            const { method, baseURL, url, params } = err.config;
+        if (sanitizedErr.config) {
+            const { method, baseURL, url, params } = sanitizedErr.config;
             config = { method, baseURL, url, params, restData: '[REDACTED]' };
         }
-
-        // Remove sensitive information before logging
-        const sanitizedError = new Error(err.message || 'HTTP request error');
-        sanitizedError.name = err.name || 'AxiosHttpRequesterError';
-        sanitizedError.statusCode = err.statusCode;
-        sanitizedError.code = err.code; // maintain err.code
-        sanitizedError.status = err.status;
-        sanitizedError.contentType = err.contentType;
-        sanitizedError.stack = err.stack;
-        sanitizedError.config = config;
-        sanitizedError.originalRequest = err.originalRequest ? { ...err.originalRequest } : undefined;
-        sanitizedError.response = err.response ? { ...err.response } : undefined;
-
-        // Redact sensitive fields
-        if (sanitizedError.config && sanitizedError.config.headers) {
-            sanitizedError.config.headers = { ...sanitizedError.config.headers };
-            if (sanitizedError.config.headers.Authorization) {
-                sanitizedError.config.headers.Authorization = '[REDACTED]';
-            }
-        }
-        if (sanitizedError.config && sanitizedError.config.httpAgent) {
-            sanitizedError.config.httpAgent = '[REDACTED]';
-        }
-        if (sanitizedError.config && sanitizedError.config.httpsAgent) {
-            sanitizedError.config.httpsAgent = '[REDACTED]';
-        }
-        if (sanitizedError.originalRequest) {
-            if (sanitizedError.originalRequest.headers && sanitizedError.originalRequest.headers.Authorization) {
-                sanitizedError.originalRequest.headers.Authorization = '[REDACTED]';
-            }
-            if (sanitizedError.originalRequest.httpAgent) {
-                sanitizedError.originalRequest.httpAgent = '[REDACTED]';
-            }
-            if (sanitizedError.originalRequest.httpsAgent) {
-                sanitizedError.originalRequest.httpsAgent = '[REDACTED]';
-            }
-        }
-        if (sanitizedError.request) {
-            sanitizedError.request = '[REDACTED]';
-        }
-        if (sanitizedError.response && sanitizedError.response.config && sanitizedError.response.config.headers) {
-            sanitizedError.response.config.headers = { ...sanitizedError.response.config.headers };
-            if (sanitizedError.response.config.headers.Authorization) {
-                sanitizedError.response.config.headers.Authorization = '[REDACTED]';
-            }
-            if (sanitizedError.response.config.httpAgent) {
-                sanitizedError.response.config.httpAgent = '[REDACTED]';
-            }
-            if (sanitizedError.response.config.httpsAgent) {
-                sanitizedError.response.config.httpsAgent = '[REDACTED]';
-            }
-        }
-        this.logger.warn('error in sending HTTP request', { error: sanitizedError });
-        throw sanitizedError;
+        const response = sanitizedErr.response?.data;
+        this.logger.warn('error in sending HTTP request', { error: { ...sanitizedErr, config, request: '[REDACTED]', response } });
+        return sanitizedErr;
     }
 
     /** @param {AxiosHttpRequestDeps} deps */
