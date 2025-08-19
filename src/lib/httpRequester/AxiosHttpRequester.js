@@ -32,6 +32,7 @@ const axios = require('axios');
 const axiosRetry = require('axios-retry').default;
 const safeStringify = require('fast-safe-stringify');
 const { ResponseType } = require('./constants');
+const { sanitizeRequest, sanitizeError } = require('../sanitize');
 
 axios.defaults.headers.common = {}; // do not use default axios headers
 
@@ -143,8 +144,8 @@ class AxiosHttpRequester {
             const contentType = headers['content-type'];
             if (!/^application\/json/.test(contentType)) {
                 const err = new Error('Invalid content-type. ' +
-                    `Expected application/json but received ${contentType}: ${data?.toString()}`);
-                err.originalRequest = originalRequest;
+            `Expected application/json but received ${contentType}: ${data?.toString()}`);
+                err.originalRequest = sanitizeRequest(originalRequest);
                 err.status = status;
                 err.contentType = contentType;
                 throw err;
@@ -162,14 +163,17 @@ class AxiosHttpRequester {
     #makeErrorResponse(err) {
         err.statusCode = err.status || err.response?.status; // for backward compatibility
 
+        // Sanitize error before logging and returning
+        const sanitizedErr = sanitizeError(err);
+
         let config;
-        if (err.config) {
-            const { method, baseURL, url, params } = err.config;
+        if (sanitizedErr.config) {
+            const { method, baseURL, url, params } = sanitizedErr.config;
             config = { method, baseURL, url, params, restData: '[REDACTED]' };
         }
-        const response = err.response?.data;
-        this.logger.warn('error in sending HTTP request', { error: { ...err, config, request: '[REDACTED]', response } });
-        return err;
+        const response = sanitizedErr.response?.data;
+        this.logger.warn('error in sending HTTP request', { error: { ...sanitizedErr, config, request: '[REDACTED]', response } });
+        return sanitizedErr;
     }
 
     /** @param {AxiosHttpRequestDeps} deps */
