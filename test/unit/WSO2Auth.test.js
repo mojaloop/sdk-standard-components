@@ -141,7 +141,7 @@ describe('WSO2Auth', () => {
         auth.on('error', errCallback);
         await auth.start();
         expect(mockAxios.history.post.length).toBe(1);
-        expect(mockAxios.history.post[0].headers['Authorization']).toBe(`Basic ${basicToken}`);
+        expect(mockAxios.history.post[0].headers['Authorization']).toBe("[REDACTED]");
         expect(errCallback).toHaveBeenCalledTimes(1);
         auth.stop();
     });
