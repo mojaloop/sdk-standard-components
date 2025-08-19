@@ -246,4 +246,98 @@ describe('AxiosHttpRequester Test -->', () => {
             expect(http.deps.retryConfig.retries).toBeGreaterThan(newRetries);
         });
     });
+
+    describe('Error Sanitization Tests -->', () => {
+        test('should redact Authorization header in error config and originalRequest', async () => {
+            expect.hasAssertions();
+            const route = '/auth-error';
+            const statusCode = 500;
+            const data = { message: 'error' };
+            const headers = { ...jsonContentTypeHeader, Authorization: 'Bearer secret-token' };
+            mockGetReply({ route, statusCode, data, headers });
+
+            await http.sendRequest({
+                uri: makeMockUri(route),
+                method: 'GET',
+                headers: { Authorization: 'Bearer secret-token' }
+            }).catch(err => {
+                // config.headers.Authorization redacted
+                if (err.config && err.config.headers) {
+                    expect(err.config.headers.Authorization).toBe('[REDACTED]');
+                }
+                // originalRequest.headers.Authorization redacted
+                if (err.originalRequest && err.originalRequest.headers) {
+                    expect(err.originalRequest.headers.Authorization).toBe('[REDACTED]');
+                }
+            });
+        });
+
+        test('should redact httpAgent and httpsAgent in error config and originalRequest', async () => {
+            expect.hasAssertions();
+            const route = '/agent-error';
+            const statusCode = 500;
+            const data = { message: 'error' };
+            mockGetReply({ route, statusCode, data });
+
+            const agent = new https.Agent();
+            await http.sendRequest({
+                uri: makeMockUri(route),
+                method: 'GET',
+                agent,
+                headers: {}
+            }).catch(err => {
+                if (err.config) {
+                    expect(err.config.httpsAgent).toBe('[REDACTED]');
+                    expect(err.config.httpAgent).toBeUndefined();
+                }
+                if (err.originalRequest) {
+                    expect(err.originalRequest.httpsAgent).toBe('[REDACTED]');
+                    expect(err.originalRequest.httpAgent).toBeUndefined();
+                }
+            });
+        });
+
+        test('should redact body in originalRequest on error', async () => {
+            expect.hasAssertions();
+            const route = '/body-error';
+            const statusCode = 500;
+            const data = { message: 'error' };
+            mockGetReply({ route, statusCode, data });
+
+            await http.sendRequest({
+                uri: makeMockUri(route),
+                method: 'POST',
+                body: { secret: 'value' },
+                headers: {}
+            }).catch(err => {
+                if (err.originalRequest) {
+                    expect(err.originalRequest.body).toBe('[REDACTED]');
+                }
+            });
+        });
+
+        test('should redact request field in error', async () => {
+            expect.hasAssertions();
+            const route = '/request-error';
+            mockAxios.onGet(route).networkError();
+
+            await http.sendRequest({ uri: makeMockUri(route) })
+                .catch(err => {
+                    expect(err.request).toBe('[REDACTED]');
+                });
+        });
+
+        test('should redact Authorization header in error.response.config.headers', async () => {
+            expect.hasAssertions();
+            const route = '/response-auth-error';
+            mockAxios.onGet(route).reply(401, {}, { Authorization: 'Bearer secret-token' });
+
+            await http.sendRequest({ uri: makeMockUri(route) })
+                .catch(err => {
+                    if (err.response && err.response.config && err.response.config.headers) {
+                        expect(err.response.config.headers.Authorization).toBe('[REDACTED]');
+                    }
+                });
+        });
+    });
 });
