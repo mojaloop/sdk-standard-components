@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.16.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.4...v19.16.5) (2025-08-19)
+
+
+### Chore
+
+* sanitize errors in http requester ([#269](https://github.com/mojaloop/sdk-standard-components/issues/269)) ([a68395d](https://github.com/mojaloop/sdk-standard-components/commit/a68395d95e2a9891b525801e190cfa5ab3a1a9b8))
+
 ### [19.16.4](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.3...v19.16.4) (2025-07-23)
 
 
