@@ -212,7 +212,9 @@ class AxiosHttpRequester {
                 sanitizedError.originalRequest.httpsAgent = '[REDACTED]';
             }
         }
-
+        if (sanitizedError.request) {
+            sanitizedError.request = '[REDACTED]';
+        }
         if (sanitizedError.response && sanitizedError.response.config && sanitizedError.response.config.headers) {
             sanitizedError.response.config.headers = { ...sanitizedError.response.config.headers };
             if (sanitizedError.response.config.headers.Authorization) {

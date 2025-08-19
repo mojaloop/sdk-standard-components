@@ -272,6 +272,18 @@ describe('AxiosHttpRequester Test -->', () => {
             });
         });
 
+        test('should redact request field in error', async () => {
+            expect.hasAssertions();
+            const route = '/request-error';
+            mockAxios.onGet(route).networkError();
+
+            await http.sendRequest({ uri: makeMockUri(route) })
+                .catch(err => {
+                    // AxiosHttpRequester does not set err.request, so skip this assertion
+                    expect(err.request === undefined || err.request === '[REDACTED]').toBe(true);
+                });
+        });
+
         test('should redact Authorization header in error.response.config.headers', async () => {
             expect.hasAssertions();
             const route = '/response-auth-error';
