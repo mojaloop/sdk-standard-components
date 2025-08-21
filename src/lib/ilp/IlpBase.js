@@ -124,7 +124,7 @@ class IlpBase {
         }
 
         const decimalPlaces = currencyDecimals[currency];
-        return `${Number(amount) * Math.pow(10, decimalPlaces)}`;
+        return `${(Number(amount) * Math.pow(10, decimalPlaces)).toFixed(decimalPlaces)}`;
     }
 
     /**
