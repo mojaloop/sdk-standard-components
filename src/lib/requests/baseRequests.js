@@ -92,7 +92,7 @@ class BaseRequests {
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.defineResourceVersionsAndEndpoints(config);
 
-        this.wso2 = config.wso2 || {}; // default to empty object such that properties will be undefined
+        this.wso2 = config.wso2 || {};
     }
 
     defineResourceVersionsAndEndpoints(config) {
@@ -169,21 +169,21 @@ class BaseRequests {
 
     _request(opts, responseType) {
         const __request = async (opts, responseType, attempts) => this.requester.sendRequest(opts)
-            .catch((err) => {
+            .catch(async (err) => {
                 const retryAuth = err.status === 401 &&
                     this.wso2.auth &&
                     attempts < this.wso2.retryWso2AuthFailureTimes;
                 if (retryAuth) {
-                    this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token.');
-                    const token = this.wso2.auth.refreshToken();
+                    this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token...');
+                    const token = await this.wso2.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
                     } else {
                         const msg = 'Unable to retrieve WSO2 auth token';
-                        this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug(msg);
+                        this.logger.warn(msg, { attempts });
                         throw new Error(msg);
                     }
-                    this.logger.isDebugEnabled && this.logger.push({ attempts, opts }).debug('Retrying request with new WSO2 token.');
+                    this.logger.verbose('Retrying request with new WSO2 token...', { attempts });
                     return __request(opts, responseType, attempts + 1);
                 } else {
                     throw err;
@@ -196,9 +196,7 @@ class BaseRequests {
         return __request(opts, responseType, 0)
             .then((res) => (responseType === ResponseType.Mojaloop) ? throwOrJson(res) : res)
             .catch((err) => {
-                this.logger.isWarnEnabled && this.logger
-                    .push({ err, opts: { ...opts, agent: '[REDACTED]' } })
-                    .warn('Error attempting request');
+                this.logger.push({ opts: { ...opts, agent: '[REDACTED]' } }).warn('Error attempting request: ', err);
                 throw err;
             });
     }
