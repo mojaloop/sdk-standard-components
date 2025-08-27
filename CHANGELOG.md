@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.16.6](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.5...v19.16.6) (2025-08-27)
+
+
+### Bug Fixes
+
+* **csi-1708:** fixed retryAuth logic ([#270](https://github.com/mojaloop/sdk-standard-components/issues/270)) ([76f85d7](https://github.com/mojaloop/sdk-standard-components/commit/76f85d789ab1891c2e98501cbe33f3e48b07591f))
+
 ### [19.16.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.4...v19.16.5) (2025-08-19)
 
 
