@@ -36,8 +36,8 @@ const qs = require('querystring');
 const EventEmitter = require('events');
 const { createHttpRequester } = require('../httpRequester');
 
-const DEFAULT_REFRESH_INTERVAL_SECONDS = 3600;
-const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 10;
+const DEFAULT_REFRESH_INTERVAL_SECONDS = 1200;
+const DEFAULT_REFRESH_RETRY_INTERVAL_SECONDS = 5;
 
 /**
  * Obtain WSO2 bearer token and periodically refresh it
@@ -135,7 +135,7 @@ class WSO2Auth extends EventEmitter {
         let refreshSeconds;
         try {
             const response = await this._requester.sendRequest(reqOpts).catch(err => err);
-            this._logger.isVerboseEnabled && this._logger.verbose('Response received from WSO2');
+            this._logger.verbose('Response received from WSO2');
             if (response.status > 299) {
                 this.emit('error', 'Error retrieving WSO2 auth token');
                 throw new Error(`Unexpected response code ${response.status} received from WSO2 token request`);
@@ -145,11 +145,11 @@ class WSO2Auth extends EventEmitter {
             const tokenIsValidNumber = (typeof expires_in === 'number') && (expires_in > 0);
             const tokenExpiry = tokenIsValidNumber ? expires_in : Infinity;
             refreshSeconds = Math.min(this._refreshSeconds, tokenExpiry);
-            this._logger.isDebugEnabled && this._logger.debug('WSO2 token refreshed successfully. ' +
+            this._logger.verbose('WSO2 token refreshed successfully. ' +
                 `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this._logger.isErrorEnabled && this._logger.error(`Error performing WSO2 token refresh: ${error.message}. `
+            this._logger.error(`Error performing WSO2 token refresh: ${error.message}. `
                 + `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }

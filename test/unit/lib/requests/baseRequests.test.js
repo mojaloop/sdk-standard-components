@@ -39,11 +39,12 @@ const putPartiesBody = require('../../data/putPartiesBody.json');
 const patchTransfersBody = require('../../data/patchTransfersBody.json');
 
 describe('BaseRequests wso2 authorisation', () => {
-    let wso2Auth, defaultConf;
+    let wso2Auth, defaultConf, accessToken;
 
     beforeEach(() => {
+        accessToken = 'fake.access.token';
         wso2Auth = {
-            refreshToken: jest.fn(() => 'fake-token'),
+            refreshToken: jest.fn(async () => accessToken),
         };
         defaultConf = {
             logger: mockLogger({ app: 'BaseRequests test' }, undefined),
