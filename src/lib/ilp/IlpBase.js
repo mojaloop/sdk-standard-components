@@ -30,6 +30,7 @@ const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 const base64url = require('base64url');
 const safeStringify = require('fast-safe-stringify');
+const MLNumber = require('@mojaloop/ml-number');
 
 const dto = require('../dto');
 
@@ -124,7 +125,8 @@ class IlpBase {
         }
 
         const decimalPlaces = currencyDecimals[currency];
-        return `${Number(amount) * Math.pow(10, decimalPlaces)}`;
+        const mlNumber = new MLNumber(amount);
+        return mlNumber.shiftedBy(decimalPlaces).toString();
     }
 
     /**
