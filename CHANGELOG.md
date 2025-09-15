@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.16.9](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.8...v19.16.9) (2025-09-15)
+
+
+### Bug Fixes
+
+* decimal calc ([#274](https://github.com/mojaloop/sdk-standard-components/issues/274)) ([f659fda](https://github.com/mojaloop/sdk-standard-components/commit/f659fdaf74204b0c9ebc7208238e8e1e2e8006e4))
+
 ### [19.16.8](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.7...v19.16.8) (2025-09-15)
 
 
