@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.16.8](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.7...v19.16.8) (2025-09-15)
+
+
+### Chore
+
+* updated axios ([#273](https://github.com/mojaloop/sdk-standard-components/issues/273)) ([4c2db0d](https://github.com/mojaloop/sdk-standard-components/commit/4c2db0d4ecdd9cf97950f168eb29a87bda083de7))
+
 ### [19.16.7](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.6...v19.16.7) (2025-08-27)
 
 
