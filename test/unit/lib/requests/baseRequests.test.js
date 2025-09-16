@@ -135,6 +135,39 @@ describe('BaseRequests', () => {
         mockAxios.onAny().reply(200, {}, jsonContentTypeHeader);
     });
 
+    it('should use provided httpAgent when TLS is disabled', () => {
+        const mockHttpAgent = { mock: 'httpAgent' };
+        const conf = {
+            ...defaultConf,
+            httpAgent: mockHttpAgent,
+        };
+
+        const br = new BaseRequests(conf);
+        expect(br.agent).toBe(mockHttpAgent);
+    });
+
+    it('should use provided httpsAgent when TLS is enabled', () => {
+        const mockHttpsAgent = { mock: 'httpsAgent' };
+        const conf = {
+            ...defaultConf,
+            tls: { enabled: true, creds: {} },
+            httpsAgent: mockHttpsAgent,
+        };
+
+        const br = new BaseRequests(conf);
+        expect(br.agent).toBe(mockHttpsAgent);
+    });
+
+    it('should fall back to default agents when none provided', () => {
+        const httpConf = { ...defaultConf };
+        const httpBr = new BaseRequests(httpConf);
+        expect(httpBr.agent).toBeDefined();
+
+        const httpsConf = { ...defaultConf, tls: { enabled: true, creds: {} } };
+        const httpsBr = new BaseRequests(httpsConf);
+        expect(httpsBr.agent).toBeDefined();
+    });
+
     it('returns original request details for GET calls when response type is mojaloop', async () => {
         const conf = {
             ...defaultConf,

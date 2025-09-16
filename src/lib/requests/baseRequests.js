@@ -40,6 +40,8 @@ class BaseRequests {
      *   Example: { auth, retryWso2AuthFailureTimes: 1 }
      * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
      * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
+     * @param {Object} [config.httpAgent] - Optional HTTP agent to use for HTTP requests
+     * @param {Object} [config.httpsAgent] - Optional HTTPS agent to use for HTTPS requests
      */
     constructor(config) {
         this.logger = config.logger.push({ component: this.constructor.name });
@@ -61,14 +63,14 @@ class BaseRequests {
         });
 
         if (config.tls.enabled) {
-            this.agent = new https.Agent({
+            this.agent = config.httpsAgent || new https.Agent({
                 ...config.tls.creds,
                 keepAlive: true
             });
 
             this.transportScheme = 'https';
         } else {
-            this.agent = http.globalAgent;
+            this.agent = config.httpAgent || http.globalAgent;
             this.transportScheme = 'http';
         }
 
