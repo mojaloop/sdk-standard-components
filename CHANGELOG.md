@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.17.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.9...v19.17.0) (2025-09-16)
+
+
+### Features
+
+* parameterize http agent ([#275](https://github.com/mojaloop/sdk-standard-components/issues/275)) ([676e11f](https://github.com/mojaloop/sdk-standard-components/commit/676e11f44db16acd7308c3122a412e3c4f8af642))
+
 ### [19.16.9](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.8...v19.16.9) (2025-09-15)
 
 
