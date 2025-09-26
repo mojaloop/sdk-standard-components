@@ -8,6 +8,10 @@
 
 This package contains a set of components that encode standard practices for enabling the following features of a DFSP to Mojaloop switch interface:
 
+## CI/CD
+
+This repository uses the [mojaloop/build](https://github.com/mojaloop/ci-config-orb-build) CircleCI orb for standardized CI/CD workflows, including automated Grype vulnerability scanning for source code security.
+
 ## Usage
 
 ```

@@ -1,11 +1,32 @@
+# CircleCI configuration using the mojaloop/build orb
+# This streamlined config uses the mojaloop/build orb for standardized CI/CD workflows
+#
+# The orb automatically handles:
+# - PR title checking
+# - Dependency installation and caching
+# - Linting
+# - Unit, integration, and functional testing
+# - Vulnerability checking (npm audit)
+# - License scanning
+# - Grype security scanning (source code scanning for this library)
+# - Automated releases to npm and GitHub
+# - Slack notifications
+#
+# To enable this configuration:
+# 1. Go to CircleCI project settings → Advanced
+# 2. Ensure "Enable dynamic config using setup workflows" is enabled
+
 version: 2.1
 setup: true
+
 orbs:
-    build: mojaloop/build@1.0.64
+  build: mojaloop/build@1.1.6
+
 workflows:
-    setup:
-        jobs:
-            - build/workflow:
-                  filters:
-                      tags:
-                          only: /v\d+(\.\d+){2}(-[a-zA-Z-][0-9a-zA-Z-]*\.\d+)?/
+  setup:
+    jobs:
+      - build/workflow:
+          context: org-global
+          filters:
+            tags:
+              only: /v\d+(\.\d+){2}(-[a-zA-Z-][0-9a-zA-Z-]*\.\d+)?/
