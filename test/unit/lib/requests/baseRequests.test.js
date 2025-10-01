@@ -65,7 +65,7 @@ describe('BaseRequests OIDC authorisation', () => {
             ...defaultConf,
             oidc: {
                 auth: oidcAuth,
-                // retryOIDCAuthFailureTimes: undefined, // the default
+                // retryOidcAuthFailureTimes: undefined, // the default
             }
         };
 
