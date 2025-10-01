@@ -31,7 +31,7 @@
 const fs = require('node:fs');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
-const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const OIDCAuth = require('../../../../src/lib/OIDCAuth');
 const { defaultHttpConfig, createHttpRequester } = require('#src/lib/httpRequester/index');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
@@ -44,7 +44,7 @@ describe('request error handling', () => {
         let jwsSign = false;
         let jwsSignPutParties = false;
 
-        const wso2Auth = new WSO2Auth({ logger });
+        const oidc = new OIDCAuth({ logger });
 
         // Everything is false by default
         const conf = {
@@ -58,7 +58,7 @@ describe('request error handling', () => {
             jwsSignPutParties: jwsSignPutParties,
             jwsSigningKey: jwsSigningKey,
             peerEndpoint: '127.0.0.1:9999',
-            wso2Auth,
+            oidc,
         };
 
         const testMr = new mr(conf);
@@ -68,7 +68,7 @@ describe('request error handling', () => {
         let dest = '42';
         let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
         await mojaloopRequestMethod(url, resourceType, body, dest);
-        await wso2Auth.stop();
+        await oidc.stop();
     }
 
     test(

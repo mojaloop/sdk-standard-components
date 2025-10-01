@@ -36,7 +36,7 @@ const Ilp = require('./lib/ilp');
 const Jws = require('./lib/jws');
 const Logger = require('./lib/logger');
 const requests = require('./lib/requests');
-const WSO2Auth = require('./lib/WSO2Auth');
+const OIDCAuth = require('./lib/OIDCAuth');
 const randomPhrase = require('./lib/randomphrase');
 const httpRequester = require('./lib/httpRequester');
 const utils = require('./lib/utils');
@@ -56,7 +56,8 @@ module.exports = {
     request,
     requests,
     httpRequester,
-    WSO2Auth,
+    OIDCAuth,
+    WSO2Auth: OIDCAuth, // deprecated! (for backward compatibility only)
     randomPhrase,
     utils,
 };

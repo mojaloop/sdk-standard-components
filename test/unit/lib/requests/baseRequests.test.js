@@ -38,12 +38,12 @@ const postQuotesBody = require('../../data/quoteRequest.json');
 const putPartiesBody = require('../../data/putPartiesBody.json');
 const patchTransfersBody = require('../../data/patchTransfersBody.json');
 
-describe('BaseRequests wso2 authorisation', () => {
-    let wso2Auth, defaultConf, accessToken;
+describe('BaseRequests OIDC authorisation', () => {
+    let oidcAuth, defaultConf, accessToken;
 
     beforeEach(() => {
         accessToken = 'fake.access.token';
-        wso2Auth = {
+        oidcAuth = {
             refreshToken: jest.fn(async () => accessToken),
         };
         defaultConf = {
@@ -63,9 +63,9 @@ describe('BaseRequests wso2 authorisation', () => {
         expect.hasAssertions();
         const conf = {
             ...defaultConf,
-            wso2: {
-                auth: wso2Auth,
-                // retryWso2AuthFailureTimes: undefined, // the default
+            oidc: {
+                auth: oidcAuth,
+                // retryOIDCAuthFailureTimes: undefined, // the default
             }
         };
 
@@ -74,7 +74,7 @@ describe('BaseRequests wso2 authorisation', () => {
             .catch((err) => {
                 expect(err.status).toBe(401);
                 expect(mockAxios.history.get.length).toBe(1);
-                expect(wso2Auth.refreshToken).not.toHaveBeenCalled();
+                expect(oidcAuth.refreshToken).not.toHaveBeenCalled();
             });
     });
 
@@ -82,9 +82,9 @@ describe('BaseRequests wso2 authorisation', () => {
         expect.hasAssertions();
         const conf = {
             ...defaultConf,
-            wso2: {
-                auth: wso2Auth,
-                retryWso2AuthFailureTimes: 1,
+            oidc: {
+                auth: oidcAuth,
+                retryOidcAuthFailureTimes: 1,
             },
         };
 
@@ -92,8 +92,8 @@ describe('BaseRequests wso2 authorisation', () => {
         await br._request({ uri: 'http://what.ever', headers: {} })
             .catch((err) => {
                 expect(err.status).toBe(401);
-                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-                expect(wso2Auth.refreshToken).toHaveBeenCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+                expect(mockAxios.history.get.length).toBe(conf.oidc.retryOidcAuthFailureTimes + 1);
+                expect(oidcAuth.refreshToken).toHaveBeenCalledTimes(conf.oidc.retryOidcAuthFailureTimes);
             });
     });
 
@@ -101,9 +101,9 @@ describe('BaseRequests wso2 authorisation', () => {
         expect.hasAssertions();
         const conf = {
             ...defaultConf,
-            wso2: {
-                auth: wso2Auth,
-                retryWso2AuthFailureTimes: 5,
+            oidc: {
+                auth: oidcAuth,
+                retryOidcAuthFailureTimes: 5,
             },
         };
 
@@ -111,8 +111,8 @@ describe('BaseRequests wso2 authorisation', () => {
         await br._request({ uri: 'http://what.ever', headers: {} })
             .catch((err) => {
                 expect(err.status).toBe(401);
-                expect(mockAxios.history.get.length).toBe(conf.wso2.retryWso2AuthFailureTimes + 1);
-                expect(wso2Auth.refreshToken).toHaveBeenCalledTimes(conf.wso2.retryWso2AuthFailureTimes);
+                expect(mockAxios.history.get.length).toBe(conf.oidc.retryOidcAuthFailureTimes + 1);
+                expect(oidcAuth.refreshToken).toHaveBeenCalledTimes(conf.oidc.retryOidcAuthFailureTimes);
             });
     });
 });

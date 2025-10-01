@@ -35,9 +35,9 @@ class BaseRequests {
      * @param {boolean} config.jwsSign - If `true`, then requests will be JWS signed
      * @param {boolean} [config.jwsSignPutParties] - If not provided, it will default to the value of `config.jwsSign`
      * @param {string} [config.jwsSigningKey] - The jwsSigningKey to use. Required if `jwsSign === true`
-     * @param {Object} [config.wso2] The wso2Auth object and
+     * @param {Object} [config.oidc] The oidcAuth object and
      *   number indicating how many times to retry a request that fails authorization.
-     *   Example: { auth, retryWso2AuthFailureTimes: 1 }
+     *   Example: { auth, retryOidcAuthFailureTimes: 1 }
      * @param {object} config.httpConfig - Options for httpClient (axios) - see: https://axios-http.com/docs/req_config
      * @param {object} config.retryConfig - Options for axios-retry - see: https://github.com/softonic/axios-retry?tab=readme-ov-file#options
      * @param {Object} [config.httpAgent] - Optional HTTP agent to use for HTTP requests
@@ -94,7 +94,7 @@ class BaseRequests {
         this.peerEndpoint = `${this.transportScheme}://${config.peerEndpoint}`;
         this.defineResourceVersionsAndEndpoints(config);
 
-        this.wso2 = config.wso2 || {};
+        this.oidc = config.oidc || {};
     }
 
     defineResourceVersionsAndEndpoints(config) {
@@ -173,19 +173,19 @@ class BaseRequests {
         const __request = async (opts, responseType, attempts) => this.requester.sendRequest(opts)
             .catch(async (err) => {
                 const retryAuth = err.status === 401 &&
-                    this.wso2.auth &&
-                    attempts < this.wso2.retryWso2AuthFailureTimes;
+                    this.oidc.auth &&
+                    attempts < this.oidc.retryOidcAuthFailureTimes;
                 if (retryAuth) {
                     this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token...');
-                    const token = await this.wso2.auth.refreshToken();
+                    const token = await this.oidc.auth.refreshToken();
                     if (token) {
                         opts.headers['Authorization'] = `Bearer ${token}`;
                     } else {
-                        const msg = 'Unable to retrieve WSO2 auth token';
+                        const msg = 'Unable to retrieve OIDC access token';
                         this.logger.warn(msg, { attempts });
                         throw new Error(msg);
                     }
-                    this.logger.verbose('Retrying request with new WSO2 token...', { attempts });
+                    this.logger.verbose('Retrying request with new OIDC token...', { attempts });
                     return __request(opts, responseType, attempts + 1);
                 } else {
                     throw err;
@@ -434,8 +434,8 @@ class BaseRequests {
         }
 
         //Need to populate Bearer Token if we are in OAuth2.0 environment
-        if (this.wso2.auth) {
-            const token = this.wso2.auth.getToken();
+        if (this.oidc.auth) {
+            const token = this.oidc.auth.getToken();
             if(token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }

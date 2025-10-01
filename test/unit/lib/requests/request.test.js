@@ -36,7 +36,7 @@ const crypto = require('node:crypto');
 const querystring = require('querystring');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
-const WSO2Auth = require('../../../../src/lib/WSO2Auth');
+const OIDCAuth = require('../../../../src/lib/OIDCAuth');
 const mockLogger = require('../../../__mocks__/mockLogger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
@@ -81,7 +81,7 @@ describe('mojaloopRequests Tests', () => {
                 expectedResponse.headers
             );
 
-        const wso2Auth = new WSO2Auth({ logger });
+        const oidc = new OIDCAuth({ logger });
 
         // Everything is false by default
         const conf = {
@@ -93,13 +93,13 @@ describe('mojaloopRequests Tests', () => {
             jwsSign: true,
             jwsSignPutParties: true,
             jwsSigningKey: jwsSigningKey,
-            wso2Auth,
+            oidc,
         };
         const testMr = new mr(conf);
         const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream)
             .catch(err => err);
 
-        await wso2Auth.stop();
+        await oidc.stop();
 
         return resp;
     };

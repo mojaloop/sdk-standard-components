@@ -328,7 +328,7 @@ describe('Thirdparty Requests Tests -->', () => {
 
         const config = mockConfigDto();
 
-        // const wso2Auth = new WSO2Auth({ logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }) }, undefined);
+        // const oidc = new OIDCAuth({ logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }) }, undefined);
         //
         // const config = {
         //     logger: mockLogger({ app: '*ThirdpartyRequestsAuthorizations-test' }, undefined),
@@ -341,7 +341,7 @@ describe('Thirdparty Requests Tests -->', () => {
         //     jwsSign: false,
         //     jwsSignPutParties: false,
         //     jwsSigningKey: jwsSigningKey,
-        //     wso2Auth,
+        //     oidc,
         // };
 
         it('executes a POST /thirdpartyRequests/authorizations call', async () => {

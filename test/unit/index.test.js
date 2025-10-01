@@ -38,7 +38,7 @@ describe('index layout', () => {
         'MojaloopRequests',
         'ThirdpartyRequests',
         'request',
-        'WSO2Auth',
+        'OIDCAuth',
     ];
 
     shouldBeExported.forEach((item) => {
