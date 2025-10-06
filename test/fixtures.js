@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const WSO2Auth = require('#src/lib/WSO2Auth/index');
+const OIDCAuth = require('#src/lib/OIDCAuth/index');
 const { loggerFactory } = require('#src/lib/logger');
 
 const jwsSigningKey = fs.readFileSync(__dirname + '/unit/data/jwsSigningKey.pem');
@@ -42,7 +42,9 @@ const mockConfigDto = ({
     jwsSign = false,
     jwsSignPutParties = false,
     logger = loggerFactory({ app: 'request-test' }),
-    wso2Auth =  new WSO2Auth({ logger }),
+    oidc = {
+        auth: new OIDCAuth({ logger })
+    },
     peerEndpoint = '127.0.0.1',
     servicesEndpoint = '127.0.0.2',
     thirdpartyRequestsEndpoint = 'thirdparty-api-adapter.local'
@@ -52,7 +54,7 @@ const mockConfigDto = ({
     jwsSign,
     jwsSignPutParties,
     jwsSigningKey,
-    wso2Auth,
+    oidc,
     peerEndpoint,
     servicesEndpoint,
     thirdpartyRequestsEndpoint,

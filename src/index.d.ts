@@ -55,7 +55,10 @@ declare namespace SDKStandardComponents {
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
         jwsSigningKey?: Buffer;
-        wso2Auth?: object;
+        oidc?: {
+            auth: OIDCAuth;
+            retryOidcAuthFailureTimes?: number;
+        };
         alsEndpoint?: string;
         peerEndpoint?: string;
         quotesEndpoint?: string;
@@ -519,7 +522,7 @@ declare namespace SDKStandardComponents {
         ): Promise<GenericRequestResponse | GenericRequestResponseUndefined>
     }
 
-    interface WSO2AuthConfig {
+    interface OIDCAuthConfig {
         logger: Logger.SdkLogger,
         tlsCreds?: {
             ca: string
@@ -533,12 +536,9 @@ declare namespace SDKStandardComponents {
         refreshRetrySeconds?: number
         staticToken?: string
     }
-    /**
-     * @class WSO2Auth
-     * @description Obtain WSO2 bearer token and periodically refresh it
-     */
-    class WSO2Auth {
-        constructor(config: WSO2AuthConfig)
+    /** @description Obtain OIDC access token and periodically refresh it */
+    class OIDCAuth {
+        constructor(config: OIDCAuthConfig)
 
         /**
          * @function getToken
