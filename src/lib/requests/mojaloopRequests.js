@@ -109,7 +109,7 @@ class MojaloopRequests extends BaseRequests {
     }
 
     /**
-     * Executes a DELETE /participants/{idType}/{idValue}/{idSubValue} request for the specified identifier type and indentifier 
+     * Executes a DELETE /participants/{idType}/{idValue}/{idSubValue} request for the specified identifier type and indentifier
      * and (optionally) sub identifier
      */
     async deleteParticipants(idType, idValue, idSubValue, destFspId, headers, query, responseType) {
@@ -250,6 +250,15 @@ class MojaloopRequests extends BaseRequests {
     async putFxQuotesError(conversionRequestId, error, destFspId, headers = {}) {
         return this._put(`fxQuotes/${conversionRequestId}/error`, RESOURCES.fxQuotes, error, destFspId,
             headers, undefined, undefined, { ID: conversionRequestId, isError: true });
+    }
+    /**
+     * Executes a GET /fxTransfers/{ID} request for the specified fxTransfer ID
+     *
+     * @returns {object} - JSON response body if one was received
+     */
+    async getFxTransfers(commitRequestId, destFspId = '', headers = {}) {
+        const url = `fxTransfers/${commitRequestId}`;
+        return this._get(url, RESOURCES.fxTransfers, destFspId, headers);
     }
 
     /**

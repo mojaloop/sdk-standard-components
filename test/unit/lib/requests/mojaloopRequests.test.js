@@ -918,6 +918,56 @@ describe('MojaloopRequests', () => {
         expect(reqBody).toEqual(putErrorBody);
     });
 
+    it('should send GET /fxTransfers/{ID} with ISO20022 content-type when ApiType is iso20022', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.ISO20022,
+        };
+        const testMr = new mr(conf);
+
+        const commitRequestId = 'fx-commit-123';
+        const res = await testMr.getFxTransfers(commitRequestId, 'destFsp', {});
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.fxTransfers+json;version=2.0');
+        // check the correct url was used
+        expect(res.originalRequest.url).toEqual(`/fxTransfers/${commitRequestId}`);
+        // check the correct destination header
+        expect(res.originalRequest.headers['fspiop-destination']).toEqual('destFsp');
+    });
+
+    it('should send GET /fxTransfers/{ID} with FSPIOP content-type when ApiType is fspiop', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+        const testMr = new mr(conf);
+
+        const commitRequestId = 'fx-commit-456';
+        const res = await testMr.getFxTransfers(commitRequestId, 'destFsp', {});
+
+        // check the correct content type was sent
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.fxTransfers+json;version=2.0');
+        // check the correct url was used
+        expect(res.originalRequest.url).toEqual(`/fxTransfers/${commitRequestId}`);
+        // check the correct destination header
+        expect(res.originalRequest.headers['fspiop-destination']).toEqual('destFsp');
+    });
+
+    it('should send GET /fxTransfers/{ID} with empty destFspId and default headers', async () => {
+        const conf = {
+            ...defaultConf,
+            apiType: ApiType.FSPIOP,
+        };
+        const testMr = new mr(conf);
+
+        const commitRequestId = 'fx-commit-789';
+        const res = await testMr.getFxTransfers(commitRequestId);
+
+        expect(res.originalRequest.url).toEqual(`/fxTransfers/${commitRequestId}`);
+        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.fxTransfers+json;version=2.0');
+    });
+
     it('Sends ISO20022 POST /fxTransfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
