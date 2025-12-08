@@ -1,4 +1,12 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.0...v19.18.1) (2025-12-08)
+
+
+### Chore
+
+* **deps:** bump jws ([#281](https://github.com/mojaloop/sdk-standard-components/issues/281)) ([826f492](https://github.com/mojaloop/sdk-standard-components/commit/826f49222f0a5b877713ca2d66d13b220433ec6c))
+* update dependencies and audit ([#283](https://github.com/mojaloop/sdk-standard-components/issues/283)) ([f87da21](https://github.com/mojaloop/sdk-standard-components/commit/f87da215976f9b5ea16e0f09cdb0200e7c532e41))
+
 ## [19.18.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.17.0...v19.18.0) (2025-10-06)
 
 ## [19.17.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.16.9...v19.17.0) (2025-09-16)
