@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.1...v19.18.2) (2025-12-23)
+
+
+### Chore
+
+* **ci:** update CircleCI orb to 1.1.9 ([#284](https://github.com/mojaloop/sdk-standard-components/issues/284)) ([1ab6ce3](https://github.com/mojaloop/sdk-standard-components/commit/1ab6ce3a9b9f4dafa9a6345480305096f8f7f4c8))
+
 ### [19.18.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.0...v19.18.1) (2025-12-08)
 
 
