@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.3](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.2...v19.18.3) (2026-01-04)
+
+
+### Bug Fixes
+
+* handle subtype mapping ([#285](https://github.com/mojaloop/sdk-standard-components/issues/285)) ([4c8070a](https://github.com/mojaloop/sdk-standard-components/commit/4c8070a449dd1b68b10809e814e779030864710b))
+
 ### [19.18.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.1...v19.18.2) (2025-12-23)
 
 
