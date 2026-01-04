@@ -34,6 +34,7 @@ const jws = require('jws');
 const safeStringify = require('fast-safe-stringify');
 
 const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(\/.*)*)$/;
+// const uriRegex = /\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(?:$|\/.*$)/;
 
 
 /**
