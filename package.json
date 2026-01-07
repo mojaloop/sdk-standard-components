@@ -45,7 +45,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.2",
     "@mojaloop/ml-number": "^11.4.2",
-    "@mojaloop/ml-schema-transformer-lib": "2.7.11",
+    "@mojaloop/ml-schema-transformer-lib": "2.7.13",
     "axios": "1.13.2",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
@@ -83,7 +83,7 @@
     "jest": "30.2.0",
     "jest-junit": "16.0.0",
     "nock": "14.0.10",
-    "npm-check-updates": "19.2.1",
+    "npm-check-updates": "19.3.1",
     "pre-commit": "1.2.2",
     "replace": "1.2.2",
     "standard-version": "9.5.0",
