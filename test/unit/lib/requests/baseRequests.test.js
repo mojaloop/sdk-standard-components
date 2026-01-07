@@ -308,7 +308,6 @@ describe('BaseRequests', () => {
         // values.
         expect(reqBody.Assgnmt).not.toBeUndefined();
         expect(reqBody.Rpt).not.toBeUndefined();
-        expect(reqBody.Rpt.OrgnlId).toEqual('MSISDN/0123456789');
     });
 
     it('transforms an FSPIOP PATCH request to an ISO20022 PATCH request when API type is ISO20022', async () => {

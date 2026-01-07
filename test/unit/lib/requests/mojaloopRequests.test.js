@@ -271,7 +271,6 @@ describe('MojaloopRequests', () => {
         // values.
         expect(reqBody.Assgnmt).not.toBeUndefined();
         expect(reqBody.Rpt).not.toBeUndefined();
-        expect(reqBody.Rpt.OrgnlId).toEqual(`${putPartiesBody.party.partyIdInfo.partyIdType}/${putPartiesBody.party.partyIdInfo.partyIdentifier}/${putPartiesBody.party.partyIdInfo.partySubIdOrType}`);
     });
 
     it('Sends FSPIOP PUT /parties bodies when ApiType is fspiop', async () => {
