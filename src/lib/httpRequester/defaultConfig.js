@@ -29,14 +29,14 @@ const axiosRetry = require('axios-retry');
 const {
     DEFAULT_TIMEOUT,
     DEFAULT_RETRIES,
-    DEFAULT_RETRY_DELAY,
+    DEFAULT_RETRY_DELAY
 } = require('./constants');
 
 const retryableStatusCodes = [
     408,
     429,
     502,
-    503,
+    503
 ];
 
 const retryableHttpErrorCodes = [
@@ -51,7 +51,7 @@ const createDefaultHttpConfig = () => Object.freeze({
     withCredentials: false,
     // validateStatus: status => (status >= 200 && status < 300), // default
     transitional: {
-        clarifyTimeoutError: true, // to set ETIMEDOUT error code on timeout instead of ECONNABORTED
+        clarifyTimeoutError: true // to set ETIMEDOUT error code on timeout instead of ECONNABORTED
     }
 });
 
@@ -59,10 +59,10 @@ const createDefaultHttpConfig = () => Object.freeze({
 const createDefaultRetryConfig = (logger) => Object.freeze({
     retries: DEFAULT_RETRIES,
     retryCondition: (err) => {
-        const needRetry = axiosRetry.isNetworkOrIdempotentRequestError(err)
-            || axiosRetry.isRetryableError(err)
-            || retryableStatusCodes.includes(err.status)
-            || retryableHttpErrorCodes.includes(err.code);
+        const needRetry = axiosRetry.isNetworkOrIdempotentRequestError(err) ||
+            axiosRetry.isRetryableError(err) ||
+            retryableStatusCodes.includes(err.status) ||
+            retryableHttpErrorCodes.includes(err.code);
         logger.isDebugEnabled && logger.push(formatAxiosError(err)).debug(`retryCondition is evaluated to ${needRetry}`);
         return needRetry;
     },
@@ -76,20 +76,22 @@ const createDefaultRetryConfig = (logger) => Object.freeze({
     },
     onMaxRetryTimesExceeded: (err, retryCount) => {
         logger.isInfoEnabled && logger.push(formatAxiosError(err, retryCount)).info('max retries exceeded for HTTP request!');
-    },
+    }
 });
 
-const formatAxiosError = (error, retryCount) =>  {
+const formatAxiosError = (error, retryCount) => {
     const { message, code, status, response } = error;
 
     return {
-        message, code, status,
+        message,
+        code,
+        status,
         ...(response?.data && { errorResponseData: response.data }),
-        ...(retryCount && { retryCount }),
+        ...(retryCount && { retryCount })
     };
 };
 
 module.exports = {
     createDefaultHttpConfig,
-    createDefaultRetryConfig,
+    createDefaultRetryConfig
 };

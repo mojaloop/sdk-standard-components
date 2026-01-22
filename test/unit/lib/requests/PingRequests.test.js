@@ -27,7 +27,7 @@
 
 const { PingRequests } = require('#src/lib/requests/index');
 const { mockConfigDto, Headers } = require('#test/fixtures');
-const { mockAxios} = require('#test/unit/utils');
+const { mockAxios } = require('#test/unit/utils');
 
 describe('PingRequests Tests -->', () => {
     beforeEach(() => {

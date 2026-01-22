@@ -47,7 +47,7 @@ const sensitiveHeaders = [
     'host', // without removing host header request proxy fails with error: "Client network socket disconnected before secure TLS connection was established"
     'content-length', // without removing content-length header request just stuck
     'accept-encoding',
-    'user-agent',
+    'user-agent'
 ];
 
 const hopByHopHeaders = [
@@ -59,7 +59,7 @@ const hopByHopHeaders = [
     'trailer',
     'transfer-encoding',
     'upgrade',
-    'keep-alive',
+    'keep-alive'
 ];
 
 const xHeaders = [
@@ -75,9 +75,8 @@ const xHeaders = [
     'x-b3-traceid',
     'x-b3-spanid',
     'x-b3-parentspanid',
-    'x-b3-sampled',
+    'x-b3-sampled'
 ];
-
 
 module.exports = {
     cleanupIncomingHeaders

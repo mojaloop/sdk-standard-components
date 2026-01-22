@@ -28,7 +28,7 @@
  --------------
  ******/
 
-const { mockAxios, jsonContentTypeHeader} = require('#test/unit/utils');
+const { mockAxios, jsonContentTypeHeader } = require('#test/unit/utils');
 const ThirdpartyRequests = require('../../../../src/lib/requests/thirdpartyRequests');
 const { mockConfigDto } = require('../../../fixtures');
 
@@ -355,9 +355,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(postThirdpartyRequestsAuthorizationBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'post',
-                    'url': '/thirdpartyRequests/authorizations',
-                    'headers': expect.objectContaining({
+                    method: 'post',
+                    url: '/thirdpartyRequests/authorizations',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -376,9 +376,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/thirdpartyRequests/authorizations/1',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/thirdpartyRequests/authorizations/1',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -397,9 +397,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationErrorBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/thirdpartyRequests/authorizations/1/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/thirdpartyRequests/authorizations/1/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -425,9 +425,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'get',
-                    'url': '/accounts/username1234',
-                    'headers': expect.objectContaining({
+                    method: 'get',
+                    url: '/accounts/username1234',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -447,9 +447,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/accounts/username1234',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/accounts/username1234',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -469,9 +469,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/accounts/username1234/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/accounts/username1234/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -499,9 +499,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'post',
-                    'url': '/thirdpartyRequests/verifications',
-                    'headers': expect.objectContaining({
+                    method: 'post',
+                    url: '/thirdpartyRequests/verifications',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -522,9 +522,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': `/thirdpartyRequests/verifications/${verificationRequestId}`,
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: `/thirdpartyRequests/verifications/${verificationRequestId}`,
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -545,9 +545,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -586,8 +586,8 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'get',
-                    'url': '/services/THIRD_PARTY_DFSP'
+                    method: 'get',
+                    url: '/services/THIRD_PARTY_DFSP'
                 })
             );
         });
@@ -606,9 +606,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/services/THIRD_PARTY_DFSP',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/services/THIRD_PARTY_DFSP',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -629,9 +629,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/services/THIRD_PARTY_DFSP/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/services/THIRD_PARTY_DFSP/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })

@@ -1,5 +1,5 @@
 import http from 'http'
-import { KeyObject } from 'tls'
+import { KeyObject } from 'crypto'
 import { ILogger, ContextLogger } from '@mojaloop/central-services-logger/src/contextLogger'
 import {
     //This needs reconsidering if and when more changes are included in fspiop v2.0, currently they're non-breaking as far as any existing fields are replaced, but when such changes come in, this needs to be reviewed.
@@ -54,7 +54,8 @@ declare namespace SDKStandardComponents {
         dfspId: string;
         jwsSign: boolean;
         jwsSignPutParties?: boolean;
-        jwsSigningKey?: Buffer;
+        jwsSigningKey?: Buffer | string | KeyObject;
+        jwsAlg?: string;
         oidc?: {
             auth: OIDCAuth;
             retryOidcAuthFailureTimes?: number;
@@ -797,7 +798,8 @@ declare namespace SDKStandardComponents {
 
     type JwsSignerConfig = {
         logger: Logger.SdkLogger
-        signingKey: String
+        signingKey: string | Buffer | KeyObject
+        alg?: string
     }
 
     type JwsRequest = {

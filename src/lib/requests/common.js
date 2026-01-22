@@ -31,7 +31,7 @@
 'use strict';
 
 const safeStringify = require('fast-safe-stringify');
-const { ApiType, ONLY_FSPIOP_RESOURCES} = require('../constants');
+const { ApiType, ONLY_FSPIOP_RESOURCES } = require('../constants');
 
 const respErrSym = Symbol('ResponseErrorDataSym');
 
@@ -39,24 +39,23 @@ const respErrSym = Symbol('ResponseErrorDataSym');
  * An HTTPResponseError class
  */
 class HTTPResponseError extends Error {
-    constructor(params) {
+    constructor (params) {
         super(params.msg);
         this[respErrSym] = params;
     }
 
-    getData() {
+    getData () {
         return this[respErrSym];
     }
 
-    toString() {
+    toString () {
         return safeStringify(this[respErrSym]);
     }
 
-    toJSON() {
+    toJSON () {
         return safeStringify(this[respErrSym]);
     }
 }
-
 
 // Strip all beginning and end forward-slashes from each of the arguments, then join all the
 // stripped strings with a forward-slash between them. If the last string ended with a
@@ -65,10 +64,9 @@ const buildUrl = (...args) => {
     return args
         .filter(e => e !== undefined)
         .map(s => s.replace(/(^\/*|\/*$)/g, '')) /* This comment works around a problem with editor syntax highglighting */
-        .join('/')
-        + ((args[args.length - 1].slice(-1) === '/') ? '/' : '');
+        .join('/') +
+        ((args[args.length - 1].slice(-1) === '/') ? '/' : '');
 };
-
 
 const throwOrJson = async (res) => {
     // Noticed that none of the backend sevices are returning this header, although this is mandated by API Spec.
@@ -79,28 +77,26 @@ const throwOrJson = async (res) => {
     // }
 
     // mojaloop api says that no body content should be returned directly - content is only returned asynchronously
-    if ((res.headers['content-length']  && (res.headers['content-length'] !== '0' ) || (res.body && res.body.length > 0))) {
-        throw new HTTPResponseError({ msg: `Expected empty response body but got content: ${res.body}`,
+    if ((res.headers['content-length'] && res.headers['content-length'] !== '0') || (res.body && res.body.length > 0)) {
+        throw new HTTPResponseError({
+            msg: `Expected empty response body but got content: ${res.body}`,
             res
         });
     }
 
-    //if res has an "originalRequest" property then return a simple object containing that
-    if (typeof(res.originalRequest) !== 'undefined') {
+    // if res has an "originalRequest" property then return a simple object containing that
+    if (typeof (res.originalRequest) !== 'undefined') {
         return {
-            originalRequest: res.originalRequest,
+            originalRequest: res.originalRequest
         };
     }
 
-    //return undefined as we do not expect body responses to mojaloop api requests
-    return;
+    // return undefined as we do not expect body responses to mojaloop api requests
 };
 
 const bodyStringifier = (obj) => {
-    if (typeof obj === 'string' || Buffer.isBuffer(obj))
-        return obj;
-    if (typeof obj === 'number')
-        return obj.toString();
+    if (typeof obj === 'string' || Buffer.isBuffer(obj)) { return obj; }
+    if (typeof obj === 'number') { return obj.toString(); }
     return safeStringify(obj);
 };
 
@@ -144,5 +140,5 @@ module.exports = {
     formatEndpointOrDefault,
     HTTPResponseError,
     ResponseType,
-    throwOrJson,
+    throwOrJson
 };

@@ -32,7 +32,7 @@ const { mockAxios, jsonContentTypeHeader } = require('#test/unit/utils');
 
 const { TransformFacades } = require('@mojaloop/ml-schema-transformer-lib');
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
-const { ApiType, ISO_20022_HEADER_PART} = require('../../../../src/lib/constants');
+const { ApiType, ISO_20022_HEADER_PART } = require('../../../../src/lib/constants');
 const { mockConfigDto } = require('../../../fixtures');
 
 // dummy request bodies
@@ -77,7 +77,6 @@ describe('PUT /parties', () => {
         }
     );
 
-
     test(
         'does not sign put parties when jwsSign is true and jwsSignPutParties is false',
         async () => {
@@ -85,14 +84,12 @@ describe('PUT /parties', () => {
         }
     );
 
-
     test(
         'does not sign put parties when jwsSign and jwsSignPutParties are false',
         async () => {
             await testPutParties(false, false, true);
         }
     );
-
 
     test(
         'does not sign put parties when jwsSign is false and jwsSignPutParties is true',
@@ -106,7 +103,7 @@ describe('PUT /parties', () => {
         const maxRedirects = 12345;
         const conf = {
             ...mockConfigDto(),
-            httpConfig: { timeout, maxRedirects },
+            httpConfig: { timeout, maxRedirects }
         };
         const testMr = new mr(conf);
         await testMr.putParties('MSISDN', '123456', '', {});
@@ -137,14 +134,12 @@ describe('PUT /quotes', () => {
         }
     }
 
-
     test(
         'signs put quotes when jwsSign is true and jwsSignPutParties is false',
         async () => {
             await testPutQuotes(true, false, false);
         }
     );
-
 
     test(
         'does not sign put quotes when jwsSign is false and jwsSignPutParties is true',
@@ -153,7 +148,6 @@ describe('PUT /quotes', () => {
         }
     );
 
-
     test(
         'does not sign put quotes when jwsSign is false and jwsSignPutParties is false',
         async () => {
@@ -161,14 +155,12 @@ describe('PUT /quotes', () => {
         }
     );
 
-
     test(
         'signs put parties when jwsSign is true and jwsSignPutParties is not supplied',
         async () => {
             await testPutQuotes(true, undefined);
         }
     );
-
 
     test(
         'does not sign put parties when jwsSign is false and jwsSignPutParties is not supplied',
@@ -194,7 +186,7 @@ describe('postAuthorizations', () => {
             retriesLeft: '1',
             amount: {
                 amount: '100',
-                currency: 'U2F',
+                currency: 'U2F'
             },
             transactionId: '987'
         };
@@ -223,7 +215,7 @@ describe('patchTransfers', () => {
         const xferId = '123456';
         const patchBody = {
             completedTimestamp: now.toISOString(),
-            transferState: 'COMMITTED',
+            transferState: 'COMMITTED'
         };
         const destFsp = 'patchdfsp';
 
@@ -248,7 +240,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /parties bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -276,7 +268,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /parties bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -300,7 +292,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /parties error bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -330,7 +322,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /parties error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -343,7 +335,7 @@ describe('MojaloopRequests', () => {
             undefined
         );
 
-        const reqBody =res.originalRequest.data;
+        const reqBody = res.originalRequest.data;
         // check the correct content type was sent
         expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.parties+json;version=1.0');
 
@@ -354,11 +346,11 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP POST /participants bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
-        const res = await testMr.postParticipants(postParticipantsBody,'somefsp');
+        const res = await testMr.postParticipants(postParticipantsBody, 'somefsp');
 
         const reqBody = res.originalRequest.data;
         // check the correct content type was sent.
@@ -372,7 +364,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP POST /participants bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -389,7 +381,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /participants bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -413,7 +405,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /participants bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -436,7 +428,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /participants error bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -460,7 +452,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /participants error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -483,7 +475,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 POST /quotes bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -504,7 +496,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP POST /quotes bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -521,11 +513,11 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /quotes bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
-        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: {}});
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, { isoPostQuote: {} });
 
         const reqBody = res.originalRequest.data;
         // check the correct content type was sent
@@ -542,12 +534,12 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /quotes bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
         const isoPostQuoteContext = await TransformFacades.FSPIOP.quotes.post({ body: postQuotesBody });
-        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, {isoPostQuote: isoPostQuoteContext.body});
+        const res = await testMr.putQuotes(postQuotesBody.quoteId, putQuotesBody, 'somefsp', undefined, { isoPostQuote: isoPostQuoteContext.body });
 
         const reqBody = res.originalRequest.data;
 
@@ -563,7 +555,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /quotes bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -577,11 +569,10 @@ describe('MojaloopRequests', () => {
         expect(reqBody).toEqual(putQuotesBody);
     });
 
-
     it('Sends ISO20022 PUT /quotes error bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -605,7 +596,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /quotes error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -622,12 +613,12 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 POST /transfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
 
         const testMr = new mr(conf);
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {},  { isoPostQuote: {} });
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {}, { isoPostQuote: {} });
 
         const reqBody = res.originalRequest.data;
         // check the correct content type was sent
@@ -646,14 +637,14 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 POST /transfers bodies when ApiType is iso20022 and $context.isoPostQuote is specified and testing mode=false', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
-        const isoPostQuote = await TransformFacades.FSPIOP.quotes.post({body: postQuotesBody});
-        const isoPutQuoteContext = await TransformFacades.FSPIOP.quotes.put({params: {ID: '1234'}, body: putQuotesBody, $context: {isoPostQuote: isoPostQuote.body}});
+        const isoPostQuote = await TransformFacades.FSPIOP.quotes.post({ body: postQuotesBody });
+        const isoPutQuoteContext = await TransformFacades.FSPIOP.quotes.put({ params: { ID: '1234' }, body: putQuotesBody, $context: { isoPostQuote: isoPostQuote.body } });
 
-        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {},{ isoPostQuoteResponse: isoPutQuoteContext.body });
+        const res = await testMr.postTransfers(postTransfersBody, 'somefsp', {}, { isoPostQuoteResponse: isoPutQuoteContext.body });
 
         const reqBody = res.originalRequest.data;
         // Test fields that transformed when given previous iso quote as context
@@ -665,7 +656,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -682,7 +673,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /transfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -704,7 +695,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /transfers bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -721,7 +712,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PATCH /transfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -743,7 +734,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PATCH /transfers bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -760,7 +751,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /transfers error bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -784,7 +775,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /transfers error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -801,7 +792,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 POST /fxQuotes bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -823,7 +814,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP POST /fxQuotes bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -840,7 +831,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /fxQuotes bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -862,7 +853,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /fxQuotes bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -879,7 +870,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /fxQuotes error bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -903,7 +894,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /fxQuotes error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -920,7 +911,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 POST /fxTransfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -942,7 +933,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP POST /fxTransfers bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -959,7 +950,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /fxTransfers bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -981,7 +972,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /fxTransfers bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -998,7 +989,7 @@ describe('MojaloopRequests', () => {
     it('Sends ISO20022 PUT /fxTransfers error bodies when ApiType is iso20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 
@@ -1022,7 +1013,7 @@ describe('MojaloopRequests', () => {
     it('Sends FSPIOP PUT /fxTransfers error bodies when ApiType is fspiop', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
         const testMr = new mr(conf);
 
@@ -1039,7 +1030,7 @@ describe('MojaloopRequests', () => {
     it('should set FSPIOP headers for putTransactionRequests', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const testMr = new mr(conf);
 

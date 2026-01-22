@@ -28,13 +28,17 @@
  --------------
  ******/
 
-const httpActual = jest.requireActual('http');
+'use strict';
+
+/* eslint-env jest */
+/* global httpActual */
+
 const http = jest.genMockFromModule('http');
 const { Readable, Writable } = require('stream');
 
 const writeMock = jest.fn();
 
-function request(options, callback) {
+function request (options, callback) {
     if (!http.__request) {
         return httpActual.request(options, callback);
     }
@@ -44,7 +48,7 @@ function request(options, callback) {
     readable._read = jest.fn();
     readable.push(buffer);
     readable.push(null);
-    readable.headers = response.headers || {'content-type': 'application/json'};
+    readable.headers = response.headers || { 'content-type': 'application/json' };
     readable.statusCode = response.statusCode;
     callback(readable);
 

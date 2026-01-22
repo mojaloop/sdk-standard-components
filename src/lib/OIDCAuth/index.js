@@ -58,7 +58,7 @@ class OIDCAuth extends EventEmitter {
      * @param {String} [opts.refreshRetrySeconds] OIDC token refresh retry interval in seconds
      * @param {String} [opts.staticToken] OIDC static bearer token
      */
-    constructor(opts) {
+    constructor (opts) {
         super({ captureExceptions: true });
         this._logger = opts.logger.child({ component: this.constructor.name });
         this._refreshSeconds = opts.refreshSeconds || DEFAULT_REFRESH_INTERVAL_SECONDS;
@@ -79,7 +79,7 @@ class OIDCAuth extends EventEmitter {
             method: 'POST',
             body: qs.stringify({
                 grant_type: 'client_credentials'
-            }),
+            })
         };
 
         if (opts.tlsCreds) {
@@ -102,25 +102,25 @@ class OIDCAuth extends EventEmitter {
         }
     }
 
-    getToken() {
+    getToken () {
         return this._token;
     }
 
-    async start() {
+    async start () {
         if (this._token === undefined) {
             await this.refreshToken();
         }
     }
 
-    stop() {
+    stop () {
         clearTimeout(this._refreshTimer);
         this._refreshTimer = null;
         this._token = null;
         this._stop = true;
     }
 
-    async refreshToken() {
-        // Prevent the timeout from expiring and triggering an extraneous refresh
+    async refreshToken () {
+    // Prevent the timeout from expiring and triggering an extraneous refresh
         this.stop();
         this._stop = false;
 
@@ -128,9 +128,9 @@ class OIDCAuth extends EventEmitter {
         const reqOpts = {
             ...this._reqOpts,
             headers: {
-                'Authorization': `Basic ${this._basicToken}`,
+                Authorization: `Basic ${this._basicToken}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
-            },
+            }
         };
         let refreshSeconds;
         try {
@@ -140,17 +140,17 @@ class OIDCAuth extends EventEmitter {
                 this.emit('error', 'Error retrieving OIDC auth token');
                 throw new Error(`Unexpected response code ${response.status} received from OIDC tokenEndpoint`);
             }
-            const { access_token, expires_in } = response.data;
-            this._token = access_token;
-            const tokenIsValidNumber = (typeof expires_in === 'number') && (expires_in > 0);
-            const tokenExpiry = tokenIsValidNumber ? expires_in : Infinity;
+            const { access_token: accessToken, expires_in: expiresIn } = response.data;
+            this._token = accessToken;
+            const tokenIsValidNumber = (typeof expiresIn === 'number') && (expiresIn > 0);
+            const tokenExpiry = tokenIsValidNumber ? expiresIn : Infinity;
             refreshSeconds = Math.min(this._refreshSeconds, tokenExpiry);
             this._logger.verbose('OIDC token refreshed successfully. ' +
-                `Token expiry is ${expires_in}${tokenIsValidNumber ? 's' : ''}, ` +
+                `Token expiry is ${expiresIn}${tokenIsValidNumber ? 's' : ''}, ` +
                 `next refresh in ${refreshSeconds}s`);
         } catch (error) {
-            this._logger.error(`Error performing OIDC token refresh: ${error.message}. `
-                + `Retry in ${this._refreshRetrySeconds}s`);
+            this._logger.error(`Error performing OIDC token refresh: ${error.message}. ` +
+                `Retry in ${this._refreshRetrySeconds}s`);
             refreshSeconds = this._refreshRetrySeconds;
         }
         if (!this._stop) { // Don't schedule the next refresh if stop() was called meanwhile

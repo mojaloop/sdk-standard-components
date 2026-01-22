@@ -53,7 +53,7 @@ class AxiosHttpRequester {
      * @param {AxiosHttpRequestDeps} deps
      * @returns {AxiosHttpRequester}
      */
-    constructor(deps) {
+    constructor (deps) {
         this.deps = deps;
         this.logger = deps.logger.child({ component: this.constructor.name });
         this.#httpClient = this.#createAxiosClient(deps);
@@ -65,7 +65,7 @@ class AxiosHttpRequester {
      * @param {HttpOptions} httpOpts - HTTP options
      * @returns {Promise<unknown>} HTTP response
      */
-    async sendRequest(httpOpts) {
+    async sendRequest (httpOpts) {
         let originalRequest = null; // todo: think, if we need
         try {
             const axiosOpts = this.convertToAxiosOptions(httpOpts);
@@ -73,7 +73,7 @@ class AxiosHttpRequester {
                 ...axiosOpts,
                 ...(axiosOpts.httpAgent && { httpAgent: '[REDACTED]' }),
                 ...(axiosOpts.httpsAgent && { httpsAgent: '[REDACTED]' }),
-                body: safeStringify(axiosOpts.data), // todo: think, if we need this (or use data JSON)
+                body: safeStringify(axiosOpts.data) // todo: think, if we need this (or use data JSON)
             };
 
             this.logger.push({ originalRequest }).debug('sending HTTP request...');
@@ -89,10 +89,10 @@ class AxiosHttpRequester {
         }
     }
 
-    get responseType() { return ResponseType; }
+    get responseType () { return ResponseType; }
 
     /** @param {HttpOptions} httpOpts */
-    convertToAxiosOptions(httpOpts) {
+    convertToAxiosOptions (httpOpts) {
         const {
             uri,
             method,
@@ -102,7 +102,7 @@ class AxiosHttpRequester {
             responseType, // = ResponseType.JSON
             agent,
             timeout,
-            httpConfig = {},
+            httpConfig = {}
         } = httpOpts;
 
         const completeUrl = new URL(uri.startsWith('http') ? uri : `http://${uri}`);
@@ -117,13 +117,15 @@ class AxiosHttpRequester {
             headers,
             responseType,
             timeout,
-            ...(!agent ? null : {
-                [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
-            }),
+            ...(!agent
+                ? null
+                : {
+                    [agent instanceof https.Agent ? 'httpsAgent' : 'httpAgent']: agent
+                })
         };
     }
 
-    constructRoutePart(completeUrl, qs) {
+    constructRoutePart (completeUrl, qs) {
         const qsEnc = querystring.encode(qs);
 
         let search = completeUrl.search || '';
@@ -135,8 +137,7 @@ class AxiosHttpRequester {
         return completeUrl.pathname + search + completeUrl.hash;
     }
 
-
-    #makeSuccessResponse(axiosResponse, originalRequest) {
+    #makeSuccessResponse (axiosResponse, originalRequest) {
         const { data, status, headers } = axiosResponse;
 
         // todo: think, if we need to preserve this validation - it does not work with FSPIOP interoperability headers
@@ -160,7 +161,7 @@ class AxiosHttpRequester {
         };
     }
 
-    #makeErrorResponse(err) {
+    #makeErrorResponse (err) {
         err.statusCode = err.status || err.response?.status; // for backward compatibility
 
         // Sanitize error before logging and returning
@@ -177,7 +178,7 @@ class AxiosHttpRequester {
     }
 
     /** @param {AxiosHttpRequestDeps} deps */
-    #createAxiosClient(deps) {
+    #createAxiosClient (deps) {
         if (deps.httpClient) return deps.httpClient;
 
         this.logger.push(deps.httpConfig).debug('createAxiosClient...');

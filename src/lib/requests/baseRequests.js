@@ -11,11 +11,10 @@ const {
     defineApiType,
     formatEndpointOrDefault,
     ResponseType,
-    throwOrJson,
+    throwOrJson
 } = require('./common');
 
 const { ApiType, ApiTransformer } = require('./apiTransformer');
-
 
 /**
  *
@@ -26,7 +25,6 @@ const { ApiType, ApiTransformer } = require('./apiTransformer');
  *   `_post()`, and `_put()` requests
  */
 class BaseRequests {
-
     /**
      * @param {Object} config - The Config Object
      * @param {Object} config.logger - Logging function
@@ -43,7 +41,7 @@ class BaseRequests {
      * @param {Object} [config.httpAgent] - Optional HTTP agent to use for HTTP requests
      * @param {Object} [config.httpsAgent] - Optional HTTPS agent to use for HTTPS requests
      */
-    constructor(config) {
+    constructor (config) {
         this.logger = config.logger.push({ component: this.constructor.name });
         this.requester = this.#createHttpRequester(config);
 
@@ -59,7 +57,7 @@ class BaseRequests {
         // note that this is extensible for other future API flavours
         this._apiTransformer = new ApiTransformer({
             logger: this.logger,
-            apiType: this.apiType,
+            apiType: this.apiType
         });
 
         if (config.tls.enabled) {
@@ -87,7 +85,8 @@ class BaseRequests {
         if (this.jwsSign) {
             this.jwsSigner = new JwsSigner({
                 logger: config.logger,
-                signingKey: config.jwsSigningKey
+                signingKey: config.jwsSigningKey,
+                alg: config.jwsAlg
             });
         }
 
@@ -97,59 +96,59 @@ class BaseRequests {
         this.oidc = config.oidc || {};
     }
 
-    defineResourceVersionsAndEndpoints(config) {
+    defineResourceVersionsAndEndpoints (config) {
         this.resourceVersions = {
             parties: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             participants: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             quotes: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             bulkQuotes: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             bulkTransfers: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             transactionRequests: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             authorizations: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             [RESOURCES.fxQuotes]: {
                 contentVersion: '2.0',
-                acceptVersion: '2',
+                acceptVersion: '2'
             },
             [RESOURCES.fxTransfers]: {
                 contentVersion: '2.0',
-                acceptVersion: '2',
+                acceptVersion: '2'
             },
             transfers: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             custom: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             thirdparty: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             services: {
                 contentVersion: '1.0',
-                acceptVersion: '1',
+                acceptVersion: '1'
             },
             ...config.resourceVersions
         };
@@ -165,11 +164,11 @@ class BaseRequests {
             [RESOURCES.fxQuotes]: formatEndpointOrDefault(config.fxQuotesEndpoint, this.transportScheme, this.peerEndpoint),
             [RESOURCES.fxTransfers]: formatEndpointOrDefault(config.fxTransfersEndpoint, this.transportScheme, this.peerEndpoint),
             thirdparty: formatEndpointOrDefault(config.thirdpartyRequestsEndpoint, this.transportScheme, this.peerEndpoint),
-            services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint),
+            services: formatEndpointOrDefault(config.servicesEndpoint, this.transportScheme, this.peerEndpoint)
         };
     }
 
-    _request(opts, responseType) {
+    _request (opts, responseType) {
         const __request = async (opts, responseType, attempts) => this.requester.sendRequest(opts)
             .catch(async (err) => {
                 const retryAuth = err.status === 401 &&
@@ -179,7 +178,7 @@ class BaseRequests {
                     this.logger.warn('Received HTTP 401 for request. Attempting to retrieve a new token...');
                     const token = await this.oidc.auth.refreshToken();
                     if (token) {
-                        opts.headers['Authorization'] = `Bearer ${token}`;
+                        opts.headers.Authorization = `Bearer ${token}`;
                     } else {
                         const msg = 'Unable to retrieve OIDC access token';
                         this.logger.warn(msg, { attempts });
@@ -216,16 +215,16 @@ class BaseRequests {
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
      */
-    async _get(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+    async _get (url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'GET',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
                 ...this._buildHeaders('GET', resourceType, dest),
-                ...headers,
+                ...headers
             },
             qs: query,
-            agent: this.agent,
+            agent: this.agent
         };
 
         if (responseType === ResponseType.Stream) {
@@ -250,18 +249,18 @@ class BaseRequests {
      * @param {*} responseType - Optional, defaults to `Mojaloop`
      * @param {Object} transformParams
      */
-    async _put(url, resourceType, body, dest, headers = {}, query = {},
+    async _put (url, resourceType, body, dest, headers = {}, query = {},
         responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'PUT',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
                 ...this._buildHeaders('PUT', resourceType, dest),
-                ...headers,
+                ...headers
             },
-            body: body,
+            body,
             qs: query,
-            agent: this.agent,
+            agent: this.agent
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
@@ -300,18 +299,18 @@ class BaseRequests {
      * @param {*} responseType - Optional, defaults to `Mojaloop`
      * @param {Object} transformParams
      */
-    async _patch(url, resourceType, body, dest, headers = {}, query = {},
+    async _patch (url, resourceType, body, dest, headers = {}, query = {},
         responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'PATCH',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
                 ...this._buildHeaders('PATCH', resourceType, dest),
-                ...headers,
+                ...headers
             },
-            body: body,
+            body,
             qs: query,
-            agent: this.agent,
+            agent: this.agent
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
@@ -341,18 +340,18 @@ class BaseRequests {
      * @param {*} responseType - Optional, defaults to `Mojaloop`
      * @param {Object} transformParams
      */
-    async _post(url, resourceType, body, dest, headers = {}, query = {},
+    async _post (url, resourceType, body, dest, headers = {}, query = {},
         responseType = ResponseType.Mojaloop, transformParams = {}) {
         const reqOpts = {
             method: 'POST',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
                 ...this._buildHeaders('POST', resourceType, dest),
-                ...headers,
+                ...headers
             },
-            body: body,
+            body,
             qs: query,
-            agent: this.agent,
+            agent: this.agent
         };
 
         // transform the request. This will only change the request if translation is required i.e. if this.apiType is not 'fspiop'
@@ -389,16 +388,16 @@ class BaseRequests {
      * @param {*} query - Optional query parameters
      * @param {*} responseType - Optional, defaults to `Mojaloop`
      */
-    async _delete(url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
+    async _delete (url, resourceType, dest, headers = {}, query = {}, responseType = ResponseType.Mojaloop) {
         const reqOpts = {
             method: 'DELETE',
             uri: buildUrl(this._pickPeerEndpoint(resourceType), url),
             headers: {
                 ...this._buildHeaders('DELETE', resourceType, dest),
-                ...headers,
+                ...headers
             },
             qs: query,
-            agent: this.agent,
+            agent: this.agent
         };
 
         return this._request(reqOpts, responseType);
@@ -414,15 +413,15 @@ class BaseRequests {
      *
      * @returns {*} headers object for use in requests to mojaloop api endpoints
      */
-    _buildHeaders(method, resourceType, dest) {
+    _buildHeaders (method, resourceType, dest) {
         const apiType = defineApiType(resourceType, this.apiType);
         const isoPart = apiType === ApiType.ISO20022
             ? `.${ISO_20022_HEADER_PART}`
             : '';
 
-        let headers = {
+        const headers = {
             'content-type': `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].contentVersion}`,
-            'date': new Date().toUTCString(),
+            date: new Date().toUTCString()
         };
 
         if (this.dfspId) {
@@ -433,18 +432,18 @@ class BaseRequests {
             headers['fspiop-destination'] = dest;
         }
 
-        //Need to populate Bearer Token if we are in OAuth2.0 environment
+        // Need to populate Bearer Token if we are in OAuth2.0 environment
         if (this.oidc.auth) {
             const token = this.oidc.auth.getToken();
-            if(token) {
-                headers['Authorization'] = `Bearer ${token}`;
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
             }
         }
 
         // dont add accept header to PUT requests
-        if(method.toUpperCase() !== 'PUT') {
+        if (method.toUpperCase() !== 'PUT') {
             // if we are sending ISO we should "accept" it also
-            headers['accept'] = `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
+            headers.accept = `application/vnd.interoperability${isoPart}.${resourceType}+json;version=${this.resourceVersions[resourceType].acceptVersion}`;
         }
 
         return headers;
@@ -456,18 +455,15 @@ class BaseRequests {
      * @param {string} resourceType - The 'type' of resource, as defined in the Mojaloop specification
      * @returns {string} The endpoint fot the given `resourceType`. If an endpoint can't be found, defaults to the peerEndpoint
      */
-    _pickPeerEndpoint(resourceType) {
+    _pickPeerEndpoint (resourceType) {
         return this.resourceEndpoints[resourceType] || this.peerEndpoint;
     }
 
-
-
     /** @returns {AxiosHttpRequester} */
-    #createHttpRequester({ httpConfig, retryConfig }) {
+    #createHttpRequester ({ httpConfig, retryConfig }) {
         const { logger } = this;
         return createHttpRequester({ logger, httpConfig, retryConfig });
     }
 }
-
 
 module.exports = BaseRequests;

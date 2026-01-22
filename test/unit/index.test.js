@@ -28,7 +28,9 @@
  --------------
  ******/
 
-describe('index layout', () => {
+'use strict';
+
+describe('index', () => {
     const index = require('../../src/index');
     const shouldBeExported = [
         'Errors',
@@ -38,7 +40,7 @@ describe('index layout', () => {
         'MojaloopRequests',
         'ThirdpartyRequests',
         'request',
-        'OIDCAuth',
+        'OIDCAuth'
     ];
 
     shouldBeExported.forEach((item) => {

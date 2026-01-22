@@ -84,7 +84,7 @@ describe('AxiosHttpRequester Test -->', () => {
         const response = await http.sendRequest({
             uri: makeMockUri(route),
             method: 'GET',
-            headers: {},
+            headers: {}
         });
         expect(response.statusCode).toBe(statusCode);
         expect(response.data).toEqual(data);
@@ -117,7 +117,7 @@ describe('AxiosHttpRequester Test -->', () => {
             responseType: ResponseType.JSON,
             uri: makeMockUri(route),
             method: 'GET',
-            headers: {},
+            headers: {}
         }).catch(err => {
             expect(err.originalRequest).toBeDefined();
             expect(err.statusCode).toBe(statusCode);
@@ -152,7 +152,7 @@ describe('AxiosHttpRequester Test -->', () => {
             const qs = { a: 1, b: 2 };
             const httpOpts = {
                 uri: `${serverUrl}${route}${hash}`,
-                qs,
+                qs
             };
             const converted = http.convertToAxiosOptions(httpOpts);
             expect(converted.baseURL).toBe(serverUrl);
@@ -162,7 +162,7 @@ describe('AxiosHttpRequester Test -->', () => {
         test('should set proper httpsAgent field', () => {
             const httpOpts = {
                 uri: 'http://localhost:1234',
-                agent: new https.Agent(),
+                agent: new https.Agent()
             };
             const converted = http.convertToAxiosOptions(httpOpts);
             expect(converted.httpsAgent).toBeInstanceOf(https.Agent);

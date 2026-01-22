@@ -47,7 +47,7 @@ describe('mojaloopRequests Tests', () => {
         mockAxios.reset();
     });
 
-    function streamToBuffer(stream) {
+    function streamToBuffer (stream) {
         const chunks = [];
         return new Promise((resolve, reject) => {
             stream.on('data', chunk => chunks.push(chunk));
@@ -56,7 +56,7 @@ describe('mojaloopRequests Tests', () => {
         });
     }
 
-    const toStream = data => Readable.from( data instanceof Buffer
+    const toStream = data => Readable.from(data instanceof Buffer
         ? data
         : Buffer.from(JSON.stringify(data))
     );
@@ -92,8 +92,8 @@ describe('mojaloopRequests Tests', () => {
             },
             jwsSign: true,
             jwsSignPutParties: true,
-            jwsSigningKey: jwsSigningKey,
-            oidc,
+            jwsSigningKey,
+            oidc
         };
         const testMr = new mr(conf);
         const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream)
@@ -104,14 +104,14 @@ describe('mojaloopRequests Tests', () => {
         return resp;
     };
 
-    async function testRequest(request, expectedResponse, responseType) {
+    async function testRequest (request, expectedResponse, responseType) {
         const resp = await executeRequest(request, expectedResponse, responseType);
 
         expect(resp.originalRequest.data).toEqual(request.body);
         expect(resp.originalRequest.headers).toBeDefined();
         expect(resp.originalRequest.url).toBeDefined();
 
-        if(!expectedResponse.originalRequest) {
+        if (!expectedResponse.originalRequest) {
             // ignore the originalRequest prop on resp.
             delete resp.originalRequest;
         }
@@ -126,8 +126,8 @@ describe('mojaloopRequests Tests', () => {
             statusCode: 200,
             headers: {
                 'content-type': 'application/json',
-                'x-other-header': 'other-content',
-            },
+                'x-other-header': 'other-content'
+            }
         };
         const request = {
             protocol: 'http',
@@ -136,8 +136,8 @@ describe('mojaloopRequests Tests', () => {
             body: 'some body',
             query: {
                 a: 123,
-                b: 'other param',
-            },
+                b: 'other param'
+            }
         };
         await testRequest(request, expectedResponse, { json: true });
     });
@@ -148,8 +148,8 @@ describe('mojaloopRequests Tests', () => {
             statusCode: 200,
             headers: {
                 'content-type': 'application/json',
-                'x-other-header': 'other-content',
-            },
+                'x-other-header': 'other-content'
+            }
         };
         const request = {
             protocol: 'http',
@@ -158,8 +158,8 @@ describe('mojaloopRequests Tests', () => {
             body: 'some body',
             query: {
                 a: 123,
-                b: 'other param',
-            },
+                b: 'other param'
+            }
         };
         await testRequest(request, expectedResponse, { json: true });
     });
@@ -170,8 +170,8 @@ describe('mojaloopRequests Tests', () => {
             statusCode: 200,
             headers: {
                 'content-encoding': 'gzip',
-                'x-other-header': 'other-content',
-            },
+                'x-other-header': 'other-content'
+            }
         };
         const request = {
             protocol: 'http',
@@ -180,8 +180,8 @@ describe('mojaloopRequests Tests', () => {
             body: 'some body',
             query: {
                 a: 123,
-                b: 'other param',
-            },
+                b: 'other param'
+            }
         };
         await testRequest(request, expectedResponse, { stream: true });
     });
@@ -192,8 +192,8 @@ describe('mojaloopRequests Tests', () => {
             statusCode: 404,
             headers: {
                 'content-type': 'application/json',
-                'x-other-header': 'other-content',
-            },
+                'x-other-header': 'other-content'
+            }
         };
         const request = {
             protocol: 'http',
@@ -202,8 +202,8 @@ describe('mojaloopRequests Tests', () => {
             body: 'some body',
             query: {
                 a: 123,
-                b: 'other param',
-            },
+                b: 'other param'
+            }
         };
         const responseType = { stream: true, json: true };
         const resp = await executeRequest(request, expectedResponse, responseType);
@@ -222,8 +222,8 @@ describe('mojaloopRequests Tests', () => {
             statusCode: 404,
             headers: {
                 'content-type': 'application/json',
-                'x-other-header': 'other-content',
-            },
+                'x-other-header': 'other-content'
+            }
         };
         const request = {
             protocol: 'http',
@@ -232,8 +232,8 @@ describe('mojaloopRequests Tests', () => {
             body: 'some body',
             query: {
                 a: 123,
-                b: 'other param',
-            },
+                b: 'other param'
+            }
         };
 
         const resp = await executeRequest(request, expectedResponse, { stream: false, json: true });
