@@ -31,15 +31,14 @@
 const { mockAxios } = require('#test/unit/utils');
 
 const { Readable } = require('node:stream');
-const fs = require('node:fs');
 const crypto = require('node:crypto');
 const querystring = require('querystring');
 
 const mr = require('../../../../src/lib/requests/mojaloopRequests.js');
 const OIDCAuth = require('../../../../src/lib/OIDCAuth');
 const mockLogger = require('../../../__mocks__/mockLogger');
+const { mockConfigDto } = require('../../../fixtures');
 
-const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem');
 const logger = mockLogger({ app: 'request-test' });
 
 describe('mojaloopRequests Tests', () => {
@@ -83,18 +82,13 @@ describe('mojaloopRequests Tests', () => {
 
         const oidc = new OIDCAuth({ logger });
 
-        // Everything is false by default
-        const conf = {
+        const conf = mockConfigDto({
             logger,
+            oidc,
             peerEndpoint: request.host,
-            tls: {
-                mutualTLS: { enabled: false }
-            },
             jwsSign: true,
-            jwsSignPutParties: true,
-            jwsSigningKey,
-            oidc
-        };
+            jwsSignPutParties: true
+        });
         const testMr = new mr(conf);
         const resp = await testMr.postCustom(request.uri, request.body, request.headers, request.query, responseType.stream)
             .catch(err => err);

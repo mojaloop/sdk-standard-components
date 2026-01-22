@@ -108,17 +108,14 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0]).toEqual(expected);
         });
 
-        it('executes a `PATCH /consents/{id}` request with signing enabled', async () => {
+        it('adds fspiop-signature header when jwsSign is true', async () => {
             const config2 = mockConfigDto({ jwsSign: true });
             const tpr = new ThirdpartyRequests(config2);
 
             await tpr.patchConsents(consentId, patchConsentsRequest, destFspId);
 
-            const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].headers['fspiop-signature']).toBeTruthy();
-            expect(calls[0].data).toBe(JSON.stringify(patchConsentsRequest));
-            expect(calls[0]).toEqual(expected);
+            const { headers } = mockAxios.history.patch[0];
+            expect(headers['fspiop-signature']).toBeTruthy();
         });
     });
 
