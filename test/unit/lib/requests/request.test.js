@@ -70,6 +70,26 @@ describe('mojaloopRequests Tests', () => {
         return parsed;
     };
 
+    const buildDefaultExpectedResponse = () => ({
+        data: { id: '123ABC' },
+        statusCode: 200,
+        headers: {
+            'content-type': 'application/json',
+            'x-other-header': 'other-content'
+        }
+    });
+
+    const buildDefaultRequest = () => ({
+        protocol: 'http',
+        host: 'www.example.com',
+        uri: '/login',
+        body: 'some body',
+        query: {
+            a: 123,
+            b: 'other param'
+        }
+    });
+
     const executeRequest = async (request, expectedResponse, responseType) => {
         const qs = querystring.encode(request.query);
         mockAxios
@@ -115,47 +135,15 @@ describe('mojaloopRequests Tests', () => {
     }
 
     test('should send correct request and receive correct JSON response', async () => {
-        const expectedResponse = {
-            data: { id: '123ABC' },
-            statusCode: 200,
-            headers: {
-                'content-type': 'application/json',
-                'x-other-header': 'other-content'
-            }
-        };
-        const request = {
-            protocol: 'http',
-            host: 'www.example.com',
-            uri: '/login',
-            body: 'some body',
-            query: {
-                a: 123,
-                b: 'other param'
-            }
-        };
+        const expectedResponse = buildDefaultExpectedResponse();
+        const request = buildDefaultRequest();
         await testRequest(request, expectedResponse, { json: true });
     });
 
     test('should send correct request and receive stream response', async () => {
-        const expectedResponse = {
-            data: { id: '123ABC' },
-            statusCode: 200,
-            headers: {
-                'content-type': 'application/json',
-                'x-other-header': 'other-content'
-            }
-        };
-        const request = {
-            protocol: 'http',
-            host: 'www.example.com',
-            uri: '/login',
-            body: 'some body',
-            query: {
-                a: 123,
-                b: 'other param'
-            }
-        };
-        await testRequest(request, expectedResponse, { json: true });
+        const expectedResponse = buildDefaultExpectedResponse();
+        const request = buildDefaultRequest();
+        await testRequest(request, expectedResponse, { stream: true, json: true });
     });
 
     test('should send correct request and receive binary stream response', async () => {

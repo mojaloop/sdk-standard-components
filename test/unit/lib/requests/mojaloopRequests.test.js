@@ -50,6 +50,22 @@ const putFxQuotesBody = require('../../data/putFxQuotesBody.json');
 const postFxTransfersBody = require('../../data/postFxTransfersBody.json');
 const putFxTransfersBody = require('../../data/putFxTransfersBody.json');
 
+const expectIsoQuotesErrorBody = (res, putErrorBody, contentType) => {
+    const reqBody = res.originalRequest.data;
+    expect(res.originalRequest.headers['content-type']).toEqual(contentType);
+    expect(reqBody.GrpHdr).not.toBeUndefined();
+    expect(reqBody.TxInfAndSts).not.toBeUndefined();
+    expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
+    expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
+    expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
+};
+
+const expectUntransformedBodyWithContentType = (res, contentType, expectedBody) => {
+    const reqBody = res.originalRequest.data;
+    expect(res.originalRequest.headers['content-type']).toEqual(contentType);
+    expect(reqBody).toEqual(expectedBody);
+};
+
 describe('PUT /parties', () => {
     beforeEach(() => {
         mockAxios.reset();
@@ -281,12 +297,11 @@ describe('MojaloopRequests', () => {
             undefined
         );
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.parties+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(putPartiesBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.parties+json;version=1.0',
+            putPartiesBody
+        );
     });
 
     it('Sends ISO20022 PUT /parties error bodies when ApiType is iso20022', async () => {
@@ -352,13 +367,11 @@ describe('MojaloopRequests', () => {
 
         const res = await testMr.postParticipants(postParticipantsBody, 'somefsp');
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent.
-        // Note that even though no body transformation happens for participants we do expect the header to be for ISO20022
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(postParticipantsBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.iso20022.participants+json;version=1.0',
+            postParticipantsBody
+        );
     });
 
     it('Sends FSPIOP POST /participants bodies when ApiType is fspiop', async () => {
@@ -370,12 +383,11 @@ describe('MojaloopRequests', () => {
 
         const res = await testMr.postParticipants(postParticipantsBody, 'somefsp');
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(postParticipantsBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.participants+json;version=1.0',
+            postParticipantsBody
+        );
     });
 
     it('Sends FSPIOP PUT /participants bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
@@ -393,13 +405,11 @@ describe('MojaloopRequests', () => {
             'somefsp'
         );
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent.
-        // Note that even though no body transformation happens for participants we do expect the header to be for ISO20022
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(putParticipantsBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.iso20022.participants+json;version=1.0',
+            putParticipantsBody
+        );
     });
 
     it('Sends FSPIOP PUT /participants bodies when ApiType is fspiop', async () => {
@@ -417,12 +427,11 @@ describe('MojaloopRequests', () => {
             'somefsp'
         );
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(putParticipantsBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.participants+json;version=1.0',
+            putParticipantsBody
+        );
     });
 
     it('Sends FSPIOP PUT /participants error bodies when ApiType is iso20022. Resource type NOT transformed', async () => {
@@ -440,13 +449,11 @@ describe('MojaloopRequests', () => {
             'somefsp'
         );
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent.
-        // Note that even though no body transformation happens for participants we do expect the header to be for ISO20022
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(putErrorBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.iso20022.participants+json;version=1.0',
+            putErrorBody
+        );
     });
 
     it('Sends FSPIOP PUT /participants error bodies when ApiType is fspiop', async () => {
@@ -464,12 +471,11 @@ describe('MojaloopRequests', () => {
             'somefsp'
         );
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.participants+json;version=1.0');
-
-        // check the body was NOT converted to ISO20022
-        expect(reqBody).toEqual(putErrorBody);
+        expectUntransformedBodyWithContentType(
+            res,
+            'application/vnd.interoperability.participants+json;version=1.0',
+            putErrorBody
+        );
     });
 
     it('Sends ISO20022 POST /quotes bodies when ApiType is iso20022', async () => {
@@ -578,19 +584,11 @@ describe('MojaloopRequests', () => {
 
         const res = await testMr.putQuotesError(postQuotesBody.quoteId, putErrorBody, 'somefsp');
 
-        const reqBody = res.originalRequest.data;
-        // check the correct content type was sent
-        expect(res.originalRequest.headers['content-type']).toEqual('application/vnd.interoperability.iso20022.quotes+json;version=1.0');
-
-        // check the body was converted to ISO20022
-        // note that we dont check that the content of the ISO body is correct, that is up to the tests around the
-        // transformer lib. We just check if the body was changed to an iso form by looking for one or two expected
-        // values.
-        expect(reqBody.GrpHdr).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn).not.toBeUndefined();
-        expect(reqBody.TxInfAndSts.StsRsnInf.Rsn.Prtry).toEqual(putErrorBody.errorInformation.errorCode);
+        expectIsoQuotesErrorBody(
+            res,
+            putErrorBody,
+            'application/vnd.interoperability.iso20022.quotes+json;version=1.0'
+        );
     });
 
     it('Sends FSPIOP PUT /quotes error bodies when ApiType is fspiop', async () => {

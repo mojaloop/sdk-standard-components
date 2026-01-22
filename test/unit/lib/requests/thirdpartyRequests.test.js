@@ -48,6 +48,16 @@ describe('Thirdparty Requests Tests -->', () => {
         mockAxios.reset();
     });
 
+    const expectSingleAxiosCall = (calls, expectedData, expectedMatcher) => {
+        expect(calls.length).toBe(1);
+        if (expectedData !== undefined) {
+            expect(calls[0].data).toBe(JSON.stringify(expectedData));
+        }
+        if (expectedMatcher) {
+            expect(calls[0]).toEqual(expectedMatcher);
+        }
+    };
+
     describe('putConsents', () => {
         const config = mockConfigDto();
 
@@ -103,9 +113,7 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.patchConsents(consentId, patchConsentsRequest, destFspId);
 
             const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(patchConsentsRequest));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, patchConsentsRequest, expected);
         });
 
         it('adds fspiop-signature header when jwsSign is true', async () => {
@@ -199,9 +207,7 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putConsentRequests(consentRequestsId, consentRequestsBody, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(consentRequestsBody));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, consentRequestsBody, expected);
         });
     });
 
@@ -220,9 +226,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putConsentRequestsError(consentRequestId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/consentRequests/12345/error',
@@ -256,9 +262,7 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postConsentRequests(consentRequestBody, 'dfspa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(consentRequestBody));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, consentRequestBody, expected);
         });
     });
 
@@ -277,9 +281,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.patchThirdpartyRequestsTransactions(requestBody, transactionRequestId, 'pispa');
 
             const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'patch',
                     url: '/thirdpartyRequests/transactions/1',
@@ -348,9 +352,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postThirdpartyRequestsAuthorizations(postThirdpartyRequestsAuthorizationBody, 'dfspa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(postThirdpartyRequestsAuthorizationBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                postThirdpartyRequestsAuthorizationBody,
                 expect.objectContaining({
                     method: 'post',
                     url: '/thirdpartyRequests/authorizations',
@@ -369,9 +373,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsAuthorizations(putThirdpartyRequestsAuthorizationBody, authorizationRequestId, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                putThirdpartyRequestsAuthorizationBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/thirdpartyRequests/authorizations/1',
@@ -390,9 +394,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsAuthorizationsError(putThirdpartyRequestsAuthorizationErrorBody, authorizationRequestId, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationErrorBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                putThirdpartyRequestsAuthorizationErrorBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/thirdpartyRequests/authorizations/1/error',
@@ -440,9 +444,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putAccounts(userId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/accounts/username1234',
@@ -462,9 +466,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putAccountsError(userId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/accounts/username1234/error',
@@ -492,9 +496,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postThirdpartyRequestsVerifications(requestBody, 'pispa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'post',
                     url: '/thirdpartyRequests/verifications',
@@ -515,9 +519,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsVerifications(requestBody, verificationRequestId, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: `/thirdpartyRequests/verifications/${verificationRequestId}`,
@@ -538,9 +542,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsVerificationsError(requestBody, verificationRequestId, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
