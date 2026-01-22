@@ -28,7 +28,7 @@
  --------------
  ******/
 
-const { mockAxios, jsonContentTypeHeader} = require('#test/unit/utils');
+const { mockAxios, jsonContentTypeHeader } = require('#test/unit/utils');
 const ThirdpartyRequests = require('../../../../src/lib/requests/thirdpartyRequests');
 const { mockConfigDto } = require('../../../fixtures');
 
@@ -47,6 +47,16 @@ describe('Thirdparty Requests Tests -->', () => {
     beforeEach(() => {
         mockAxios.reset();
     });
+
+    const expectSingleAxiosCall = (calls, expectedData, expectedMatcher) => {
+        expect(calls.length).toBe(1);
+        if (expectedData !== undefined) {
+            expect(calls[0].data).toBe(JSON.stringify(expectedData));
+        }
+        if (expectedMatcher) {
+            expect(calls[0]).toEqual(expectedMatcher);
+        }
+    };
 
     describe('putConsents', () => {
         const config = mockConfigDto();
@@ -103,22 +113,17 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.patchConsents(consentId, patchConsentsRequest, destFspId);
 
             const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(patchConsentsRequest));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, patchConsentsRequest, expected);
         });
 
-        it('executes a `PATCH /consents/{id}` request with signing enabled', async () => {
+        it('adds fspiop-signature header when jwsSign is true', async () => {
             const config2 = mockConfigDto({ jwsSign: true });
             const tpr = new ThirdpartyRequests(config2);
 
             await tpr.patchConsents(consentId, patchConsentsRequest, destFspId);
 
-            const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].headers['fspiop-signature']).toBeTruthy();
-            expect(calls[0].data).toBe(JSON.stringify(patchConsentsRequest));
-            expect(calls[0]).toEqual(expected);
+            const { headers } = mockAxios.history.patch[0];
+            expect(headers['fspiop-signature']).toBeTruthy();
         });
     });
 
@@ -202,9 +207,7 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putConsentRequests(consentRequestsId, consentRequestsBody, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(consentRequestsBody));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, consentRequestsBody, expected);
         });
     });
 
@@ -223,9 +226,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putConsentRequestsError(consentRequestId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'put',
                     url: '/consentRequests/12345/error',
@@ -259,9 +262,7 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postConsentRequests(consentRequestBody, 'dfspa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(consentRequestBody));
-            expect(calls[0]).toEqual(expected);
+            expectSingleAxiosCall(calls, consentRequestBody, expected);
         });
     });
 
@@ -280,9 +281,9 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.patchThirdpartyRequestsTransactions(requestBody, transactionRequestId, 'pispa');
 
             const calls = mockAxios.history.patch;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
                     method: 'patch',
                     url: '/thirdpartyRequests/transactions/1',
@@ -351,13 +352,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postThirdpartyRequestsAuthorizations(postThirdpartyRequestsAuthorizationBody, 'dfspa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(postThirdpartyRequestsAuthorizationBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                postThirdpartyRequestsAuthorizationBody,
                 expect.objectContaining({
-                    'method': 'post',
-                    'url': '/thirdpartyRequests/authorizations',
-                    'headers': expect.objectContaining({
+                    method: 'post',
+                    url: '/thirdpartyRequests/authorizations',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -372,13 +373,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsAuthorizations(putThirdpartyRequestsAuthorizationBody, authorizationRequestId, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                putThirdpartyRequestsAuthorizationBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/thirdpartyRequests/authorizations/1',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/thirdpartyRequests/authorizations/1',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -393,13 +394,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsAuthorizationsError(putThirdpartyRequestsAuthorizationErrorBody, authorizationRequestId, 'dfspa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(putThirdpartyRequestsAuthorizationErrorBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                putThirdpartyRequestsAuthorizationErrorBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/thirdpartyRequests/authorizations/1/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/thirdpartyRequests/authorizations/1/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -425,9 +426,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'get',
-                    'url': '/accounts/username1234',
-                    'headers': expect.objectContaining({
+                    method: 'get',
+                    url: '/accounts/username1234',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'dfspa'
                     })
                 })
@@ -443,13 +444,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putAccounts(userId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/accounts/username1234',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/accounts/username1234',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -465,13 +466,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putAccountsError(userId, requestBody, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/accounts/username1234/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/accounts/username1234/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -495,13 +496,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.postThirdpartyRequestsVerifications(requestBody, 'pispa');
 
             const calls = mockAxios.history.post;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
-                    'method': 'post',
-                    'url': '/thirdpartyRequests/verifications',
-                    'headers': expect.objectContaining({
+                    method: 'post',
+                    url: '/thirdpartyRequests/verifications',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -518,13 +519,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsVerifications(requestBody, verificationRequestId, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': `/thirdpartyRequests/verifications/${verificationRequestId}`,
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: `/thirdpartyRequests/verifications/${verificationRequestId}`,
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -541,13 +542,13 @@ describe('Thirdparty Requests Tests -->', () => {
             await tpr.putThirdpartyRequestsVerificationsError(requestBody, verificationRequestId, 'pispa');
 
             const calls = mockAxios.history.put;
-            expect(calls.length).toBe(1);
-            expect(calls[0].data).toBe(JSON.stringify(requestBody));
-            expect(calls[0]).toEqual(
+            expectSingleAxiosCall(
+                calls,
+                requestBody,
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: `/thirdpartyRequests/verifications/${verificationRequestId}/error`,
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -586,8 +587,8 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls.length).toBe(1);
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'get',
-                    'url': '/services/THIRD_PARTY_DFSP'
+                    method: 'get',
+                    url: '/services/THIRD_PARTY_DFSP'
                 })
             );
         });
@@ -606,9 +607,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/services/THIRD_PARTY_DFSP',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/services/THIRD_PARTY_DFSP',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })
@@ -629,9 +630,9 @@ describe('Thirdparty Requests Tests -->', () => {
             expect(calls[0].data).toBe(JSON.stringify(requestBody));
             expect(calls[0]).toEqual(
                 expect.objectContaining({
-                    'method': 'put',
-                    'url': '/services/THIRD_PARTY_DFSP/error',
-                    'headers': expect.objectContaining({
+                    method: 'put',
+                    url: '/services/THIRD_PARTY_DFSP/error',
+                    headers: expect.objectContaining({
                         'fspiop-destination': 'pispa'
                     })
                 })

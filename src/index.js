@@ -59,5 +59,5 @@ module.exports = {
     OIDCAuth,
     WSO2Auth: OIDCAuth, // deprecated! (for backward compatibility only)
     randomPhrase,
-    utils,
+    utils
 };

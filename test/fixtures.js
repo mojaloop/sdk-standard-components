@@ -5,14 +5,14 @@ const { loggerFactory } = require('#src/lib/logger');
 const jwsSigningKey = fs.readFileSync(__dirname + '/unit/data/jwsSigningKey.pem');
 
 const moneyPayload = ({
-    currency =  'EUR',
+    currency = 'EUR',
     amount = '123.45'
 } = {}) => Object.freeze({ currency, amount });
 
 const fxQuotesPayload = ({
     conversionRequestId = 'b51ec534-ee48-4575-b6a9-ead2955b8069',
     sourceAmount = moneyPayload(),
-    targetAmount = moneyPayload(),
+    targetAmount = moneyPayload()
 } = {}) => Object.freeze({
     conversionRequestId,
     conversionTerms: {
@@ -23,7 +23,7 @@ const fxQuotesPayload = ({
         amountType: 'RECEIVE',
         sourceAmount,
         targetAmount,
-        expiration: '2024-05-24T08:38:08.699-04:00',
+        expiration: '2024-05-24T08:38:08.699-04:00'
     }
 });
 
@@ -32,7 +32,7 @@ const fxQuotesBeResponse = (fxQuotesPayload) => {
     const { conversionRequestId, conversionTerms } = fxQuotesPayload;
     return Object.freeze({
         homeTransactionId: `${Date.now()}`,
-        conversionTerms,
+        conversionTerms
     });
 };
 
@@ -60,7 +60,7 @@ const mockConfigDto = ({
     thirdpartyRequestsEndpoint,
     tls: {
         mutualTLS: { enabled: false }
-    },
+    }
 });
 
 const Headers = Object.freeze({
@@ -77,5 +77,5 @@ module.exports = {
     fxQuotesBeResponse,
     moneyPayload,
     mockConfigDto,
-    Headers,
+    Headers
 };

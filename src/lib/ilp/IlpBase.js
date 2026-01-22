@@ -40,17 +40,16 @@ const currencyDecimals = require('./currency.json');
 const HASH_ALGORITHM = 'sha256';
 const DIGEST_ENCODING = 'base64url';
 
-
 /**
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
 class IlpBase {
-    constructor(config) {
+    constructor (config) {
         this.secret = config.secret;
         this.logger = config.logger.child({ component: this.constructor.name });
     }
 
-    get version() {
+    get version () {
         throw new Error('Getter "version" should be overridden');
     }
 
@@ -66,7 +65,7 @@ class IlpBase {
      * @returns {IlpResponse} - object containing the fulfilment, ilp packet and condition values
      */
     // eslint-disable-next-line no-unused-vars
-    getResponseIlp(transactionObject) {
+    getResponseIlp (transactionObject) {
         throw new Error('getResponseIlp method should be overridden');
     }
 
@@ -85,7 +84,7 @@ class IlpBase {
      *
      * @returns {IlpResponse} - object containing the fulfilment, ilp packet and condition values
      */
-    getQuoteResponseIlp(quoteRequest, quoteResponse) {
+    getQuoteResponseIlp (quoteRequest, quoteResponse) {
         const transactionObject = dto.transactionObjectDto(quoteRequest, quoteResponse);
         return this.getResponseIlp(transactionObject);
     }
@@ -96,7 +95,7 @@ class IlpBase {
      *
      * @returns {IlpResponse} - object containing the fulfilment, ilp packet and condition values
      */
-    getFxQuoteResponseIlp(fxQuoteRequest, beFxQuoteResponse) {
+    getFxQuoteResponseIlp (fxQuoteRequest, beFxQuoteResponse) {
         const { conversionRequestId } = fxQuoteRequest;
         const { conversionTerms } = beFxQuoteResponse;
         const fxTransactionObject = {
@@ -106,7 +105,7 @@ class IlpBase {
         return this.getResponseIlp(fxTransactionObject);
     }
 
-    makeIlpData(transactionObject) {
+    makeIlpData (transactionObject) {
         return Buffer.from(base64url(safeStringify(transactionObject)));
     }
 
@@ -117,7 +116,7 @@ class IlpBase {
      *
      * @returns {string} - unsigned 64bit integer as string
      */
-    _getIlpCurrencyAmount(mojaloopAmount) {
+    _getIlpCurrencyAmount (mojaloopAmount) {
         const { currency, amount } = mojaloopAmount;
 
         if (typeof currencyDecimals[currency] === 'undefined') {
@@ -134,7 +133,7 @@ class IlpBase {
      *
      * @returns {boolean} - true is the fulfilment is valid, otherwise false
      */
-    validateFulfil(fulfilment, condition) {
+    validateFulfil (fulfilment, condition) {
         const preimage = base64url.toBuffer(fulfilment);
 
         if (preimage.length !== 32) {
@@ -200,7 +199,7 @@ class IlpBase {
             .digest(DIGEST_ENCODING);
     }
 
-    _createHmac(dataInBase64, secretInBase64) {
+    _createHmac (dataInBase64, secretInBase64) {
         return crypto.createHmac(HASH_ALGORITHM, Buffer.from(secretInBase64, 'ascii'))
             .update(Buffer.from(dataInBase64, 'ascii'))
             .digest(DIGEST_ENCODING);

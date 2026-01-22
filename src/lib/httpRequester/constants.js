@@ -29,9 +29,9 @@ const { env } = require('node:process');
 
 const ResponseType = Object.freeze({
     ArrayBuffer: 'arraybuffer',
-    JSON:  'json',
+    JSON: 'json',
     Text: 'text',
-    Stream: 'stream',
+    Stream: 'stream'
     // Document: 'document', // this available in axios
 });
 
@@ -43,5 +43,5 @@ module.exports = {
     ResponseType,
     DEFAULT_TIMEOUT,
     DEFAULT_RETRIES,
-    DEFAULT_RETRY_DELAY,
+    DEFAULT_RETRY_DELAY
 };

@@ -19,7 +19,7 @@ const putPartiesBody = require('../../data/putPartiesBody.json');
 const putPartiesHeaders = {
     'Content-Type': 'application/vnd.interoperability.parties+json;version=1.0',
     'fspiop-source': 'payeedfsp',
-    'fspiop-destination': 'payerdfsp',
+    'fspiop-destination': 'payerdfsp'
 };
 const putPartiesParams = {
     Type: 'MSISDN',
@@ -32,7 +32,7 @@ describe('API Transformer', () => {
     beforeEach(() => {
         defaultConf = {
             logger: mockLogger({ app: 'ApiTransformer test' }, undefined),
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
     });
 
@@ -42,10 +42,10 @@ describe('API Transformer', () => {
 
     it('Constructs with valid config', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
-        expect(() =>  {
+        expect(() => {
             new ApiTransformer(conf);
         }).not.toThrow();
     });
@@ -53,10 +53,10 @@ describe('API Transformer', () => {
     it('Rejects unsupported API type on construction', async () => {
         const conf = {
             ...defaultConf,
-            apiType: 'unsupported-type',
+            apiType: 'unsupported-type'
         };
 
-        expect(() =>  {
+        expect(() => {
             new ApiTransformer(conf);
         }).toThrow();
     });
@@ -64,7 +64,7 @@ describe('API Transformer', () => {
     it('Transforms an outgoing request from FSPIOP to ISO20022 when API type is ISO20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
 
         const tf = new ApiTransformer(conf);
@@ -101,7 +101,7 @@ describe('API Transformer', () => {
     it('Does not transforms an outgoing request from FSPIOP when API type is FSPIOP', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.FSPIOP,
+            apiType: ApiType.FSPIOP
         };
 
         const tf = new ApiTransformer(conf);
@@ -111,7 +111,6 @@ describe('API Transformer', () => {
             headers: { ...putPartiesHeaders },
             params: { ...putPartiesParams }
         });
-
 
         expect(ret).not.toBeUndefined();
         expect(ret.body).not.toBeUndefined();

@@ -5,22 +5,22 @@ const JwsTest = require('../../src/lib/jws');
 const Signer = JwsTest.signer;
 const Validator = JwsTest.validator;
 const mockLogger = require('../__mocks__/mockLogger');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 const signingKey = fs.readFileSync(__dirname + '/data/jwsSigningKey.pem');
 const validationKey = fs.readFileSync(__dirname + '/data/jwsValidationKey.pem');
 const key = {
-    'kty': 'EC',
-    'd': 'iYjERsNErBjCQljkeU8EJVAwU-dMxi_07vdYgTPRsx4',
-    'use': 'sig',
-    'crv': 'P-256',
-    'x': 'ok3_fYYnzhXij__aLGXKr0AKGjjUo1tAqt9z4jp3iog',
-    'y': '_AlRjdUsqPTbpRExkd5vNcsqCSKSDx31mBuMewZTcds',
-    'alg': 'ES256'
+    kty: 'EC',
+    d: 'iYjERsNErBjCQljkeU8EJVAwU-dMxi_07vdYgTPRsx4',
+    use: 'sig',
+    crv: 'P-256',
+    x: 'ok3_fYYnzhXij__aLGXKr0AKGjjUo1tAqt9z4jp3iog',
+    y: '_AlRjdUsqPTbpRExkd5vNcsqCSKSDx31mBuMewZTcds',
+    alg: 'ES256'
 };
 
-const signingKeyEC = crypto.createPrivateKey({format: 'jwk', key}).export({format: 'pem', type: 'sec1'});
-const validationKeyEC = crypto.createPublicKey({format: 'jwk', key}).export({format: 'pem', type: 'spki'});
+const signingKeyEC = crypto.createPrivateKey({ format: 'jwk', key }).export({ format: 'pem', type: 'sec1' });
+const validationKeyEC = crypto.createPublicKey({ format: 'jwk', key }).export({ format: 'pem', type: 'spki' });
 
 describe('JWS', () => {
     let signer;
@@ -31,7 +31,7 @@ describe('JWS', () => {
 
     beforeEach(() => {
         signer = new Signer({
-            signingKey: signingKey,
+            signingKey,
             logger: mockLogger({ app: 'jws-test' }, undefined)
         });
         signerEC = new Signer({
@@ -44,18 +44,18 @@ describe('JWS', () => {
             headers: {
                 'fspiop-source': 'mojaloop-sdk',
                 'fspiop-destination': 'some-other-fsp',
-                'date': new Date().toISOString(),
+                date: new Date().toISOString()
             },
             method: 'PUT',
             uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
-            body,
+            body
         };
     });
 
-    function testValidateSignedRequest(shouldFail, key) {
+    function testValidateSignedRequest (shouldFail, key) {
         const request = {
             headers: testOpts.headers,
-            body: body,
+            body
         };
 
         const validate = () => {

@@ -45,7 +45,7 @@ describe('IlpV1 Tests -->', () => {
     let ilp;
 
     beforeEach(() => {
-        ilp = ilpFactory(ILP_VERSIONS.v1,{
+        ilp = ilpFactory(ILP_VERSIONS.v1, {
             secret: 'test',
             logger: mockLogger({ app: 'ilp-test-v1' })
         });
@@ -83,7 +83,7 @@ describe('IlpV1 Tests -->', () => {
     });
 
     test('deserializes the ILP packet into a valid transaction object', () => {
-        // Arrange
+    // Arrange
         const { ilpPacket } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
         const expectedDataElement = dto.transactionObjectDto(quoteRequest, partialResponse);
 
@@ -97,7 +97,7 @@ describe('IlpV1 Tests -->', () => {
     });
 
     test('ILP fulfilment should match condition', () => {
-        // Arrange
+    // Arrange
         const { fulfilment, ilpPacket, condition } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
         // Act
@@ -197,8 +197,5 @@ describe('IlpV1 Tests -->', () => {
             const validation = ilp.validateIlpAgainstTransferRequest(transferRequest);
             expect(validation).toBe(false);
         });
-
     });
 });
-
-

@@ -40,15 +40,15 @@ const PING = RESOURCES.ping;
  */
 
 class PingRequests extends BaseRequests {
-    defineResourceVersionsAndEndpoints(config) {
+    defineResourceVersionsAndEndpoints (config) {
         this.resourceVersions = {
             [PING]: {
                 contentVersion: '2.0',
-                acceptVersion: '2',
+                acceptVersion: '2'
             }
         };
         this.resourceEndpoints = {
-            [PING]: formatEndpointOrDefault(config.pingEndpoint, this.transportScheme, this.peerEndpoint),
+            [PING]: formatEndpointOrDefault(config.pingEndpoint, this.transportScheme, this.peerEndpoint)
         };
     }
 
@@ -57,7 +57,7 @@ class PingRequests extends BaseRequests {
      * @param {PutPingParams} params
      * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}}
      */
-    async putPing({ requestId, destination, headers }) {
+    async putPing ({ requestId, destination, headers }) {
         const url = `${PING}/${requestId}`;
         const body = { requestId };
         return this._put(url, PING, body, destination, headers);
@@ -68,7 +68,7 @@ class PingRequests extends BaseRequests {
      * @param {PutPingParams} params
      * @returns {Promise<GenericRequestResponse | GenericRequestResponseUndefined>}
      */
-    async putPingError({ requestId, destination, headers, errInfo }) {
+    async putPingError ({ requestId, destination, headers, errInfo }) {
         const url = `${PING}/${requestId}/error`;
         return this._put(url, PING, errInfo, destination, headers);
     }
