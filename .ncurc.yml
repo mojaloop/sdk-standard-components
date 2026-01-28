@@ -3,3 +3,5 @@ reject:
   - "ilp-packet-v1"
   # eslint-config-airbnb-base relies on eslint < 9.0.0
   - "eslint"
+  # axios v1.13.3 introduces some error object changes that break request-errors.test.js. Needs investigation.
+  - "axios"
