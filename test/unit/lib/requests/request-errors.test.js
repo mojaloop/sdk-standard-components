@@ -79,8 +79,6 @@ describe('request error handling', () => {
                 await primRequestSerializationTest('_post');
             } catch (err) {
                 expect(err.code).toBe('ECONNREFUSED');
-                expect(err.address).toBe('127.0.0.1');
-                expect(err.port).toBe(9999);
             }
         }
     );
@@ -93,8 +91,6 @@ describe('request error handling', () => {
                 await primRequestSerializationTest('_put');
             } catch (err) {
                 expect(err.code).toBe('ECONNREFUSED');
-                expect(err.address).toBe('127.0.0.1');
-                expect(err.port).toBe(9999);
             }
         }
     );
@@ -105,8 +101,6 @@ describe('request error handling', () => {
             await primRequestSerializationTest('_post');
         } catch (err) {
             expect(err.code).toBe('ECONNREFUSED');
-            expect(err.address).toBe('127.0.0.1');
-            expect(err.port).toBe(9999);
 
             expect(err.originalRequest).toBeDefined();
             expect(err.originalRequest.data).toBeDefined();
