@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.6](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.5...v19.18.6) (2026-02-03)
+
+
+### Chore
+
+* bump dep ([#292](https://github.com/mojaloop/sdk-standard-components/issues/292)) ([273da57](https://github.com/mojaloop/sdk-standard-components/commit/273da57d66883f36dfa5c20380fcc05fb4575bdf))
+
 ### [19.18.5](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.4...v19.18.5) (2026-01-29)
 
 
