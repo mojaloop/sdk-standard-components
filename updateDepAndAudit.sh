@@ -1,5 +1,47 @@
-#!/bin/bash
+#!/bin/sh
 set -e
+
+# Check for required dependencies
+echo "Checking for required dependencies..."
+MISSING_DEPS=""
+
+# Check for jq
+if ! command -v jq > /dev/null 2>&1; then
+  MISSING_DEPS="$MISSING_DEPS jq"
+fi
+
+# Check for awk (should be present on most systems, but verify)
+if ! command -v awk > /dev/null 2>&1; then
+  MISSING_DEPS="$MISSING_DEPS awk"
+fi
+
+# Check for npm
+if ! command -v npm > /dev/null 2>&1; then
+  MISSING_DEPS="$MISSING_DEPS npm"
+fi
+
+# Check for curl (needed for grype installation)
+if ! command -v curl > /dev/null 2>&1; then
+  MISSING_DEPS="$MISSING_DEPS curl"
+fi
+
+# If any dependencies are missing, report and exit
+if [ -n "$MISSING_DEPS" ]; then
+  echo "Error: The following required tools are not installed:"
+  for dep in $MISSING_DEPS; do
+    echo "  - $dep"
+  done
+  echo ""
+  echo "Please install the missing dependencies before running this script."
+  echo "Installation suggestions:"
+  echo "  - jq: https://stedolan.github.io/jq/download/"
+  echo "  - yq: https://github.com/mikefarah/yq#install"
+  echo "  - curl: Usually available via package manager (apt, yum, brew, etc.)"
+  exit 1
+fi
+
+echo "All required dependencies are available."
+echo ""
 
 echo "Starting dependency update and audit process..."
 
@@ -61,7 +103,26 @@ awk -v allowlist="$ALLOWLIST_JSON" '
   # While inside the original allowlist array, look for the closing bracket line
   in_allowlist && $0 ~ /^[[:space:]]*\][[:space:]]*,?[[:space:]]*(\/\/.*)?$/ {
     has_comma = ($0 ~ /\],/)
-    print allowlist_indent "\"allowlist\": " allowlist (has_comma ? "," : "")
+    # Format allowlist with proper indentation for array items
+    formatted_allowlist = ""
+    n = split(allowlist, items, /[,\[\]]/)
+    for (i = 1; i <= n; i++) {
+      # Remove whitespace and quotes
+      item = items[i]
+      sub(/^[[:space:]"]+/, "", item)
+      sub(/[[:space:]"]+$/, "", item)
+      if (item != "") {
+        formatted_allowlist = formatted_allowlist allowlist_indent "  \"" item "\""
+        if (i < n) {
+          # Add comma only if not last item
+          formatted_allowlist = formatted_allowlist ","
+        }
+        formatted_allowlist = formatted_allowlist "\n"
+      }
+    }
+    print allowlist_indent "\"allowlist\": ["
+    printf "%s", formatted_allowlist
+    print allowlist_indent "]" (has_comma ? "," : "")
     in_allowlist = 0
     next
   }
@@ -97,7 +158,12 @@ elif [ -x "/usr/local/bin/grype" ]; then
   export PATH="/usr/local/bin:$PATH"
 else
   echo "grype not found. Installing grype..."
-  curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b "$HOME/.local/bin"
+  GRYPE_VERSION="v0.65.1"
+  GRYPE_CHECKSUM="4591f422e11a37c0f5f848f2af8e51a2d67562095940428d0526019623e14674"  # Replace with actual checksum from release
+  curl -sSfL "https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}/grype_${GRYPE_VERSION}_linux_amd64.tar.gz" -o /tmp/grype.tar.gz
+  echo "${GRYPE_CHECKSUM}  /tmp/grype.tar.gz" | sha256sum -c - || { echo "Checksum verification failed"; exit 1; }
+  tar -xzf /tmp/grype.tar.gz -C "$HOME/.local/bin" grype
+  rm /tmp/grype.tar.gz
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
@@ -123,10 +189,10 @@ if [ -n "$GRYPE_VULNS" ]; then
 
   # Build yq expression to reset and populate ignore list in one pass
   GRYPE_EXPR='.ignore = []'
-  while IFS= read -r vuln; do
+  echo "$COMBINED_IGNORE" | while IFS= read -r vuln; do
     [ -n "$vuln" ] || continue
     GRYPE_EXPR="$GRYPE_EXPR | .ignore += [{\"vulnerability\": \"$vuln\"}]"
-  done <<< "$COMBINED_IGNORE"
+  done
 
   # Update .grype.yaml using the constructed expression
   yq e "$GRYPE_EXPR" .grype.yaml > "$GRYPE_TEMP"
