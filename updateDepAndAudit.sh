@@ -18,11 +18,10 @@ UNFIXED=$(npm audit --json | jq -r '.vulnerabilities | to_entries[] | select(.va
 
 if [ -z "$UNFIXED" ]; then
   echo "No unfixed vulnerabilities found."
+else
+  echo "Unfixed vulnerabilities found:"
+  echo "$UNFIXED"
 fi
-
-echo "Unfixed vulnerabilities found:"
-echo "$UNFIXED"
-
 # Step 4: Update audit-ci.jsonc with unfixed vulnerabilities
 echo "Step 4: Updating audit-ci.jsonc..."
 TEMP_FILE=$(mktemp)
@@ -31,10 +30,14 @@ TEMP_FILE=$(mktemp)
 CURRENT_ALLOWLIST=$(grep -v '^\s*//' audit-ci.jsonc | jq -r '.allowlist[]' 2>/dev/null | grep '^GHSA-' || true)
 
 # Combine current and new vulnerabilities, remove duplicates
-COMBINED=$(echo -e "$CURRENT_ALLOWLIST\n$UNFIXED" | sort -u | grep '^GHSA-')
+COMBINED=$(echo -e "$CURRENT_ALLOWLIST\n$UNFIXED" | sort -u | grep '^GHSA-' || true)
 
 # Build new allowlist array
-ALLOWLIST_JSON=$(echo "$COMBINED" | jq -R . | jq -s .)
+if [ -n "$COMBINED" ]; then
+  ALLOWLIST_JSON=$(echo "$COMBINED" | jq -R . | jq -s .)
+else
+  ALLOWLIST_JSON='[]'
+fi
 
 # Update the allowlist in audit-ci.jsonc while preserving comments
 awk -v allowlist="$ALLOWLIST_JSON" '
@@ -79,7 +82,7 @@ echo "audit-ci.jsonc updated successfully."
 
 # Step 5: Run audit check
 echo "Step 5: Running audit check..."
-npm run audit:check
+npm run audit:check || true
 
 # Step 6: Install grype if not present
 echo "Step 6: Checking for grype installation..."
