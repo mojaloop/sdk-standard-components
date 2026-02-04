@@ -52,27 +52,30 @@ npm install
 
 # Step 2: Run npm audit fix
 echo "Step 2: Running npm audit fix..."
-npm audit fix || true
+npm run audit:fix || true
 
 # Step 3: Get unfixed vulnerabilities
 echo "Step 3: Checking for unfixed vulnerabilities..."
-UNFIXED=$(npm audit --json | jq -r '.vulnerabilities | to_entries[] | select(.value.fixAvailable == false or (.value.fixAvailable | type == "object" and .isSemVerMajor == true)) | .value.via[] | select(type == "object") | .url' | sed 's|https://github.com/advisories/||' | sort -u)
+# Get advisory IDs (GHSA-* format) only from vulnerabilities with no fix available and that have a GitHub advisory URL
+UNFIXED_GHSA=$(npm audit --json 2>/dev/null | jq -r '.vulnerabilities | to_entries[] | .value.via[] | select(type == "object" and .url != null and (.url | contains("github.com/advisories/GHSA-"))) | .url' | grep -oE 'GHSA-[a-z0-9-]+' | sort -u)
 
-if [ -z "$UNFIXED" ]; then
+if [ -z "$UNFIXED" ] && [ -z "$UNFIXED_GHSA" ]; then
   echo "No unfixed vulnerabilities found."
+  UNFIXED_GHSA=""
 else
   echo "Unfixed vulnerabilities found:"
-  echo "$UNFIXED"
+  echo "Advisory IDs: $UNFIXED_GHSA"
 fi
+
 # Step 4: Update audit-ci.jsonc with unfixed vulnerabilities
 echo "Step 4: Updating audit-ci.jsonc..."
 TEMP_FILE=$(mktemp)
 
-# Read current allowlist from audit-ci.jsonc - strip comments first for jq parsing
-CURRENT_ALLOWLIST=$(grep -v '^\s*//' audit-ci.jsonc | jq -r '.allowlist[]' 2>/dev/null | grep '^GHSA-' || true)
+# Read current allowlist from audit-ci.jsonc
+CURRENT_ALLOWLIST=$(jq -r '.allowlist[]? // empty' audit-ci.jsonc 2>/dev/null || true)
 
-# Combine current and new vulnerabilities, remove duplicates
-COMBINED=$(echo -e "$CURRENT_ALLOWLIST\n$UNFIXED" | sort -u | grep '^GHSA-' || true)
+# Combine current allowlist with both package names and GHSA IDs, remove duplicates
+COMBINED=$(printf "%s\n%s\n" "$CURRENT_ALLOWLIST" "$UNFIXED_GHSA" | grep -v '^$' | sort -u)
 
 # Build new allowlist array
 if [ -n "$COMBINED" ]; then
