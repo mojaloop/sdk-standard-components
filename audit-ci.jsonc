@@ -7,6 +7,6 @@
     // Currently no fixes available for the following
     "allowlist": [
       "GHSA-37qj-frw5-hhjh",
-      "GHSA-xxjr-mmjv-4gpg",
+      "GHSA-xxjr-mmjv-4gpg"
     ]
   }
