@@ -87,12 +87,15 @@ if [ -n "$GRYPE_VULNS" ]; then
   # Combine and deduplicate
   COMBINED_IGNORE=$(echo -e "$CURRENT_IGNORE\n$GRYPE_VULNS" | grep -v '^$' | sort -u)
 
-  # Update .grype.yaml
-  yq e '.ignore = []' .grype.yaml > "$GRYPE_TEMP"
-  echo "$COMBINED_IGNORE" | while IFS= read -r vuln; do
-    yq e ".ignore += [{\"vulnerability\": \"$vuln\"}]" -i "$GRYPE_TEMP"
-  done
+  # Build yq expression to reset and populate ignore list in one pass
+  GRYPE_EXPR='.ignore = []'
+  while IFS= read -r vuln; do
+    [ -n "$vuln" ] || continue
+    GRYPE_EXPR="$GRYPE_EXPR | .ignore += [{\"vulnerability\": \"$vuln\"}]"
+  done <<< "$COMBINED_IGNORE"
 
+  # Update .grype.yaml using the constructed expression
+  yq e "$GRYPE_EXPR" .grype.yaml > "$GRYPE_TEMP"
   mv "$GRYPE_TEMP" .grype.yaml
   echo ".grype.yaml updated successfully."
 else
