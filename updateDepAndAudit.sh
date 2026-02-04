@@ -86,11 +86,12 @@ echo "Step 6: Checking for grype installation..."
 # Check common installation paths
 if command -v grype &> /dev/null; then
   echo "grype is already installed at $(which grype)"
-elif [ -f "$HOME/.local/bin/grype" ]; then
+elif [ -x "$HOME/.local/bin/grype" ]; then
   echo "grype found at $HOME/.local/bin/grype, adding to PATH"
   export PATH="$HOME/.local/bin:$PATH"
-elif [ -f "/usr/local/bin/grype" ]; then
-  echo "grype found at /usr/local/bin/grype"
+elif [ -x "/usr/local/bin/grype" ]; then
+  echo "grype found at /usr/local/bin/grype, adding to PATH"
+  export PATH="/usr/local/bin:$PATH"
 else
   echo "grype not found. Installing grype..."
   curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b "$HOME/.local/bin"
