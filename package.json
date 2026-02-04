@@ -25,6 +25,7 @@
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "dep:check": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" ncu -e 2",
     "dep:update": "ncu -u",
+    "dep:automate": "sh ./updateDepAndAudit.sh",
     "release": "standard-version --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
@@ -45,7 +46,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.3",
     "@mojaloop/ml-number": "^11.4.2",
-    "@mojaloop/ml-schema-transformer-lib": "2.8.1",
+    "@mojaloop/ml-schema-transformer-lib": "2.9.0",
     "axios": "1.13.4",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
