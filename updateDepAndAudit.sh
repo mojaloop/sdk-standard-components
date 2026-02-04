@@ -38,10 +38,40 @@ ALLOWLIST_JSON=$(echo "$COMBINED" | jq -R . | jq -s .)
 
 # Update the allowlist in audit-ci.jsonc while preserving comments
 awk -v allowlist="$ALLOWLIST_JSON" '
-/^[[:space:]]*"allowlist"[[:space:]]*:/ {
-  sub(/\[.*\]/, allowlist)
-}
-{print}
+  # Detect the allowlist property line
+  /^[[:space:]]*"allowlist"[[:space:]]*:/ {
+    # Capture indentation before the opening quote of "allowlist"
+    allowlist_indent = substr($0, 1, match($0, /"/) - 1)
+
+    # Handle case where the entire array is on a single line
+    if ($0 ~ /\[/ && $0 ~ /\]/) {
+      has_comma = ($0 ~ /\],/)
+      print allowlist_indent "\"allowlist\": " allowlist (has_comma ? "," : "")
+      in_allowlist = 0
+    } else {
+      # Multi-line array: skip lines until closing bracket is found
+      in_allowlist = 1
+    }
+    next
+  }
+
+  # While inside the original allowlist array, look for the closing bracket line
+  in_allowlist && $0 ~ /^[[:space:]]*\][[:space:]]*,?[[:space:]]*(\/\/.*)?$/ {
+    has_comma = ($0 ~ /\],/)
+    print allowlist_indent "\"allowlist\": " allowlist (has_comma ? "," : "")
+    in_allowlist = 0
+    next
+  }
+
+  # Skip all other lines that are part of the original allowlist array
+  in_allowlist {
+    next
+  }
+
+  # Print all other lines unchanged
+  {
+    print
+  }
 ' audit-ci.jsonc > "$TEMP_FILE"
 mv "$TEMP_FILE" audit-ci.jsonc
 
