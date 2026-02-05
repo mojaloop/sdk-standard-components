@@ -25,7 +25,6 @@
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "dep:check": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" ncu -e 2",
     "dep:update": "ncu -u",
-    "dep:automate": "sh ./updateDepAndAudit.sh",
     "release": "standard-version --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
