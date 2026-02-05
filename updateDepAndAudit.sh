@@ -170,31 +170,87 @@ grype dir:. --config .grype.yaml --only-fixed --fail-on critical || true
 echo "Step 8: Updating .grype.yaml with unfixed vulnerabilities..."
 GRYPE_VULNS=$(grype dir:. --config .grype.yaml -o json | jq -r '.matches[]? | select(.vulnerability.fix.state == "not-fixed" or .vulnerability.fix.state == "unknown") | .vulnerability.id' | sort -u)
 
+# Step 8: Update .grype.yaml with unfixed vulnerabilities
+echo "Step 8: Updating .grype.yaml with all found vulnerabilities..."
+GRYPE_VULNS=$(grype dir:. --config .grype.yaml -o json | jq -r '.matches[]?.vulnerability.id' | sort -u)
+
 if [ -n "$GRYPE_VULNS" ]; then
-  echo "Adding unfixed vulnerabilities to .grype.yaml ignore list:"
-  echo "$GRYPE_VULNS"
+  echo "Adding medium, high, and critical unfixed vulnerabilities to .grype.yaml ignore list:"
+  # Filter for medium, high, and critical severities only (case-insensitive), excluding fixed vulnerabilities
+  FILTERED_VULNS=$(grype dir:. --config .grype.yaml -o json | jq -r '.matches[] | select((.vulnerability.severity | ascii_downcase) == "medium" or (.vulnerability.severity | ascii_downcase) == "high" or (.vulnerability.severity | ascii_downcase) == "critical") | select(.vulnerability.fix.state != "fixed") | .vulnerability.id' | sort -u)
 
-  GRYPE_TEMP=$(mktemp)
+  if [ -n "$FILTERED_VULNS" ]; then
+    echo "$FILTERED_VULNS"
 
-  # Read current ignore list
-  CURRENT_IGNORE=$(yq e '.ignore[]?.vulnerability' .grype.yaml 2>/dev/null || echo "")
+    GRYPE_TEMP=$(mktemp)
 
-  # Combine and deduplicate
-  COMBINED_IGNORE=$(echo -e "$CURRENT_IGNORE\n$GRYPE_VULNS" | grep -v '^$' | sort -u)
+    # Read current ignore list from .grype.yaml, extracting only the vulnerability IDs
+    CURRENT_IGNORE=$(grep -E '^\s*-\s*vulnerability:\s*' .grype.yaml | sed -E 's/^\s*-\s*vulnerability:\s*([A-Z0-9-]+).*/\1/' | sort -u || echo "")
 
-  # Build yq expression to reset and populate ignore list in one pass
-  GRYPE_EXPR='.ignore = []'
-  echo "$COMBINED_IGNORE" | while IFS= read -r vuln; do
-    [ -n "$vuln" ] || continue
-    GRYPE_EXPR="$GRYPE_EXPR | .ignore += [{\"vulnerability\": \"$vuln\"}]"
-  done
+    # Find only NEW vulnerabilities that aren't already in the list
+    NEW_VULNS=$(printf "%s\n" "$FILTERED_VULNS" | while read -r vuln; do
+      if ! echo "$CURRENT_IGNORE" | grep -q "^${vuln}$"; then
+        echo "$vuln"
+      fi
+    done | sort -u)
 
-  # Update .grype.yaml using the constructed expression
-  yq e "$GRYPE_EXPR" .grype.yaml > "$GRYPE_TEMP"
-  mv "$GRYPE_TEMP" .grype.yaml
-  echo ".grype.yaml updated successfully."
+    # Preserve the file structure and append new vulnerabilities to bottom of ignore list
+    # shellcheck disable=SC2016
+    awk -v new_vulns="$NEW_VULNS" '
+      BEGIN {
+        split(new_vulns, new_array, "\n")
+        in_ignore = 0
+        ignore_indent = ""
+      }
+      /^ignore:/ {
+        print
+        in_ignore = 1
+        next
+      }
+      in_ignore && /^[^ ]/ {
+        # Found next section - append new vulnerabilities before it
+        for (i in new_array) {
+          if (new_array[i] != "") {
+            print "  - vulnerability: " new_array[i]
+          }
+        }
+        in_ignore = 0
+        print
+        next
+      }
+      in_ignore && /^\s*-\s*vulnerability:/ {
+        # Capture indentation from existing entries
+        if (ignore_indent == "") {
+          ignore_indent = substr($0, 1, match($0, /-/) - 1)
+        }
+      }
+      {
+        print
+      }
+      END {
+        # If still in ignore section at end of file, append new vulnerabilities
+        if (in_ignore) {
+          for (i in new_array) {
+            if (new_array[i] != "") {
+              print "  - vulnerability: " new_array[i]
+            }
+          }
+        }
+      }
+    ' .grype.yaml > "$GRYPE_TEMP"
+
+    mv "$GRYPE_TEMP" .grype.yaml
+
+    if [ -n "$NEW_VULNS" ]; then
+      echo ".grype.yaml updated with new vulnerabilities."
+    else
+      echo "No new vulnerabilities to add (all already in ignore list)."
+    fi
+  else
+    echo "No medium, high, or critical vulnerabilities found in grype scan."
+  fi
 else
-  echo "No unfixed vulnerabilities found in grype scan."
+  echo "No vulnerabilities found in grype scan."
 fi
 
 echo "Process completed successfully!"
