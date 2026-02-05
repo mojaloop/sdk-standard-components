@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.7](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.6...v19.18.7) (2026-02-05)
+
+
+### Chore
+
+* update deps and add helper script ([#293](https://github.com/mojaloop/sdk-standard-components/issues/293)) ([73ac679](https://github.com/mojaloop/sdk-standard-components/commit/73ac67947168b94389edd75f6d5f4e1afb10a274))
+
 ### [19.18.6](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.5...v19.18.6) (2026-02-03)
 
 
