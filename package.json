@@ -45,7 +45,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.3",
     "@mojaloop/ml-number": "^11.4.2",
-    "@mojaloop/ml-schema-transformer-lib": "2.8.1",
+    "@mojaloop/ml-schema-transformer-lib": "2.9.0",
     "axios": "1.13.4",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
