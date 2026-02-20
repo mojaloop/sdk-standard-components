@@ -43,10 +43,10 @@
     }
   ],
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.10.3",
-    "@mojaloop/ml-number": "^11.4.2",
+    "@mojaloop/central-services-logger": "11.10.4",
+    "@mojaloop/ml-number": "^11.4.3",
     "@mojaloop/ml-schema-transformer-lib": "2.9.0",
-    "axios": "1.13.4",
+    "axios": "1.13.5",
     "axios-retry": "4.5.0",
     "base64url": "3.0.1",
     "fast-safe-stringify": "2.1.1",
@@ -56,7 +56,23 @@
     "jws": "4.0.1"
   },
   "overrides": {
+    "ajv": "8.18.0",
+    "axios": "1.13.5",
+    "eslint": {
+      "ajv": "6.12.6"
+    },
     "form-data": "4.0.4",
+    "lodash": "4.17.23",
+    "lodash-es": "4.17.23",
+    "minimatch": "10.2.2",
+    "replace": {
+      "minimatch": "3.0.5"
+    },
+    "standard-versio": {
+      "dotgitignore": {
+        "minimatch": "3.1.2"
+      }
+    },
     "shins": {
       "ajv": "6.12.3",
       "ejs": "3.1.10",
@@ -72,18 +88,18 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
-    "@mojaloop/api-snippets": "18.3.0",
+    "@eslint/js": "^10.0.1",
+    "@mojaloop/api-snippets": "18.3.1",
     "@types/jest": "30.0.0",
-    "@types/node": "25.2.0",
+    "@types/node": "25.3.0",
     "audit-ci": "7.1.0",
     "axios-mock-adapter": "2.1.0",
-    "eslint": "8.57.0",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-plugin-import": "2.32.0",
+    "eslint": "10.0.1",
+    "globals": "^17.3.0",
     "jest": "30.2.0",
     "jest-junit": "16.0.0",
-    "nock": "14.0.10",
-    "npm-check-updates": "19.3.2",
+    "nock": "14.0.11",
+    "npm-check-updates": "19.4.1",
     "pre-commit": "1.2.2",
     "replace": "1.2.2",
     "standard-version": "9.5.0",
