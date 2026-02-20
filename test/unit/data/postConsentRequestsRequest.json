@@ -1,0 +1,17 @@
+{
+    "id": "456",
+    "initiatorId": "PISP A",
+    "accountIds": [
+        "dfspa.alice.1234",
+        "dfspa.alice.5678"
+    ],
+    "authChannels": [
+        "Web",
+        "OTP"
+    ],
+    "scopes": [
+        "accounts.getBalance",
+        "accounts.transfer"
+    ],
+    "callbackUri": "pisp-app://callback..."
+}

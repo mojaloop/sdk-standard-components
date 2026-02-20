@@ -1,0 +1,21 @@
+{
+    "id": "123",
+    "requestId": "456",
+    "initiatorId": "pispa",
+    "participantId": "dfspa",
+    "scopes": [
+      {
+        "scope": "account.getBalance",
+        "accountId": "12345-67890"
+      },
+      {
+        "scope": "account.sendTransfer",
+        "accountId": "12345-67890"
+      },
+      {
+        "scope": "account.sendTransfer",
+        "accountId": "77777-38937"
+      }
+    ],
+    "credential": null
+}

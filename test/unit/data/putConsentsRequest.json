@@ -1,0 +1,32 @@
+{
+  "requestId": "456",
+  "initiatorId": "pispA",
+  "participantId": "dfspa",
+  "scopes": [
+    {
+      "accountId": "dfspa.username.1234",
+      "actions": [
+        "accounts.transfer",
+        "accounts.getBalance"
+      ]
+    },
+    {
+      "accountId": "dfspa.username.5678",
+      "actions": [
+        "accounts.transfer",
+        "accounts.getBalance"
+      ]
+    }
+  ],
+  "credential": {
+    "id": null,
+    "credentialType": "FIDO",
+    "status": "PENDING",
+    "challenge": {
+      "payload": [],
+      "signature": null
+    },
+    "payload": null
+  }
+}
+

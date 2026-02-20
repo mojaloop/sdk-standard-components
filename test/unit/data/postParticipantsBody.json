@@ -1,0 +1,9 @@
+{
+  "requestId": "a8ba97df-173b-4832-bc3b-f746d2c2df0c",
+  "partyList": [{
+    "partyIdType": "MSISDN",
+    "partyIdentifier": "01234567890",
+    "fapId": "testdfsp"
+  }],
+  "currency": "USD"
+}

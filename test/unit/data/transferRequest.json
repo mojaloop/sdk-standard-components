@@ -1,0 +1,10 @@
+{
+  "transferId": "20508186-1458-4ac0-a824-d4b07e37d7b3",
+  "payeeFsp": "MobileMoney",
+  "payerFsp": "BankNrOne",
+  "amount": {
+    "currency": "USD",
+    "amount": "500"
+  },
+  "expiration": "2020-05-13T10:27:40.126Z"
+}

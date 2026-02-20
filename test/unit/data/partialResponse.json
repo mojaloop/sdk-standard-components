@@ -1,0 +1,23 @@
+{
+  "transferAmount": {
+    "amount": "500",
+    "currency": "USD"
+  },
+  "payeeReceiveAmount": {
+    "amount": "490",
+    "currency": "USD"
+  },
+  "payeeFspFee": {
+    "amount": "5",
+    "currency": "USD"
+  },
+  "payeeFspCommission": {
+    "amount": "5",
+    "currency": "USD"
+  },
+  "geoCode": {
+    "latitude": "53.295971",
+    "longitude": "-0.038500"
+  },
+  "expiration": "2017-11-15T14:17:09.663+01:00"
+}

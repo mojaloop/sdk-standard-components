@@ -1,0 +1,123 @@
+{
+  "name": "@mojaloop/sdk-standard-components",
+  "version": "19.18.8",
+  "description": "A set of standard components for connecting to Mojaloop API enabled Switches",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "pre-commit": [
+    "lint",
+    "test",
+    "dep:check",
+    "audit:check"
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:unit",
+    "test:unit": "jest --ci --collectCoverage=false --reporters=default --env=node --runInBand test/unit",
+    "test:xunit": "JEST_JUNIT_OUTPUT_FILE=./test/results/junit.xml npm run test:unit -- --reporters=jest-junit",
+    "test:coverage": "jest --coverage --coverageThreshold='{}'",
+    "test:coverage-check": "jest --coverage",
+    "test:functional": "echo 'No functional tests defined'",
+    "test:integration": "echo 'No integration tests defined'",
+    "audit:fix": "npm audit fix",
+    "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
+    "dep:check": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" ncu -e 2",
+    "dep:update": "ncu -u",
+    "release": "standard-version --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
+    "snapshot": "standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
+  },
+  "author": "James Bush, ModusBox Inc.",
+  "contributors": [
+    "Steven Oderayi <steven.oderayi@modusbox.com>",
+    "Paweł Marzec <pawel.marzec@modusbox.com>",
+    "Valentin Genev <valentin.genev@modusbox.com>",
+    "Kevin Leyow <kevin.leyow@modusbox.com>"
+  ],
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "dependencies": {
+    "@mojaloop/central-services-logger": "11.10.4",
+    "@mojaloop/ml-number": "^11.4.3",
+    "@mojaloop/ml-schema-transformer-lib": "2.9.0",
+    "axios": "1.13.5",
+    "axios-retry": "4.5.0",
+    "base64url": "3.0.1",
+    "fast-safe-stringify": "2.1.1",
+    "ilp-packet": "3.1.3",
+    "ilp-packet-v1": "2.2.0",
+    "jsonwebtoken": "9.0.3",
+    "jws": "4.0.1"
+  },
+  "overrides": {
+    "@redocly/openapi-core": {
+      "minimatch": "10.2.2"
+    },
+    "filelist": {
+      "minimatch": "10.2.2"
+    },
+    "ajv": "8.18.0",
+    "axios": "1.13.5",
+    "eslint": {
+      "ajv": "6.12.6"
+    },
+    "form-data": "4.0.4",
+    "lodash": "4.17.23",
+    "lodash-es": "4.17.23",
+    "replace": {
+      "minimatch": "3.0.5"
+    },
+    "dotgitignore": {
+      "minimatch": "3.1.2"
+    },
+    "shins": {
+      "ajv": "6.12.3",
+      "ejs": "3.1.10",
+      "sanitize-html": "2.12.1",
+      "markdown-it": "12.3.2"
+    },
+    "test-exclude": {
+      "minimatch": "5.1.6"
+    },
+    "widdershins": {
+      "swagger2openapi": "7.0.8",
+      "markdown-it": "12.3.2"
+    },
+    "cross-spawn": "7.0.6",
+    "trim": "0.0.3",
+    "yargs-parser": "21.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@mojaloop/api-snippets": "18.3.1",
+    "@types/jest": "30.0.0",
+    "@types/node": "25.3.0",
+    "audit-ci": "7.1.0",
+    "axios-mock-adapter": "2.1.0",
+    "eslint": "10.0.1",
+    "globals": "^17.3.0",
+    "jest": "30.2.0",
+    "jest-junit": "16.0.0",
+    "nock": "14.0.11",
+    "npm-check-updates": "19.4.1",
+    "pre-commit": "1.2.2",
+    "replace": "1.2.2",
+    "standard-version": "9.5.0",
+    "typescript": "5.9.3"
+  },
+  "imports": {
+    "#src/*": "./src/*.js",
+    "#test/*": "./test/*.js"
+  },
+  "standard-version": {
+    "scripts": {
+      "postchangelog": "replace '\\[mojaloop/#(\\d+)\\]\\(https://github.com/mojaloop/(.*)/issues/(\\d+)\\)' '[mojaloop/#$1](https://github.com/mojaloop/project/issues/$1)' CHANGELOG.md"
+    }
+  }
+}
