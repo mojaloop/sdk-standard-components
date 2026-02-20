@@ -3,7 +3,6 @@ import globals from 'globals';
 
 export default [
     js.configs.recommended,
-
     {
         files: ['**/*.{js,cjs,mjs}'],
 
@@ -25,7 +24,6 @@ export default [
             'no-console': 'off'
         }
     },
-
     {
         ignores: ['coverage/**', 'templates/**']
     }
