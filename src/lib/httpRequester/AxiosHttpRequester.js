@@ -30,7 +30,7 @@ const https = require('node:https');
 const querystring = require('node:querystring');
 const axios = require('axios');
 const axiosRetry = require('axios-retry').default;
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const { ResponseType } = require('./constants');
 const { sanitizeRequest, sanitizeError } = require('../sanitize');
 

@@ -32,7 +32,7 @@
 
 const base64url = require('base64url');
 const jwt = require('jsonwebtoken');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 
 // the JWS signature algorithm to use. Note that Mojaloop spec requires RS256 at present
 const SIGNATURE_ALGORITHMS = ['RS256', 'ES256'];

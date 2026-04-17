@@ -31,7 +31,7 @@
 'use strict';
 
 const jws = require('jws');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 
 const uriRegex = /(?:^.*)(\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(\/.*)*)$/;
 // const uriRegex = /\/(participants|parties|quotes|bulkQuotes|transfers|bulkTransfers|transactionRequests|thirdpartyRequests|authorizations|consents|consentRequests|fxQuotes|fxTransfers|)(?:$|\/.*$)/;
@@ -76,19 +76,16 @@ class JwsSigner {
             throw new Error(`URI not valid for protected header: ${uri}`);
         }
 
-        // add required JWS headers to the request options
-        requestOptions.headers['fspiop-http-method'] = requestOptions.method.toUpperCase();
-        requestOptions.headers['fspiop-uri'] = uriMatches[1];
-
-        // get the signature and add it to the header
-        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions);
-
         if (requestOptions.body && typeof requestOptions.body !== 'string') {
             requestOptions.body = safeStringify(requestOptions.body);
         }
         if (requestOptions.data && typeof requestOptions.data !== 'string') {
             requestOptions.data = safeStringify(requestOptions.data);
         }
+
+        requestOptions.headers['fspiop-http-method'] = requestOptions.method.toUpperCase();
+        requestOptions.headers['fspiop-uri'] = uriMatches[1];
+        requestOptions.headers['fspiop-signature'] = this.getSignature(requestOptions);
     }
 
     /**

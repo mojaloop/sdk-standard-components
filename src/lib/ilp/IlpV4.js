@@ -29,7 +29,7 @@
 const { Buffer } = require('node:buffer');
 const base64url = require('base64url');
 const ilpPacket = require('ilp-packet');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 
 const { ILP_ADDRESS, ILP_AMOUNT_FOR_FX, ILP_VERSIONS, ERROR_MESSAGES } = require('../constants');
 const IlpBase = require('./IlpBase');

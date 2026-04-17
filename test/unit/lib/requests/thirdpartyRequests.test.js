@@ -28,6 +28,7 @@
  --------------
  ******/
 
+const safeStringify = require('safe-stable-stringify');
 const { mockAxios, jsonContentTypeHeader} = require('#test/unit/utils');
 const ThirdpartyRequests = require('../../../../src/lib/requests/thirdpartyRequests');
 const { mockConfigDto } = require('../../../fixtures');
@@ -117,7 +118,7 @@ describe('Thirdparty Requests Tests -->', () => {
             const calls = mockAxios.history.patch;
             expect(calls.length).toBe(1);
             expect(calls[0].headers['fspiop-signature']).toBeTruthy();
-            expect(calls[0].data).toBe(JSON.stringify(patchConsentsRequest));
+            expect(calls[0].data).toBe(safeStringify(patchConsentsRequest));
             expect(calls[0]).toEqual(expected);
         });
     });
