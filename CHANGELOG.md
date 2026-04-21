@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.18.9](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.8...v19.18.9) (2026-04-21)
+
+
+### Bug Fixes
+
+* **jws:** sign the same bytes we send and validate ([#314](https://github.com/mojaloop/sdk-standard-components/issues/314)) ([30f3ace](https://github.com/mojaloop/sdk-standard-components/commit/30f3acea178036d4bb1ce3047d92ab26bb69f1ef))
+
 ### [19.18.8](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.7...v19.18.8) (2026-02-20)
 
 
