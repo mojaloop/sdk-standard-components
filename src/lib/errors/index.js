@@ -31,7 +31,7 @@
 'use strict';
 
 
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 
 
 /** See section 7.6 of "API Definition v1.0.docx". Note that some of the these

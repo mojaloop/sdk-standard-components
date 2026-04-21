@@ -30,7 +30,7 @@
 
 'use strict';
 
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const { ApiType, ONLY_FSPIOP_RESOURCES} = require('../constants');
 
 const respErrSym = Symbol('ResponseErrorDataSym');

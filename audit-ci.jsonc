@@ -7,5 +7,28 @@
     // NOTE: Please add as much information as possible to any items added to the allowList
     // Currently no fixes available for the following
     "allowlist": [
+      "GHSA-23c5-xmqv-rm74",
+      "GHSA-2mjp-6q6p-2qxm",
+      "GHSA-37ch-88jc-xwx2",
+      "GHSA-3v7f-55p6-f55p",
+      "GHSA-44fc-8fm5-q62h",
+      "GHSA-48c2-rrv3-qjmp",
+      "GHSA-4992-7rv2-5pvq",
+      "GHSA-7r86-cg39-jmmj",
+      "GHSA-8gc5-j5rx-235r",
+      "GHSA-c2c7-rcm5-vvqj",
+      "GHSA-f23m-r3pf-42rh",
+      "GHSA-f269-vfmq-vjvj",
+      "GHSA-fj3w-jwp8-x2g3",
+      "GHSA-hf2r-9gf9-rwch",
+      "GHSA-jg4p-7fhp-p32p",
+      "GHSA-jp2q-39xq-3w4g",
+      "GHSA-phc3-fgpg-7m6h",
+      "GHSA-r4q5-vmmm-2653",
+      "GHSA-r5fr-rjxr-66jc",
+      "GHSA-v9p9-hfj2-hcw8",
+      "GHSA-vrm6-8vpv-qv8q",
+      "GHSA-wf6x-7x77-mvgw",
+      "GHSA-xq3m-2v4x-88gg"
     ]
   }

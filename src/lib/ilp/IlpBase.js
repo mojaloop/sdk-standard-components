@@ -29,7 +29,7 @@
 const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 const base64url = require('base64url');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const MLNumber = require('@mojaloop/ml-number');
 
 const dto = require('../dto');
