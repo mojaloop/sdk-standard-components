@@ -341,7 +341,7 @@ describe('JWS', () => {
     });
 
     test('Should detect ES256 algorithm for EC private keys', () => {
-        const crypto = require('crypto');
+        const crypto = require('node:crypto');
         const ecKeyPair = crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' });
         const ecPrivateKey = ecKeyPair.privateKey.export({ type: 'sec1', format: 'pem' });
         const ecSigner = new Signer({
@@ -385,7 +385,7 @@ describe('JWS', () => {
     // --- ES256 end-to-end signing and validation ---
 
     test('Should sign and validate with ES256 keys', () => {
-        const crypto = require('crypto');
+        const crypto = require('node:crypto');
         const ecKeyPair = crypto.generateKeyPairSync('ec', { namedCurve: 'P-256' });
         const ecPrivateKey = ecKeyPair.privateKey.export({ type: 'sec1', format: 'pem' });
         const ecPublicKey = ecKeyPair.publicKey.export({ type: 'spki', format: 'pem' });
@@ -407,7 +407,7 @@ describe('JWS', () => {
     // --- Validation with wrong key should fail ---
 
     test('Should throw when validating with wrong public key (different key pair)', () => {
-        const crypto = require('crypto');
+        const crypto = require('node:crypto');
         const wrongKeyPair = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
         const wrongPublicKey = wrongKeyPair.publicKey.export({ type: 'spki', format: 'pem' });
 
@@ -532,7 +532,7 @@ describe('JWS', () => {
     test('Should validate with multiple keys configured for different sources', () => {
         signer.sign(testOpts);
 
-        const crypto = require('crypto');
+        const crypto = require('node:crypto');
         const otherKeyPair = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
         const otherPublicKey = otherKeyPair.publicKey.export({ type: 'spki', format: 'pem' });
 
