@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+## [19.19.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.9...v19.19.0) (2026-05-13)
+
+
+### Features
+
+* **jws:** add unit tests for JWS signer and validator ([#3275](https://github.com/mojaloop/sdk-standard-components/issues/3275)) ([#315](https://github.com/mojaloop/sdk-standard-components/issues/315)) ([a13dae7](https://github.com/mojaloop/sdk-standard-components/commit/a13dae76430cd1d38bea26eb62b5e2c80fe0bb7d))
+
 ### [19.18.9](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.8...v19.18.9) (2026-04-21)
 
 
