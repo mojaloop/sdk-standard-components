@@ -31,7 +31,6 @@
 const Common = require('../../../../src/lib/requests/common');
 
 describe('Common', () => {
-
     test('pass if content-length is not populated in incoming http response', async () => {
         const response = {
             statusCode: 200,
@@ -53,7 +52,6 @@ describe('Common', () => {
                 body: ''
             };
             await Common.throwOrJson(response);
-
         } catch (error) {
             expect(error.message).toBe('Expected empty response body but got content: ');
         }
@@ -69,7 +67,6 @@ describe('Common', () => {
                 body: ''
             };
             await Common.throwOrJson(response);
-
         } catch (err) {
             expect(err.message).toBe('Request returned non-success status code 100');
         }

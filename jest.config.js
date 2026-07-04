@@ -16,5 +16,5 @@ module.exports = {
             branches: 0,
             lines: 50
         }
-    },
+    }
 };

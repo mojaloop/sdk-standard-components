@@ -41,21 +41,21 @@ const IlpBase = require('./IlpBase');
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
 class IlpV1 extends IlpBase {
-    get version() { return ILP_VERSIONS.v1; }
+    get version () { return ILP_VERSIONS.v1; }
 
     /**
      * Generates the required fulfilment, condition, and ilpPacket
      *
      * @returns {IlpResponse} - object containing the fulfilment, condition and ilp packet (v1)
      */
-    getResponseIlp(transactionObject) {
+    getResponseIlp (transactionObject) {
         const packetInput = this.makeQuotePacketInput(transactionObject);
         const packet = ilpPacket.serializeIlpPayment(packetInput);
 
-        let base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
+        const base64encodedIlpPacket = base64url.fromBase64(packet.toString('base64')).replace('"', '');
 
-        let generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
-        let generatedCondition = super.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
+        const generatedFulfilment = this.calculateFulfil(base64encodedIlpPacket).replace('"', '');
+        const generatedCondition = super.calculateConditionFromFulfil(generatedFulfilment).replace('"', '');
 
         const result = {
             fulfilment: generatedFulfilment,
@@ -69,7 +69,6 @@ class IlpV1 extends IlpBase {
 
         return result;
     }
-
 
     /**
      * @typedef {Object} IlpInputV1
@@ -85,7 +84,7 @@ class IlpV1 extends IlpBase {
      *
      * @returns {IlpInputV1} ILPv1 JSON payload
      */
-    makeQuotePacketInput(transactionObject) {
+    makeQuotePacketInput (transactionObject) {
         const isFx = !!transactionObject.conversionTerms;
 
         const amount = isFx
@@ -112,48 +111,47 @@ class IlpV1 extends IlpBase {
      *
      * @returns {string} - ILP address of the specified party
      */
-    _getIlpAddress(mojaloopParty) {
-        // validate input
-        if (!mojaloopParty || typeof(mojaloopParty) !== 'object') {
+    _getIlpAddress (mojaloopParty) {
+    // validate input
+        if (!mojaloopParty || typeof (mojaloopParty) !== 'object') {
             throw new Error('ILP party must be an objcet');
         }
 
         const { partyIdInfo } = mojaloopParty;
 
-        if (!partyIdInfo || typeof(partyIdInfo) !== 'object') {
+        if (!partyIdInfo || typeof (partyIdInfo) !== 'object') {
             throw new Error('ILP party does not contain required partyIdInfo object');
         }
 
         const { fspId, partyIdType, partyIdentifier, partySubIdOrType } = partyIdInfo;
-        if (!partyIdType || typeof(partyIdType) !== 'string') {
+        if (!partyIdType || typeof (partyIdType) !== 'string') {
             throw new Error('ILP party does not contain required partyIdInfo.partyIdType string value');
         }
-        if (!partyIdentifier || typeof(partyIdType) !== 'string') {
+        if (!partyIdentifier || typeof (partyIdType) !== 'string') {
             throw new Error('ILP party does not contain required partyIdInfo.partyIdentifier string value');
         }
-        if (partySubIdOrType !== undefined && typeof(partySubIdOrType) !== 'string') {
+        if (partySubIdOrType !== undefined && typeof (partySubIdOrType) !== 'string') {
             throw new Error('ILP party partyIdInfo.partySubIdOrType should be a string value');
         }
 
-        return 'g' // ILP global address allocation scheme
-            + `.${fspId}` // fspId of the party account
-            + `.${partyIdType.toLowerCase()}` // identifier type
-            + `.${partyIdentifier.toLowerCase()}` // identifier value
-            + (partySubIdOrType ? `.${partySubIdOrType.toLowerCase()}` : '');
+        return 'g' + // ILP global address allocation scheme
+            `.${fspId}` + // fspId of the party account
+            `.${partyIdType.toLowerCase()}` + // identifier type
+            `.${partyIdentifier.toLowerCase()}` + // identifier value
+            (partySubIdOrType ? `.${partySubIdOrType.toLowerCase()}` : '');
     }
 
-    _getFxIlpAddress(conversionTerms) {
+    _getFxIlpAddress (conversionTerms) {
         const { counterPartyFsp, sourceAmount, targetAmount } = conversionTerms;
         return `g.${counterPartyFsp.toLowerCase()}.${sourceAmount.currency.toLowerCase()}.${targetAmount.currency.toLowerCase()}`;
     }
-
 
     /**
      * Calculates a fulfilment given a base64 encoded ilp packet and a secret
      *
      * @returns {string} - string containing base64 encoded fulfilment
      */
-    calculateFulfil(base64EncodedPacket) {
+    calculateFulfil (base64EncodedPacket) {
         const encodedSecret = Buffer.from(this.secret).toString('base64');
         return super._createHmac(base64EncodedPacket, encodedSecret);
     }

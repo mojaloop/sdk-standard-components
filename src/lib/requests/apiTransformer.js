@@ -21,27 +21,27 @@ const { ApiType } = require('../constants');
   code simple with no branching
 */
 class ApiTransformer {
-    constructor(conf) {
+    constructor (conf) {
         this._logger = conf.logger;
         this._apiType = conf.apiType;
 
-        if(!Object.values(ApiType).includes(this._apiType)) {
+        if (!Object.values(ApiType).includes(this._apiType)) {
             throw new Error(`Unsupported apiType: ${this._apiType}`);
         }
     }
 
-    async transformOutboundRequest(resourceType, method, { body, headers, params, isError, $context }){
-        // we only need to translate the body if we are not in FSPIOP mode...
-        // and there is a translation available for the specific resource type
-        if(this._apiType === ApiType.FSPIOP || !TransformFacades.FSPIOP[resourceType]) {
+    async transformOutboundRequest (resourceType, method, { body, headers, params, isError, $context }) {
+    // we only need to translate the body if we are not in FSPIOP mode...
+    // and there is a translation available for the specific resource type
+        if (this._apiType === ApiType.FSPIOP || !TransformFacades.FSPIOP[resourceType]) {
             return { body, headers, params };
         }
 
         // pass the required options through the transform facade
-        let transformOpts = {
-            headers: headers,
-            body: body,
-            params: params,
+        const transformOpts = {
+            headers,
+            body,
+            params,
             $context
         };
 
@@ -55,5 +55,5 @@ class ApiTransformer {
 
 module.exports = {
     ApiType,
-    ApiTransformer,
+    ApiTransformer
 };

@@ -15,7 +15,7 @@ describe('request Tests -->', () => {
         const headers = { 'content-type': 'text/html' };
         mockGetReply({ route, statusCode, data, headers });
 
-        await request({ uri:`http://test.com${route}`, responseType: ResponseType.JSON })
+        await request({ uri: `http://test.com${route}`, responseType: ResponseType.JSON })
             .catch(err => {
                 expect(err).toBeInstanceOf(Error);
                 expect(err.message.startsWith('Invalid content-type')).toBe(true);

@@ -80,7 +80,7 @@ describe('IlpV4 Tests -->', () => {
     });
 
     test('deserializes the ILP packet into a valid transaction object', () => {
-        // Arrange
+    // Arrange
         const { ilpPacket } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
         const transaction = dto.transactionObjectDto(quoteRequest, partialResponse);
 
@@ -94,7 +94,7 @@ describe('IlpV4 Tests -->', () => {
     });
 
     test('ILP fulfilment should match condition', () => {
-        // Arrange
+    // Arrange
         const { fulfilment, ilpPacket, condition } = ilp.getQuoteResponseIlp(quoteRequest, partialResponse);
 
         // Act
@@ -113,7 +113,7 @@ describe('IlpV4 Tests -->', () => {
     test('should throw error if expiration in transactionObject is undefined', () => {
         const transactionObj = {
             expiration: undefined,
-            amount: fixtures.moneyPayload(),
+            amount: fixtures.moneyPayload()
         };
         const condition = ilp._sha256('preimage');
         expect(() => ilp.calculateIlpPacket(transactionObj, condition))
@@ -127,7 +127,7 @@ describe('IlpV4 Tests -->', () => {
         expect(condition).toBeTruthy();
         expect(ilpPacket).toBeTruthy();
 
-        const json =  IlpPacket.deserializeIlpPrepare(Buffer.from(ilpPacket, 'base64'));
+        const json = IlpPacket.deserializeIlpPrepare(Buffer.from(ilpPacket, 'base64'));
         expect(json).toBeTruthy();
     });
 
@@ -189,7 +189,7 @@ describe('IlpV4 Tests -->', () => {
             data: Buffer.from('data'),
             destination: ILP_ADDRESS,
             expiresAt: new Date(),
-            executionCondition: Buffer.alloc(32, 'x'),
+            executionCondition: Buffer.alloc(32, 'x')
         });
         const serialize = json => IlpPacket.serializeIlpPrepare(json);
 
@@ -259,5 +259,3 @@ describe('IlpV4 Tests -->', () => {
         });
     });
 });
-
-

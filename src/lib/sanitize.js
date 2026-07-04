@@ -32,14 +32,14 @@
  * @param {Object} request - The request object to sanitize.
  * @returns {Object} The sanitized request object.
  */
-function sanitizeRequest(request) {
+function sanitizeRequest (request) {
     if (!request || typeof request !== 'object') return request;
 
     return {
         ...request,
-        ...request.headers?.Authorization && {headers: {...request.headers, Authorization: '[REDACTED]'}},
-        ...request.httpAgent && {httpAgent: '[REDACTED]'},
-        ...request.httpsAgent && {httpsAgent: '[REDACTED]'}
+        ...request.headers?.Authorization && { headers: { ...request.headers, Authorization: '[REDACTED]' } },
+        ...request.httpAgent && { httpAgent: '[REDACTED]' },
+        ...request.httpsAgent && { httpsAgent: '[REDACTED]' }
     };
 }
 
@@ -49,7 +49,7 @@ function sanitizeRequest(request) {
  * @param {Object} err
  * @returns {Object} The mutated error object
  */
-function sanitizeError(err) {
+function sanitizeError (err) {
     if (!err || typeof err !== 'object') return err;
 
     // config

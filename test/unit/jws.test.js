@@ -31,6 +31,7 @@
 'use strict';
 
 const fs = require('fs');
+const crypto = require('node:crypto');
 const JwsTest = require('../../src/lib/jws');
 const Signer = JwsTest.signer;
 const Validator = JwsTest.validator;
@@ -38,6 +39,26 @@ const mockLogger = require('../__mocks__/mockLogger');
 
 const signingKey = fs.readFileSync(__dirname + '/data/jwsSigningKey.pem');
 const validationKey = fs.readFileSync(__dirname + '/data/jwsValidationKey.pem');
+
+// Detect whether the current Node.js runtime has ML-DSA post-quantum support enabled.
+const hasMlDsaSupport = (() => {
+    try {
+        const [major, minor] = process.versions.node.split('.').map((v) => parseInt(v, 10));
+        if (Number.isNaN(major) || Number.isNaN(minor)) return false;
+        // ML-DSA key pairs are supported from Node.js v24.6.0 upwards.
+        if (major < 24 || (major === 24 && minor < 6)) {
+            return false;
+        }
+
+        // Quick runtime probe: try to generate a key pair and sign / verify once.
+        const { publicKey, privateKey } = crypto.generateKeyPairSync('ml-dsa-44');
+        const message = Buffer.from('ml-dsa self-test');
+        const signature = crypto.sign(null, message, privateKey);
+        return crypto.verify(null, message, publicKey, signature);
+    } catch {
+        return false;
+    }
+})();
 
 describe('JWS', () => {
     let signer;
@@ -47,7 +68,7 @@ describe('JWS', () => {
 
     beforeEach(() => {
         signer = new Signer({
-            signingKey: signingKey,
+            signingKey,
             logger: mockLogger({ app: 'jws-test' }, undefined)
         });
         body = { test: 123 };
@@ -56,29 +77,29 @@ describe('JWS', () => {
             headers: {
                 'fspiop-source': 'mojaloop-sdk',
                 'fspiop-destination': 'some-other-fsp',
-                'date': new Date().toISOString(),
+                date: new Date().toISOString()
             },
             method: 'PUT',
             uri: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
-            body,
+            body
         };
         // An axios-style request uses the `.url` and `.data` properties instead of the `.uri` and `.body` properties.
         testOptsData = {
             headers: {
                 'fspiop-source': 'mojaloop-sdk',
                 'fspiop-destination': 'some-other-fsp',
-                'date': new Date().toISOString(),
+                date: new Date().toISOString()
             },
             method: 'PUT',
             url: 'https://someswitch.com:443/prefix/parties/MSISDN/12345678',
-            data: body,
+            data: body
         };
     });
 
-    function testValidateSignedRequest(shouldFail) {
+    function testValidateSignedRequest (shouldFail) {
         const request = {
             headers: testOpts.headers,
-            body: body,
+            body
         };
 
         const validate = () => {
@@ -98,10 +119,10 @@ describe('JWS', () => {
         }
     }
 
-    function testValidateSignedRequestData(shouldFail) {
+    function testValidateSignedRequestData (shouldFail) {
         const request = {
             headers: testOptsData.headers,
-            data: body,
+            data: body
         };
 
         const validate = () => {
@@ -120,7 +141,6 @@ describe('JWS', () => {
             validate();
         }
     }
-
 
     test('Should generate valid JWS headers and signature for request with body', () => {
         signer.sign(testOpts);
@@ -130,6 +150,50 @@ describe('JWS', () => {
         expect(testOpts.headers['fspiop-http-method']).toBe('PUT');
 
         testValidateSignedRequest(false);
+    });
+
+    (hasMlDsaSupport ? test : test.skip)('Should generate valid JWS headers and signature for request with body using ML-DSA-44', () => {
+        const { publicKey: pqPublicKey, privateKey: pqPrivateKey } = crypto.generateKeyPairSync('ml-dsa-44');
+
+        const pqSigner = new Signer({
+            signingKey: pqPrivateKey,
+            logger: mockLogger({ app: 'jws-pqc-test' }, undefined),
+            alg: 'ML-DSA-44'
+        });
+
+        const pqValidator = new Validator({
+            validationKeys: {
+                'mojaloop-sdk': pqPublicKey
+            },
+            logger: mockLogger({ app: 'validate-pqc-test' }, undefined)
+        });
+
+        const pqBody = { test: 456 };
+        const pqOpts = {
+            headers: {
+                'fspiop-source': 'mojaloop-sdk',
+                'fspiop-destination': 'some-other-fsp',
+                date: new Date().toISOString()
+            },
+            method: 'PUT',
+            uri: 'https://someswitch.com:443/prefix/parties/MSISDN/99999999',
+            body: pqBody
+        };
+
+        pqSigner.sign(pqOpts);
+
+        expect(pqOpts.headers['fspiop-signature']).toBeTruthy();
+        expect(pqOpts.headers['fspiop-uri']).toBe('/parties/MSISDN/99999999');
+        expect(pqOpts.headers['fspiop-http-method']).toBe('PUT');
+
+        const pqRequest = {
+            headers: pqOpts.headers,
+            body: pqBody
+        };
+
+        // This should exercise the PQC validation path in JwsValidator.
+        const validate = () => pqValidator.validate(pqRequest);
+        validate();
     });
 
     test('Should generate valid JWS headers and signature for request with data', () => {
@@ -161,7 +225,6 @@ describe('JWS', () => {
         expect(signature).toBeTruthy();
         testValidateSignedRequestData(false);
     });
-
 
     test('Should throw when trying to sign with no body', () => {
         delete testOpts.body;
@@ -245,13 +308,11 @@ describe('JWS', () => {
         testValidateSignedRequestData(true);
     });
 
-
     test('Should throw when trying to validate with no fspiop-signature header', () => {
         signer.sign(testOpts);
         delete testOpts.headers['fspiop-signature'];
         testValidateSignedRequest(true);
     });
-
 
     test('Should throw when trying to validate with no fspiop-uri header', () => {
         signer.sign(testOpts);
@@ -259,13 +320,11 @@ describe('JWS', () => {
         testValidateSignedRequest(true);
     });
 
-
     test('Should throw when trying to validate with no fspiop-http-method header', () => {
         signer.sign(testOpts);
         delete testOpts.headers['fspiop-http-method'];
         testValidateSignedRequest(true);
     });
-
 
     test('Should throw when trying to validate with modified body', () => {
         signer.sign(testOpts);
@@ -285,13 +344,11 @@ describe('JWS', () => {
         testValidateSignedRequest(true);
     });
 
-
     test('Should throw when trying to validate with missing fspiop-uri header', () => {
         signer.sign(testOpts);
         delete testOpts.headers['fspiop-uri'];
         testValidateSignedRequest(true);
     });
-
 
     test('Should throw when trying to validate with missing fspiop-http-method header', () => {
         signer.sign(testOpts);
@@ -299,27 +356,23 @@ describe('JWS', () => {
         testValidateSignedRequest(true);
     });
 
-
     test('Should throw when trying to validate with modified fspiop-destination header', () => {
         signer.sign(testOpts);
         testOpts.headers['fspiop-destination'] = 'fail';
         testValidateSignedRequest(true);
     });
 
-
     test('Should throw when trying to validate with modified date header', () => {
         signer.sign(testOpts);
-        testOpts.headers['date'] = '1985-01-01T00:00:00.000Z';
+        testOpts.headers.date = '1985-01-01T00:00:00.000Z';
         testValidateSignedRequest(true);
     });
-
 
     test('Should throw when trying to validate with modified fspiop-uri', () => {
         signer.sign(testOpts);
         testOpts.headers['fspiop-uri'] = '/parties/MSISDN/12345679';
         testValidateSignedRequest(true);
     });
-
 
     test('should throw when trying to validate without matching public key', () => {
         testOpts.headers['fspiop-source'] = 'unknownFsp';
@@ -544,5 +597,166 @@ describe('JWS', () => {
             logger: mockLogger({ app: 'multi-key-test' }, undefined)
         });
         expect(validator.validate({ headers: testOpts.headers, body })).toBe(true);
+    });
+});
+
+// --- Post-Quantum Cryptography (ML-DSA) tests ---
+
+const PQC_ALGORITHMS = ['ml-dsa-44', 'ml-dsa-65', 'ml-dsa-87'];
+const PQC_JWS_ALGS   = ['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'];
+
+describe('JWS PQC (ML-DSA)', () => {
+    const conditionalTest = hasMlDsaSupport ? test : test.skip;
+
+    // Helper: build a minimal signed PQC request
+    function makePqcSignedRequest ({ alg, cryptoAlg, uri = true }) {
+        const { publicKey, privateKey } = crypto.generateKeyPairSync(cryptoAlg);
+        const pqSigner = new Signer({
+            signingKey: privateKey,
+            logger: mockLogger({ app: `pqc-${alg}` }, undefined),
+            alg
+        });
+        const pqValidator = new Validator({
+            validationKeys: { 'mojaloop-sdk': publicKey },
+            logger: mockLogger({ app: `pqc-validate-${alg}` }, undefined)
+        });
+        const pqBody = { amount: '100', currency: 'USD' };
+        const opts = {
+            headers: {
+                'fspiop-source': 'mojaloop-sdk',
+                'fspiop-destination': 'dest-fsp',
+                date: new Date().toISOString()
+            },
+            method: 'POST',
+            ...(uri
+                ? { uri: 'https://switch.example:443/prefix/transfers/abc-123', body: pqBody }
+                : { url: 'https://switch.example:443/prefix/transfers/abc-123', data: pqBody }
+            )
+        };
+        pqSigner.sign(opts);
+        return { pqValidator, opts, pqBody };
+    }
+
+    // Round-trip sign + validate for all three ML-DSA parameter sets
+    test.each(PQC_ALGORITHMS.map((a, i) => [a, PQC_JWS_ALGS[i]]))('Should sign and validate with %s (uri/body style)', (cryptoAlg, jwsAlg) => {
+        if (!hasMlDsaSupport) return;
+        const { pqValidator, opts, pqBody } = makePqcSignedRequest({ alg: jwsAlg, cryptoAlg });
+
+        expect(opts.headers['fspiop-signature']).toBeTruthy();
+        expect(opts.headers['fspiop-uri']).toBe('/transfers/abc-123');
+        expect(opts.headers['fspiop-http-method']).toBe('POST');
+        expect(pqValidator.validate({ headers: opts.headers, body: pqBody })).toBe(true);
+    });
+
+    // Axios-style (url/data) signing for ML-DSA-44
+    conditionalTest('Should sign and validate with ML-DSA-44 (url/data axios style)', () => {
+        const { pqValidator, opts, pqBody } = makePqcSignedRequest({
+            alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44', uri: false
+        });
+
+        expect(opts.headers['fspiop-signature']).toBeTruthy();
+        expect(pqValidator.validate({ headers: opts.headers, data: pqBody })).toBe(true);
+    });
+
+    // getSignature returns correct JSON structure for PQC
+    conditionalTest('getSignature should return JSON with signature and protectedHeader for ML-DSA-44', () => {
+        const base64url = require('base64url');
+        const { publicKey, privateKey } = crypto.generateKeyPairSync('ml-dsa-44');
+        void publicKey;
+        const pqSigner = new Signer({
+            signingKey: privateKey,
+            logger: mockLogger({ app: 'pqc-sig-struct' }, undefined),
+            alg: 'ML-DSA-44'
+        });
+        const opts = {
+            headers: {
+                'fspiop-source': 'mojaloop-sdk',
+                'fspiop-destination': 'dest-fsp',
+                'fspiop-uri': '/transfers/abc-123',
+                'fspiop-http-method': 'POST',
+                date: new Date().toISOString()
+            },
+            method: 'POST',
+            uri: 'https://switch.example:443/prefix/transfers/abc-123',
+            body: { amount: '100' }
+        };
+        const sigStr = pqSigner.getSignature(opts);
+        const parsed = JSON.parse(sigStr);
+
+        expect(parsed).toHaveProperty('signature');
+        expect(parsed).toHaveProperty('protectedHeader');
+        expect(typeof parsed.signature).toBe('string');
+        expect(typeof parsed.protectedHeader).toBe('string');
+
+        const decoded = JSON.parse(base64url.decode(parsed.protectedHeader));
+        expect(decoded.alg).toBe('ML-DSA-44');
+        expect(decoded['FSPIOP-URI']).toBe('/transfers/abc-123');
+        expect(decoded['FSPIOP-HTTP-Method']).toBe('POST');
+        expect(decoded['FSPIOP-Source']).toBe('mojaloop-sdk');
+    });
+
+    // Tampered body should fail validation
+    conditionalTest('Should throw when body is tampered after PQC signing', () => {
+        const { pqValidator, opts } = makePqcSignedRequest({ alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44' });
+        const tamperedBody = { amount: '999', currency: 'USD' };
+
+        expect(() => pqValidator.validate({ headers: opts.headers, body: tamperedBody })).toThrow();
+    });
+
+    // Tampered signature bytes should fail validation
+    conditionalTest('Should throw when PQC signature bytes are tampered', () => {
+        const base64url = require('base64url');
+        const { pqValidator, opts, pqBody } = makePqcSignedRequest({ alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44' });
+
+        const sigObj = JSON.parse(opts.headers['fspiop-signature']);
+        const sigBytes = base64url.toBuffer(sigObj.signature);
+        sigBytes[0] ^= 0xff; // flip bits in first byte
+        sigObj.signature = base64url(sigBytes);
+        opts.headers['fspiop-signature'] = JSON.stringify(sigObj);
+
+        expect(() => pqValidator.validate({ headers: opts.headers, body: pqBody })).toThrow();
+    });
+
+    // Wrong public key should fail validation
+    conditionalTest('Should throw when validating PQC signature with wrong public key', () => {
+        const { opts, pqBody } = makePqcSignedRequest({ alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44' });
+        const { publicKey: wrongPublicKey } = crypto.generateKeyPairSync('ml-dsa-44');
+
+        const wrongValidator = new Validator({
+            validationKeys: { 'mojaloop-sdk': wrongPublicKey },
+            logger: mockLogger({ app: 'pqc-wrong-key' }, undefined)
+        });
+        expect(() => wrongValidator.validate({ headers: opts.headers, body: pqBody })).toThrow();
+    });
+
+    // Node version guard in JwsSigner constructor
+    test('Should throw when creating PQC signer on unsupported Node.js version', () => {
+        const originalVersion = process.versions.node;
+        Object.defineProperty(process.versions, 'node', { value: '22.0.0', configurable: true });
+        try {
+            expect(() => new Signer({
+                signingKey: 'dummy-key',
+                logger: mockLogger({ app: 'pqc-version-test' }, undefined),
+                alg: 'ML-DSA-65'
+            })).toThrow('requires Node.js >= 24.7.0');
+        } finally {
+            Object.defineProperty(process.versions, 'node', { value: originalVersion, configurable: true });
+        }
+    });
+
+    // Mismatched fspiop-destination after PQC signing should fail
+    conditionalTest('Should throw when fspiop-destination is modified after PQC signing', () => {
+        const { pqValidator, opts, pqBody } = makePqcSignedRequest({ alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44' });
+        opts.headers['fspiop-destination'] = 'tampered-fsp';
+
+        expect(() => pqValidator.validate({ headers: opts.headers, body: pqBody })).toThrow();
+    });
+
+    // Date header modification after PQC signing should fail
+    conditionalTest('Should throw when date header is modified after PQC signing', () => {
+        const { pqValidator, opts, pqBody } = makePqcSignedRequest({ alg: 'ML-DSA-44', cryptoAlg: 'ml-dsa-44' });
+        opts.headers.date = '1985-01-01T00:00:00.000Z';
+
+        expect(() => pqValidator.validate({ headers: opts.headers, body: pqBody })).toThrow();
     });
 });

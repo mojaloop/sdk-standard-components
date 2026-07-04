@@ -39,10 +39,9 @@ const jwsSigningKey = fs.readFileSync(__dirname + '/../../data/jwsSigningKey.pem
 const logger = mockLogger({ app: 'request-errors-test' });
 
 describe('request error handling', () => {
-
-    async function primRequestSerializationTest(mojaloopRequestMethodName) {
-        let jwsSign = false;
-        let jwsSignPutParties = false;
+    async function primRequestSerializationTest (mojaloopRequestMethodName) {
+        const jwsSign = false;
+        const jwsSignPutParties = false;
 
         const oidc = new OIDCAuth({ logger });
 
@@ -54,19 +53,19 @@ describe('request error handling', () => {
                     enabled: false
                 }
             },
-            jwsSign: jwsSign,
-            jwsSignPutParties: jwsSignPutParties,
-            jwsSigningKey: jwsSigningKey,
+            jwsSign,
+            jwsSignPutParties,
+            jwsSigningKey,
             peerEndpoint: '127.0.0.1:9999',
-            oidc,
+            oidc
         };
 
         const testMr = new mr(conf);
-        let url = '/test';
-        let resourceType = 'parties';
-        let body = { a: 1 };
-        let dest = '42';
-        let mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
+        const url = '/test';
+        const resourceType = 'parties';
+        const body = { a: 1 };
+        const dest = '42';
+        const mojaloopRequestMethod = testMr[mojaloopRequestMethodName].bind(testMr);
         await mojaloopRequestMethod(url, resourceType, body, dest);
         await oidc.stop();
     }

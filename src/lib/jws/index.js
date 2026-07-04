@@ -33,7 +33,6 @@
 const validator = require('./jwsValidator.js');
 const signer = require('./jwsSigner.js');
 
-
 module.exports = {
     validator,
     signer

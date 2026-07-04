@@ -1,19 +1,19 @@
 const ApiType = Object.freeze({
     FSPIOP: 'fspiop',
-    ISO20022: 'iso20022',
+    ISO20022: 'iso20022'
 });
 
 const RESOURCES = Object.freeze({
     fxQuotes: 'fxQuotes',
     fxTransfers: 'fxTransfers',
-    ping: 'ping',
+    ping: 'ping'
 });
 
 const ERROR_MESSAGES = Object.freeze({
     invalidIlpExpirationDate: 'Invalid ILP expiration date',
     unsupportedIlpVersion: 'Unsupported ILP version',
     invalidIlpOptions: 'Invalid ILP options',
-    invalidAdjustedAmount: 'Ilp packet `amount` after scaling should be integer',
+    invalidAdjustedAmount: 'Ilp packet `amount` after scaling should be integer'
 });
 
 const ILP_VERSIONS = Object.freeze({
@@ -31,7 +31,7 @@ const ONLY_FSPIOP_RESOURCES = [
     'authorizations',
     // 'bulkQuotes',
     // 'bulkTransfers',
-    'transactionRequests',
+    'transactionRequests'
 ];
 // todo: think about bulkQuotes/bulkTransfers
 

@@ -31,10 +31,10 @@ const transactionObjectDto = (quoteRequest, quoteResponse) => {
         payer,
         expiration,
         amount: transferAmount,
-        ...(note && { note }),
+        ...(note && { note })
     });
 };
 
 module.exports = {
-    transactionObjectDto,
+    transactionObjectDto
 };

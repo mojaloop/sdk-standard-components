@@ -11,11 +11,12 @@
  *       James Bush - jbush@mojaloop.io                                   *
  *************************************************************************/
 
-const { MojaloopApiErrorCodes,
+const {
+    MojaloopApiErrorCodes,
     MojaloopApiErrorCodeFromCode,
     MojaloopApiErrorObjectFromCode,
-    MojaloopFSPIOPError } = require('../../../../src/lib/errors');
-
+    MojaloopFSPIOPError
+} = require('../../../../src/lib/errors');
 
 describe('Mojaloop errors', () => {
     it('all error constants have a code and a message', async () => {
@@ -26,7 +27,7 @@ describe('Mojaloop errors', () => {
         expect(allOk).toEqual(true);
     });
 
-    it('returns a mojaloop error code object given a valid mojaloop error code', async() => {
+    it('returns a mojaloop error code object given a valid mojaloop error code', async () => {
         const c = '5200';
         const ec = MojaloopApiErrorCodeFromCode(c);
 

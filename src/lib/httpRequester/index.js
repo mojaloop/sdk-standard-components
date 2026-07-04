@@ -49,7 +49,7 @@ const createHttpRequester = ({
     logger = defaultLogger,
     httpClient = null,
     httpConfig = defaultConfig.createDefaultHttpConfig(),
-    retryConfig = defaultConfig.createDefaultRetryConfig(logger),
+    retryConfig = defaultConfig.createDefaultRetryConfig(logger)
 } = {}) => {
     const deps = {
         logger,
@@ -72,5 +72,5 @@ request.responseType = httpRequester.responseType;
 module.exports = {
     request, // use createHttpRequester instead
     createHttpRequester,
-    defaultConfig,
+    defaultConfig
 };

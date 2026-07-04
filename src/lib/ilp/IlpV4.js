@@ -38,14 +38,14 @@ const IlpBase = require('./IlpBase');
  * An abstraction of ILP suitable for the Mojaloop API ILP requirements
  */
 class IlpV4 extends IlpBase {
-    get version() { return ILP_VERSIONS.v4; }
+    get version () { return ILP_VERSIONS.v4; }
 
     /**
      * Generates the required fulfilment, condition, and ilpPacket
      *
      * @returns {IlpResponse} - object containing the fulfilment, condition and ilp packet (v4)
      */
-    getResponseIlp(transactionObject) {
+    getResponseIlp (transactionObject) {
         const fulfilment = this.#calculateFulfilFromTransactionObject(transactionObject);
         const condition = super.calculateConditionFromFulfil(fulfilment);
         const ilpPacket = this.calculateIlpPacket(transactionObject, condition);
@@ -65,7 +65,7 @@ class IlpV4 extends IlpBase {
      *
      * @returns {string} - string containing base64 encoded fulfilment
      */
-    calculateFulfil(base64EncodedPacket) {
+    calculateFulfil (base64EncodedPacket) {
         const transactionObject = this.getTransactionObject(base64EncodedPacket);
         const { fulfilment } = this.getResponseIlp(transactionObject);
         return fulfilment;
@@ -87,13 +87,13 @@ class IlpV4 extends IlpBase {
      *
      * @returns {IlpInputV4} ILPv4 JSON payload
      */
-    makeQuotePacketInput(transactionObject, condition) {
+    makeQuotePacketInput (transactionObject, condition) {
         const isFx = !!transactionObject.conversionTerms;
 
         const expiresAt = isFx
             ? new Date(transactionObject.conversionTerms.expiration)
             : new Date(transactionObject.expiration);
-        if (isNaN(expiresAt.getTime())){
+        if (isNaN(expiresAt.getTime())) {
             throw new TypeError(ERROR_MESSAGES.invalidIlpExpirationDate);
         }
         const amount = this.#adjustAmount(transactionObject, isFx);
@@ -117,11 +117,11 @@ class IlpV4 extends IlpBase {
      *
      * @returns {string} - dummy ILP address for mojaloop
      */
-    _getIlpAddress() {
+    _getIlpAddress () {
         return ILP_ADDRESS;
     }
 
-    calculateIlpPacket(transactionObject, condition) {
+    calculateIlpPacket (transactionObject, condition) {
         const packetInput = this.makeQuotePacketInput(transactionObject, condition);
         const packet = ilpPacket.serializeIlpPrepare(packetInput);
 
@@ -133,7 +133,7 @@ class IlpV4 extends IlpBase {
      *
      * @returns {object} - Ilp packet as JSON object
      */
-    decodeIlpPacket(inputIlpPacket) {
+    decodeIlpPacket (inputIlpPacket) {
         const binaryPacket = Buffer.from(inputIlpPacket, 'base64');
         return ilpPacket.deserializeIlpPrepare(binaryPacket);
     }
@@ -143,14 +143,14 @@ class IlpV4 extends IlpBase {
      *
      * @returns {string} - string containing base64 encoded fulfilment
      */
-    #calculateFulfilFromTransactionObject(transactionObject) {
+    #calculateFulfilFromTransactionObject (transactionObject) {
         const base64EncodedTransaction = Buffer.from(safeStringify(transactionObject)).toString('base64');
         const encodedSecret = Buffer.from(this.secret).toString('base64');
 
         return super._createHmac(base64EncodedTransaction, encodedSecret);
     }
 
-    #adjustAmount(transactionObject, isFx) {
+    #adjustAmount (transactionObject, isFx) {
         const amount = isFx
             ? ILP_AMOUNT_FOR_FX
             : super._getIlpCurrencyAmount(transactionObject.amount);

@@ -44,7 +44,7 @@ describe('BaseRequests OIDC authorisation', () => {
     beforeEach(() => {
         accessToken = 'fake.access.token';
         oidcAuth = {
-            refreshToken: jest.fn(async () => accessToken),
+            refreshToken: jest.fn(async () => accessToken)
         };
         defaultConf = {
             logger: mockLogger({ app: 'BaseRequests test' }, undefined),
@@ -53,7 +53,7 @@ describe('BaseRequests OIDC authorisation', () => {
                 mutualTLS: {
                     enabled: false
                 }
-            },
+            }
         };
         mockAxios.reset();
         mockAxios.onAny().reply(401, {}, jsonContentTypeHeader);
@@ -64,7 +64,7 @@ describe('BaseRequests OIDC authorisation', () => {
         const conf = {
             ...defaultConf,
             oidc: {
-                auth: oidcAuth,
+                auth: oidcAuth
                 // retryOidcAuthFailureTimes: undefined, // the default
             }
         };
@@ -84,8 +84,8 @@ describe('BaseRequests OIDC authorisation', () => {
             ...defaultConf,
             oidc: {
                 auth: oidcAuth,
-                retryOidcAuthFailureTimes: 1,
-            },
+                retryOidcAuthFailureTimes: 1
+            }
         };
 
         const br = new BaseRequests(conf);
@@ -103,8 +103,8 @@ describe('BaseRequests OIDC authorisation', () => {
             ...defaultConf,
             oidc: {
                 auth: oidcAuth,
-                retryOidcAuthFailureTimes: 5,
-            },
+                retryOidcAuthFailureTimes: 5
+            }
         };
 
         const br = new BaseRequests(conf);
@@ -129,7 +129,7 @@ describe('BaseRequests', () => {
                     enabled: false
                 }
             },
-            dfspId: 'testdfsp',
+            dfspId: 'testdfsp'
         };
         mockAxios.reset();
         mockAxios.onAny().reply(200, {}, jsonContentTypeHeader);
@@ -139,7 +139,7 @@ describe('BaseRequests', () => {
         const mockHttpAgent = { mock: 'httpAgent' };
         const conf = {
             ...defaultConf,
-            httpAgent: mockHttpAgent,
+            httpAgent: mockHttpAgent
         };
 
         const br = new BaseRequests(conf);
@@ -151,7 +151,7 @@ describe('BaseRequests', () => {
         const conf = {
             ...defaultConf,
             tls: { enabled: true, creds: {} },
-            httpsAgent: mockHttpsAgent,
+            httpsAgent: mockHttpsAgent
         };
 
         const br = new BaseRequests(conf);
@@ -170,7 +170,7 @@ describe('BaseRequests', () => {
 
     it('returns original request details for GET calls when response type is mojaloop', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -184,7 +184,7 @@ describe('BaseRequests', () => {
 
     it('returns original request details for DELETE calls when response type is mojaloop', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -198,7 +198,7 @@ describe('BaseRequests', () => {
 
     it('returns original request details for POST calls when response type is mojaloop', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -213,7 +213,7 @@ describe('BaseRequests', () => {
 
     it('returns original request details for PUT calls when response type is mojaloop', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -228,7 +228,7 @@ describe('BaseRequests', () => {
 
     it('returns original request details for PATCH calls when response type is mojaloop', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -243,7 +243,7 @@ describe('BaseRequests', () => {
 
     it('constructs an apiTransformer upon construction', async () => {
         const conf = {
-            ...defaultConf,
+            ...defaultConf
         };
 
         const br = new BaseRequests(conf);
@@ -254,7 +254,7 @@ describe('BaseRequests', () => {
     it('transforms an FSPIOP POST request to an ISO20022 POST request when API type is ISO20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const br = new BaseRequests(conf);
 
@@ -283,7 +283,7 @@ describe('BaseRequests', () => {
     it('transforms an FSPIOP PUT request to an ISO20022 PUT request when API type is ISO20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const br = new BaseRequests(conf);
 
@@ -313,7 +313,7 @@ describe('BaseRequests', () => {
     it('transforms an FSPIOP PATCH request to an ISO20022 PATCH request when API type is ISO20022', async () => {
         const conf = {
             ...defaultConf,
-            apiType: ApiType.ISO20022,
+            apiType: ApiType.ISO20022
         };
         const br = new BaseRequests(conf);
 

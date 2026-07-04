@@ -42,17 +42,17 @@ class SdkLogger extends ContextLogger {
     //       - think about adding logLevel to ContextLoggerOptions
     //       - add log() method to ContextLogger (?)
     //       - export logLevels from ContextLogger (?)
-    child(context) {
+    child (context) {
         const { mlLogger } = this;
         const childContext = this.createContext(context);
         return new this.constructor(Object.assign({}, this.context, childContext), { mlLogger });
     }
 
-    push(context) {
+    push (context) {
         return this.child(context);
     }
 
-    log(message, meta = null) {
+    log (message, meta = null) {
         this.silly(message, meta);
     }
 }
@@ -60,5 +60,5 @@ class SdkLogger extends ContextLogger {
 module.exports = {
     loggerFactory,
     SdkLogger,
-    LOG_LEVELS,
+    LOG_LEVELS
 };
