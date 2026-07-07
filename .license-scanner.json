@@ -1,0 +1,8 @@
+{
+  "exceptions": {
+    "oer-utils@5.1.2": {
+      "reason": "Apache-2.0 (LICENSE file in the package: 'Licensed under the Apache License, Version 2.0'; github.com/interledgerjs/interledgerjs). Upstream package.json is missing the license field, so syft reads it as empty. Added 2026-07-07.",
+      "expires": "2026-12-31"
+    }
+  }
+}
