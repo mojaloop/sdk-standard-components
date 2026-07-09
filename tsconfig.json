@@ -9,9 +9,12 @@
   ],
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
+    "module": "nodenext",
     "lib": [
       "esnext"
+    ],
+    "types": [
+      "node"
     ],
     "importHelpers": true,
     "declaration": true,
@@ -30,11 +33,10 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "moduleResolution": "nodenext",
     "paths": {
       "~/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "esModuleInterop": true,

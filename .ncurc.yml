@@ -1,3 +1,6 @@
 reject:
   # ILP-Packet <= v2.2.0 is required to support the ILP-Packet version 1 used by the Mojaloop Specification v1.x.
   - "ilp-packet-v1"
+  # @types/node major must match the Node runtime major in .nvmrc (24.x). Higher majors only weaken
+  # type checking: tsc would accept Node-26-only APIs that crash at runtime (untestable failure mode).
+  - "@types/node"
