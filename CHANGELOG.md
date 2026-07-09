@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.19.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.19.0...v19.19.1) (2026-07-09)
+
+
+### Chore
+
+* bump orb to 2.1.3, node to 24.18.0, update deps and fix vulnerabilities [mojaloop/[#4479](https://github.com/mojaloop/sdk-standard-components/issues/4479)] ([#325](https://github.com/mojaloop/sdk-standard-components/issues/325)) ([936cb3f](https://github.com/mojaloop/sdk-standard-components/commit/936cb3f87c017b206bca3cfe5de482da7ab3882e))
+
 ## [19.19.0](https://github.com/mojaloop/sdk-standard-components/compare/v19.18.9...v19.19.0) (2026-05-13)
 
 
