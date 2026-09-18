@@ -15,10 +15,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "npm run test:unit",
-    "test:unit": "jest --ci --collectCoverage=false --reporters=default --env=node --runInBand test/unit",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --ci --collectCoverage=false --reporters=default --env=node --runInBand test/unit",
     "test:xunit": "JEST_JUNIT_OUTPUT_FILE=./test/results/junit.xml npm run test:unit -- --reporters=jest-junit",
-    "test:coverage": "jest --coverage --coverageThreshold='{}'",
-    "test:coverage-check": "jest --coverage",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage --coverageThreshold='{}'",
+    "test:coverage-check": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:functional": "echo 'No functional tests defined'",
     "test:integration": "echo 'No integration tests defined'",
     "audit:fix": "npm audit fix",
@@ -67,12 +67,12 @@
     "eslint": {
       "ajv": "6.14.0"
     },
-    "brace-expansion@5": "5.0.7",
+    "brace-expansion@5": "5.0.12",
     "js-yaml": "4.3.2",
     "json-refs": {
-      "js-yaml": "3.15.0"
+      "js-yaml": "3.15.2"
     },
-    "qs": "6.15.3",
+    "qs": "6.16.0",
     "@grpc/grpc-js": "1.14.4",
     "form-data": "4.0.6",
     "lodash": "4.18.1",
@@ -86,11 +86,8 @@
     "shins": {
       "ajv": "6.14.0",
       "ejs": "3.1.10",
-      "sanitize-html": "2.12.1",
+      "sanitize-html": "2.17.7",
       "markdown-it": "14.3.0"
-    },
-    "test-exclude": {
-      "minimatch": "5.1.9"
     },
     "widdershins": {
       "swagger2openapi": "7.0.8",
@@ -114,10 +111,10 @@
     "immutable": "5.1.8",
     "postcss": "8.5.23",
     "nanoid": "3.3.18",
-    "brace-expansion": "2.1.2",
+    "brace-expansion": "2.1.7",
     "fast-xml-parser": "5.10.1",
-    "sanitize-html": "2.17.6",
-    "body-parser": "1.20.6",
+    "sanitize-html": "2.17.7",
+    "body-parser": "1.20.8",
     "mysql2": "3.23.1",
     "@humanfs/node": "0.16.8",
     "baseline-browser-mapping": "2.11.0",
