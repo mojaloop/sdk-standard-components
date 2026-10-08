@@ -1,17 +1,16 @@
 disabled: false
 
 ignore:
-  # The two below have NO patched release published; dev tooling only. Mirrors
-  # the audit-ci.jsonc allowlist. Remove when braces 3.0.4 / sprintf-js 1.1.4 ship.
+  # The CI grype job fails on any Critical, High or Medium match, so the one entry below is
+  # required. braces has no patched release in any major (<= 3.0.3 affected, 3.0.3 is the
+  # newest published) and one of its paths, ts-auto-mock -> micromatch, is already at
+  # latest. Mirrors the audit-ci.jsonc allowlist. Remove when braces 3.0.4 ships.
+  # Removed: sprintf-js (left the tree when argparse 1 was bumped to 2) and the two convict
+  # advisories GHSA-44fc-8fm5-q62h / GHSA-hf2r-9gf9-rwch (convict 6.2.5 is installed, which
+  # is the patched version).
   - vulnerability: GHSA-vfj7-8cjw-p6xm
     include-aliases: true
-    reason: 'braces: no patched release exists (<= 3.0.3 affected, 3.0.3 is latest); dev tooling only'
-  - vulnerability: GHSA-hp3w-g68c-fv3c
-    include-aliases: true
-    reason: 'sprintf-js: no patched release exists (<= 1.1.3 affected, 1.1.3 is latest); dev tooling only'
-  # convict prototype pollution (via @mojaloop/central-services-shared); no fixed release exists (<=6.2.4 is latest) - 2026-07-07
-  - vulnerability: GHSA-44fc-8fm5-q62h
-  - vulnerability: GHSA-hf2r-9gf9-rwch
+    reason: 'braces: no patched release exists (<= 3.0.3 affected, 3.0.3 is latest); ts-auto-mock -> micromatch path already at latest'
 
 # Set output format defaults
 output:
