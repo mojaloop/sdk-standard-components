@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/sdk-standard-components](https://github.com/mojaloop/sdk-standard-components)
+### [19.19.2](https://github.com/mojaloop/sdk-standard-components/compare/v19.19.1...v19.19.2) (2026-10-09)
+
+
+### Bug Fixes
+
+* **security:** scope overrides, bump argparse to drop sprintf-js ([#326](https://github.com/mojaloop/sdk-standard-components/issues/326)) ([e32b163](https://github.com/mojaloop/sdk-standard-components/commit/e32b1635cebdbf5d79181186f50f19230181f6c0))
+
 ### [19.19.1](https://github.com/mojaloop/sdk-standard-components/compare/v19.19.0...v19.19.1) (2026-07-09)
 
 
