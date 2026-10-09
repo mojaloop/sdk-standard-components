@@ -125,7 +125,8 @@
     "source-map-js": "1.2.2",
     "moment": "2.31.0",
     "markdown-it": "14.3.1",
-    "argparse@1": "2.0.1"
+    "argparse@1": "2.0.1",
+    "handlebars": "4.7.10"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
